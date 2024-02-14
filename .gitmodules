@@ -1,0 +1,3 @@
+[submodule "DbConnector"]
+	path = rplidar_sdk
+	url = https://github.com/Slamtec/rplidar_sdk
