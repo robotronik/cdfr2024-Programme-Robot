@@ -1,6 +1,6 @@
 # Makefile
 CXX = g++
-CXXFLAGS = -Wall -Iinclude
+CXXFLAGS = -Wall -Iinclude -IlidarLib/sdk/include
 TARGET = bin/myprogram
 SRCDIR = src
 OBJDIR = obj
@@ -8,7 +8,8 @@ OBJDIR = obj
 SRC = $(wildcard $(SRCDIR)/*.cpp)
 OBJ = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRC))
 
-all: $(TARGET)
+all: lidarLib $(TARGET)
+	@echo "Compilation terminée. Exécutez './$(TARGET)' pour exécuter le programme."
 
 $(TARGET): $(OBJ) | bin
 	$(CXX) $(CXXFLAGS) $^ -o $@
@@ -19,8 +20,14 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp | $(OBJDIR)
 $(OBJDIR):
 	mkdir -p $@
 
+
 bin:
 	mkdir -p bin
 
+lidarLib:
+	@echo "Compilation du sous-dossier lidarLib..."
+	$(MAKE) -C rplidar_sdk
+
 clean:
 	rm -rf $(OBJDIR) bin/
+	$(MAKE) -C lidarLib clean
