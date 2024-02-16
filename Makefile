@@ -1,6 +1,6 @@
 # Makefile
 CXX = g++
-CXXFLAGS = -Wall -Iinclude -Irplidar_sdk/sdk/include
+CXXFLAGS = -Wall -g -Iinclude -Irplidar_sdk/sdk/include
 TARGET = bin/myprogram
 SRCDIR = src
 OBJDIR = obj
