@@ -1,11 +1,12 @@
 #include "lidar.h"
 
-void lidarDelete(void);
+static bool checkSLAMTECLIDARHealth(ILidarDriver * drv);
+static void lidarDelete(void);
 static ILidarDriver* drv;
-static sl_result     op_result;
 
 bool lidarSetup(const char* serialPort ,int baudrate){
 
+    static sl_result     op_result;
     drv = *createLidarDriver();
 
     if (!drv) {
@@ -16,7 +17,7 @@ bool lidarSetup(const char* serialPort ,int baudrate){
     sl_lidar_response_device_info_t devinfo;
     bool connectSuccess = false;
     IChannel* _channel;
-    //sl_result     op_result;
+    
 
     _channel = (*createSerialPortChannel(serialPort, baudrate));
     if (SL_IS_OK((drv)->connect(_channel))) {
@@ -65,7 +66,7 @@ bool lidarSetup(const char* serialPort ,int baudrate){
     // start scan...
     drv->startScan(0,1);
 
-
+    return true;
 }
 
 void lidarStop(void){
@@ -83,22 +84,33 @@ void lidarDelete(void){
 }
 
 
-void lidarPrint(void){
+
+bool getlidarData(lidarAnalize_t* data, int& countdata){
     sl_lidar_response_measurement_node_hq_t nodes[8192];
     size_t   count = _countof(nodes);
-    
-    op_result = drv->grabScanDataHq(nodes, count);
+    sl_result     op_result;
+
+    op_result = drv->grabScanDataHq(nodes, count,0);
 
     if (SL_IS_OK(op_result)) {
         drv->ascendScanData(nodes, count);
-        for (int pos = 0; pos < (int)count ; ++pos) {
-            printf("%s theta: %03.2f Dist: %08.2f Q: %d \n", 
-                (nodes[pos].flag & SL_LIDAR_RESP_HQ_FLAG_SYNCBIT) ?"S ":"  ", 
-                (nodes[pos].angle_z_q14 * 90.f) / 16384.f,
-                nodes[pos].dist_mm_q2/4.0f,
-                nodes[pos].quality >> SL_LIDAR_RESP_MEASUREMENT_QUALITY_SHIFT);
+        int pos;
+        for (pos = 0; pos < (int)count; ++pos) {
+            data[pos].valid = (nodes[pos].quality >> SL_LIDAR_RESP_MEASUREMENT_QUALITY_SHIFT) != 0;
+            data[pos].dist = nodes[pos].dist_mm_q2/4.0f;
+            data[pos].angle = (nodes[pos].angle_z_q14 * 90.f) / 16384.f;
         }
+        countdata = pos;
+        // for(int i = 0; i< countdata; i++){
+        //     if(data[i].valid){
+        //         printf("theta: %03.2f \tDist: %08.2f\n",data[i].angle,data[i].dist);
+        //     }
+        //     else{
+        //         printf("non valid\n");
+        //     }
+        // }
     }
+    return SL_IS_OK(op_result);
 }
 
 

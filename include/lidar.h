@@ -2,7 +2,7 @@
 
 #include <unistd.h>
 #include <rplidar.h>
-
+#include "config.h"
 
 #define _countof(_Array) (int)(sizeof(_Array) / sizeof(_Array[0]))
 
@@ -21,8 +21,6 @@ static inline void delay(sl_word_size_t ms){
 
 bool lidarSetup(const char* serialPort ,int baudrate);
 
-bool checkSLAMTECLIDARHealth(ILidarDriver * drv);
-
-void lidarPrint(void);
+bool getlidarData(lidarAnalize_t* data, int& count);
 
 void lidarStop(void);

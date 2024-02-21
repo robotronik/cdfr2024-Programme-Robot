@@ -6,13 +6,10 @@
 
 
 #include "fonction.h"
-#include "lidarPrint.h"
+#include "lidarAnalize.h"
 #include "lidar.h"
 
-
-
-
-
+#define SIZEDATALIDAR 10000
 
 bool ctrl_c_pressed;
 void ctrlc(int)
@@ -22,15 +19,25 @@ void ctrlc(int)
 
 int main() {
 
-    lidarSetup("/dev/ttyUSB0",256000);
+    if(!lidarSetup("/dev/ttyUSB0",256000)){
+        return -1;
+    }
 
     signal(SIGINT, ctrlc);
     signal(SIGTERM, ctrlc);
 
+    lidarAnalize_t lidarData[SIZEDATALIDAR];
+    position_t position = {0,0,0,0};
     // fetech result and print it out...
     while (1) {
         
-        lidarPrint();
+        int count = SIZEDATALIDAR;
+        if(getlidarData(lidarData,count)){
+            //printAngular(lidarData,count);
+            convertAngularToAxial(lidarData,count,position);
+            printLidarAxial(lidarData,count);
+        }
+
 
         if (ctrl_c_pressed){ 
             break;
