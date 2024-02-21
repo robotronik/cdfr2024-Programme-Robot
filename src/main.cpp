@@ -3,8 +3,10 @@
 
 #include "fonction.h"
 // #include "asser.h"
-#include <linux/i2c-dev.h>
-#include <sys/ioctl.h>
+#include <unistd.h>				//Needed for I2C port
+#include <fcntl.h>				//Needed for I2C port
+#include <sys/ioctl.h>			//Needed for I2C port
+#include <linux/i2c-dev.h>		//Needed for I2C port
 using namespace std;
 
 // I2C setup temp
@@ -23,7 +25,6 @@ int main(){
   }
 
   int addr = 42;
-  ioctl()
   if (ioctl(file, I2C_SLAVE, addr) < 0) {
     cout << "ioctl failed\n";
     exit(1);
