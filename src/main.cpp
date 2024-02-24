@@ -7,7 +7,7 @@
 #include <fcntl.h>				//Needed for I2C port
 #include <sys/ioctl.h>			//Needed for I2C port
 #include <linux/i2c-dev.h>		//Needed for I2C port
-#include "smbus.h"
+#include <smbus.h>
 using namespace std;
 
 // I2C setup temp
