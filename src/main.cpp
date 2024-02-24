@@ -7,6 +7,7 @@
 #include <fcntl.h>				//Needed for I2C port
 #include <sys/ioctl.h>			//Needed for I2C port
 #include <linux/i2c-dev.h>		//Needed for I2C port
+#include "smbus.h"
 using namespace std;
 
 // I2C setup temp
@@ -28,6 +29,10 @@ int main(){
   if (ioctl(file, I2C_SLAVE, addr) < 0) {
     cout << "ioctl failed\n";
     exit(1);
+    }
+
+    if (i2c_smbus_write_quick(file, 10)){
+        cout << "Error: couldn't send byte\n";
     }
     // __u8 reg = 0x10;
 //     __s32 res;
