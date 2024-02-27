@@ -35,7 +35,8 @@ int main() {
         if(getlidarData(lidarData,count)){
             //printAngular(lidarData,count);
             convertAngularToAxial(lidarData,count,position);
-            printLidarAxial(lidarData,count);
+            pixelArtPrint(lidarData, count,60,60,100);
+            //ctrl_c_pressed = true;
         }
 
 

@@ -31,7 +31,7 @@ bool lidarSetup(const char* serialPort ,int baudrate){
             delete drv;
             drv = NULL;
         }
-    }  
+    }
 
 
     if (!connectSuccess) {
@@ -101,14 +101,6 @@ bool getlidarData(lidarAnalize_t* data, int& countdata){
             data[pos].angle = (nodes[pos].angle_z_q14 * 90.f) / 16384.f;
         }
         countdata = pos;
-        // for(int i = 0; i< countdata; i++){
-        //     if(data[i].valid){
-        //         printf("theta: %03.2f \tDist: %08.2f\n",data[i].angle,data[i].dist);
-        //     }
-        //     else{
-        //         printf("non valid\n");
-        //     }
-        // }
     }
     return SL_IS_OK(op_result);
 }
