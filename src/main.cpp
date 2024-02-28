@@ -6,8 +6,10 @@
 #include <unistd.h>				//Needed for I2C port
 #include <fcntl.h>				//Needed for I2C port
 #include <sys/ioctl.h>			//Needed for I2C port
-#include <linux/i2c-dev.h>		//Needed for I2C port
-#include <smbus.h>
+extern "C" {
+    #include <linux/i2c-dev.h>
+    #include <i2c/smbus.h>
+}
 using namespace std;
 
 // I2C setup temp
@@ -31,9 +33,10 @@ int main(){
     exit(1);
     }
 
-    if (i2c_smbus_write_quick(file, 10)){
-        cout << "Error: couldn't send byte\n";
-    }
+    i2c_smbus_read_byte(file);
+    // if (i2c_smbus_write_quick(file, 10)){
+    //     cout << "Error: couldn't send byte\n";
+    // }
     // __u8 reg = 0x10;
 //     __s32 res;
 //     char buf[10];res = i2c_smbus_read_word_data(file, reg);
