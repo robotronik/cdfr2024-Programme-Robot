@@ -79,10 +79,66 @@ void pixelArtPrint(lidarAnalize_t* data, int count,int sizeX,int sizeY,int scale
                     posiy = sizeY-1;
                 if(posiy<0)
                     posiy = 0;
-                matriceAffichage[posix + sizeX * posiy] = 'O';
+                matriceAffichage[posix + sizeX * posiy] = 'W';
             }
         }
     }
+
+    //fill
+    for(int i = 0; i<sizeX; i++){
+        bool bValid = false;
+        for(int j = sizeY/2; j<sizeY; j++){
+            int posX = MAP(j,sizeY/2,sizeY,sizeX/2,i);
+            if(matriceAffichage[posX + sizeX * j] != ' '){
+                bValid = true;
+            }                
+            if(bValid == true){
+                matriceAffichage[posX + sizeX * j] = 'X';
+            }
+        }
+    }
+
+    for(int i = 0; i<sizeX; i++){
+        bool bValid = false;
+        for(int j = sizeY/2; j>=0; j--){
+            int posX = MAP(j,sizeY/2,0,sizeX/2,i);
+            if(matriceAffichage[posX + sizeX * j] != ' '){
+                bValid = true;
+            }                
+            if(bValid == true){
+                matriceAffichage[posX + sizeX * j] = 'X';
+            }
+        }
+    }
+
+
+    for(int j = 0; j<sizeY; j++){
+        bool bValid = false;
+        for(int i = sizeX/2; i<sizeX; i++){
+            int posY = MAP(i,sizeX/2,sizeX,sizeY/2,j);
+            if(matriceAffichage[i + sizeX * posY] != ' '){
+                bValid = true;
+            }                
+            if(bValid == true){
+                matriceAffichage[i + sizeX * posY] = 'X';
+            }
+        }
+    }
+
+    for(int j = 0; j<sizeY; j++){
+        bool bValid = false;
+        for(int i = sizeX/2; i>=0; i--){
+            int posY = MAP(i,sizeX/2,0,sizeY/2,j);
+            if(matriceAffichage[i + sizeX * posY] != ' '){
+                bValid = true;
+            }                
+            if(bValid == true){
+                matriceAffichage[i + sizeX * posY] = 'X';
+            }
+        }
+    }
+    
+
 
     //A B
     // O

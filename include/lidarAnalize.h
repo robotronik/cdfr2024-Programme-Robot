@@ -6,6 +6,8 @@
 #include "config.h"
 #include "math.h"
 
+#define MAP(value, fromLow, fromHigh, toLow, toHigh) ((toLow) + (((value) - (fromLow)) * ((toHigh) - (toLow)) / ((fromHigh) - (fromLow))))
+
 
 
 void convertAngularToAxial(lidarAnalize_t* data, int count, position_t position);
