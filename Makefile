@@ -1,8 +1,7 @@
 CXX = g++
-CXXFLAGS = -Wall -g -O0 -Iinclude -Irplidar_sdk/sdk/include -Irplidar_sdk/sdk/src -I/usr/include
-LDFLAGS = -Lrplidar_sdk/output/Linux/Release
-LDLIBS = -lsl_lidar_sdk -pthread
-LDLIBS := /usr/lib/x86_64-linux-gnu/libi2c.a
+CXXFLAGS = -Wall -g -Iinclude
+LDFLAGS = 
+LDLIBS = -li2c
 
 
 TARGET = bin/myprogram
@@ -15,7 +14,7 @@ OBJ = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRC))
 all: lidarLib $(TARGET)
 	@echo "Compilation terminée. Exécutez './$(TARGET)' pour exécuter le programme."
 
-$(TARGET): $(OBJ) rplidar_sdk/output/Linux/Release/libsl_lidar_sdk.a| bin
+$(TARGET): $(OBJ)| bin
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp | $(OBJDIR)
@@ -34,4 +33,4 @@ lidarLib:
 
 clean:
 	rm -rf $(OBJDIR) bin/
-	$(MAKE) -C rplidar_sdk clean
+	# $(MAKE) -C rplidar_sdk clean
