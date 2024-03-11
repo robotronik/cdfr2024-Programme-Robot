@@ -11,7 +11,7 @@ OBJDIR = obj
 SRC = $(wildcard $(SRCDIR)/*.cpp)
 OBJ = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRC))
 
-all: lidarLib $(TARGET)
+all: $(TARGET)
 	@echo "Compilation terminée. Exécutez './$(TARGET)' pour exécuter le programme."
 
 $(TARGET): $(OBJ)| bin
@@ -27,10 +27,5 @@ $(OBJDIR):
 bin:
 	mkdir -p bin
 
-lidarLib:
-	@echo "Compilation du sous-dossier lidarLib..."
-	$(MAKE) -C rplidar_sdk
-
 clean:
 	rm -rf $(OBJDIR) bin/
-	# $(MAKE) -C rplidar_sdk clean

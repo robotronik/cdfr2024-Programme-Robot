@@ -1,15 +1,11 @@
 #include <stdio.h>
 #include <iostream>
 
-#include "fonction.h"
-// #include "asser.h"
 #include <unistd.h>				//Needed for I2C port
 #include <fcntl.h>				//Needed for I2C port
 #include <sys/ioctl.h>			//Needed for I2C port
-extern "C" {
-    #include <linux/i2c-dev.h>
-    #include <i2c/smbus.h>
-}
+#include "fonction.h"
+#include "asser.hpp"
 using namespace std;
 
 // I2C setup temp
