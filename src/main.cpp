@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <iostream>
 
 #include <unistd.h>				//Needed for I2C port

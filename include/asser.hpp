@@ -1,19 +1,32 @@
 #pragma once
 
 extern "C" {
-    #include <linux/i2c-dev.h>
-    #include <i2c/smbus.h>
+#include <i2c/smbus.h>
+#include <linux/i2c-dev.h>
+#include <unistd.h>				//Needed for I2C port
+#include <fcntl.h>				//Needed for I2C port
+#include <sys/ioctl.h>			//Needed for I2C port
 }
 
 #include <cstdint>
+#include <iostream>
 
 #define I2C_ADDR 42
 
-int asserTurnOnLed(int ledN);
-int asserTurnOffLed(int ledN);
+class Asser {
+   private:
+    int i2cFile;
 
-int assergetCoords(int &x,int &y,int &z);
-int assersetCoords(int x,int y, int z);
-int asserStop(void);
-int asserLinearSetpoint(int x, int y);
-int assertAngularSetpoint(int angle, int rotation);
+   public:
+    Asser();
+    int turnOnLed(int ledN);
+    int turnOffLed(int ledN);
+
+    int getCoords(int &x, int &y, int &z);
+    int setCoords(int x, int y, int z);
+    int stop(void);
+    int linearSetpoint(int x, int y);
+    int angularSetpoint(int angle, int rotation);
+    int setLookForward(int x, int y, int rotation);
+    int setLookBackward(int x, int y, int rotation);
+};
