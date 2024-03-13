@@ -12,6 +12,10 @@
 
 void convertAngularToAxial(lidarAnalize_t* data, int count, position_t position);
 
+bool collideFordward(lidarAnalize_t* data, int count, int distanceStop);
+
+bool collideBackward(lidarAnalize_t* data, int count ,int distanceStop);
+
 void printLidarAxial(lidarAnalize_t* data, int count);
 
 void printAngular(lidarAnalize_t* data, int count);

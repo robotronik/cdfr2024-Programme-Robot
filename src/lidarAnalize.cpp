@@ -45,6 +45,13 @@ void maxDistance(lidarAnalize_t* data, int count,int& maxX, int maxY){
 }
 
 
+bool collideFordward(lidarAnalize_t* data, int count, int distanceStop){
+}
+
+bool collideBackward(lidarAnalize_t* data, int count ,int distanceStop){
+}
+
+
 void pixelArtPrint(lidarAnalize_t* data, int count,int sizeX,int sizeY,int scale,position_t position){
     
     // if(scale< 1){
