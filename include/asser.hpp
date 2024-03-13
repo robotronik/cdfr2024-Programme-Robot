@@ -24,7 +24,7 @@ class Asser {
 
     int getCoords(int &x, int &y, int &z);
     int setCoords(int x, int y, int z);
-    int stop(void);
+    int stop();
     int linearSetpoint(int x, int y);
     int angularSetpoint(int angle, int rotation);
     int setLookForward(int x, int y, int rotation);
