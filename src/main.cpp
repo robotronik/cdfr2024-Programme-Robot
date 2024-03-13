@@ -27,7 +27,7 @@ int main() {
     signal(SIGTERM, ctrlc);
 
     lidarAnalize_t lidarData[SIZEDATALIDAR];
-    position_t position = {0,0,0,0};
+    position_t position = {1000,0,15,0};
     // fetech result and print it out...
     while (1) {
         
@@ -35,7 +35,7 @@ int main() {
         if(getlidarData(lidarData,count)){
             //printAngular(lidarData,count);
             convertAngularToAxial(lidarData,count,position);
-            pixelArtPrint(lidarData, count,60,60,100);
+            pixelArtPrint(lidarData, count,60,60,100,position);
             //ctrl_c_pressed = true;
         }
 
