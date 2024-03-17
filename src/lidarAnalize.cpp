@@ -1,5 +1,6 @@
 #include "lidarAnalize.h"
 
+void getTableValid(lidarAnalize_t* data, int count);
 
 void convertAngularToAxial(lidarAnalize_t* data, int count, position_t position){
     for(int i = 0; i< count; i++){
@@ -8,16 +9,19 @@ void convertAngularToAxial(lidarAnalize_t* data, int count, position_t position)
             data[i].y = -data[i].dist*sin((data[i].angle+position.teta)*DEG_TO_RAD) + position.y;
         }
     }
+    getTableValid(data,count);
 }
 
 void printLidarAxial(lidarAnalize_t* data, int count){
     for(int i = 0; i< count; i++){
-        if(data[i].valid){
-            printf("x : %d \ty : %d\n",data[i].x,data[i].y);
+        const char* charMessage = "          ";
+        if(!data[i].valid){
+            charMessage = "non Valide";
         }
-        else{
-            printf("non valid\n");
+        if(data[i].onTable){
+            charMessage = "non Table ";
         }
+        printf("%s teta : %lf \t x : %d \ty : %d\n",charMessage,data[i].angle,data[i].x,data[i].y);
     }
 }
 
@@ -45,12 +49,43 @@ void maxDistance(lidarAnalize_t* data, int count,int& maxX, int maxY){
 }
 
 
-bool collideFordward(lidarAnalize_t* data, int count, int distanceStop){
+bool collideFordward(lidarAnalize_t* data, int count){
+    for(int i = 0; i <count; i++){
+        if(data[i].valid && data[i].onTable)
+            if(data[i].angle <45 || data[i].angle>(360-45))
+                if(data[i].dist < 500){
+                    return true;
+                }
+    }
+    return false;
 }
 
-bool collideBackward(lidarAnalize_t* data, int count ,int distanceStop){
+bool collideBackward(lidarAnalize_t* data, int count){
+    for(int i = 0; i <count; i++){
+        if(data[i].valid && data[i].onTable)
+            if(data[i].angle<(180+45) && data[i].angle>(180-45))
+                if(data[i].dist < 500){
+                    return true;
+                }
+    }
+    return false;
 }
 
+bool collide(lidarAnalize_t* data, int count ,int distanceStop){
+    //TODO
+    return true;
+}
+
+void getTableValid(lidarAnalize_t* data, int count){
+    for(int i = 0; i <count; i++){
+        if(data[i].valid){
+            if(data[i].x<1000 && data[i].x>-1000 && data[i].y<1500 && data[i].y>-1500)
+                data[i].onTable = true;
+            else
+                data[i].onTable = false;
+        }         
+    }
+}
 
 void pixelArtPrint(lidarAnalize_t* data, int count,int sizeX,int sizeY,int scale,position_t position){
     
@@ -75,8 +110,12 @@ void pixelArtPrint(lidarAnalize_t* data, int count,int sizeX,int sizeY,int scale
         if(data[i].valid == true){
             posix = data[i].x/scale + sizeX/2;
             posiy = data[i].y/scale + sizeY/2;
-            if(posix<sizeX && posix>=0 && posiy<sizeY && posiy>=0)
-                matriceAffichage[posix + sizeX * posiy] = 'X';
+            if(posix<sizeX && posix>=0 && posiy<sizeY && posiy>=0){
+                if(data[i].onTable)
+                    matriceAffichage[posix + sizeX * posiy] = '*';
+                else
+                    matriceAffichage[posix + sizeX * posiy] = 'X';
+            }                
             else{
                 if(posix>=sizeX)
                     posix = sizeX-1;
@@ -97,54 +136,54 @@ void pixelArtPrint(lidarAnalize_t* data, int count,int sizeX,int sizeY,int scale
     int positionRobotx = position.y/scale + sizeY/2;
 
     for(int i = 0; i<sizeX; i++){
-        bool bValid = false;
+        char chartype = ' ';
         for(int j = positionRoboty; j<sizeY; j++){
             int posX = MAP(j,positionRoboty,sizeY,positionRobotx,i);
             if(matriceAffichage[posX + sizeX * j] != ' '){
-                bValid = true;
+                chartype = matriceAffichage[posX + sizeX * j];
             }                
-            if(bValid == true){
-                matriceAffichage[posX + sizeX * j] = 'X';
+            if(chartype != ' '){
+                matriceAffichage[posX + sizeX * j] = chartype;
             }
         }
     }
 
     for(int i = 0; i<sizeX; i++){
-        bool bValid = false;
+        char chartype = ' ';
         for(int j = positionRoboty; j>=0; j--){
             int posX = MAP(j,positionRoboty,0,positionRobotx,i);
             if(matriceAffichage[posX + sizeX * j] != ' '){
-                bValid = true;
+                chartype = matriceAffichage[posX + sizeX * j];
             }                
-            if(bValid == true){
-                matriceAffichage[posX + sizeX * j] = 'X';
+            if(chartype != ' '){
+                matriceAffichage[posX + sizeX * j] = chartype;
             }
         }
     }
 
 
     for(int j = 0; j<sizeY; j++){
-        bool bValid = false;
+        char chartype = ' ';
         for(int i = positionRobotx; i<sizeX; i++){
             int posY = MAP(i,positionRobotx,sizeX,positionRoboty,j);
             if(matriceAffichage[i + sizeX * posY] != ' '){
-                bValid = true;
+                chartype = matriceAffichage[i + sizeX * posY];
             }                
-            if(bValid == true){
-                matriceAffichage[i + sizeX * posY] = 'X';
+            if(chartype != ' '){
+                matriceAffichage[i + sizeX * posY] = chartype;
             }
         }
     }
 
     for(int j = 0; j<sizeY; j++){
-        bool bValid = false;
+        char chartype = ' ';
         for(int i = positionRobotx; i>=0; i--){
             int posY = MAP(i,positionRobotx,0,positionRoboty,j);
             if(matriceAffichage[i + sizeX * posY] != ' '){
-                bValid = true;
+                chartype = matriceAffichage[i + sizeX * posY];
             }                
-            if(bValid == true){
-                matriceAffichage[i + sizeX * posY] = 'X';
+            if(chartype != ' '){
+                matriceAffichage[i + sizeX * posY] = chartype;
             }
         }
     }
@@ -155,18 +194,20 @@ void pixelArtPrint(lidarAnalize_t* data, int count,int sizeX,int sizeY,int scale
         posix = i;
         posiyPos = 1500/scale + sizeY/2;
         posiyNeg = (-1500)/scale + sizeY/2;
-        if(posix<sizeX && posix>=0 && posiyPos<sizeY && posiyPos>=0 && posiyNeg<sizeY && posiyNeg>=0)
+        if(posix < sizeX && posix >= 0 && posiyPos < sizeY && posiyPos >= 0 && posiyNeg < sizeY && posiyNeg >= 0){
             matriceAffichage[posix + sizeX * posiyPos] = 'Z';
             matriceAffichage[posix + sizeX * posiyNeg] = 'Z';
+        }
     }
     int posixPos, posixNeg;
     for(int i = 0; i<sizeY; i+=(sizeY/scale)+1){
         posixNeg = (-1000)/scale + sizeX/2;
         posixPos = 1000/scale + sizeX/2;
         posiy = i;
-        if(posixPos<sizeX && posixPos>=0 && posixNeg<sizeX && posixNeg>=0  && posiyNeg<sizeY && posiyNeg>=0)
+        if(posixPos < sizeX && posixPos >= 0 && posixNeg < sizeX && posixNeg >= 0  && posiyNeg < sizeY && posiyNeg >= 0){
             matriceAffichage[posixPos + sizeX * posiy] = 'Z';
-            matriceAffichage[posiyNeg + sizeX * posiy] = 'Z';
+            matriceAffichage[posixNeg + sizeX * posiy] = 'Z';
+        }
     }
 
 

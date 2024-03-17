@@ -18,4 +18,5 @@ typedef struct
     double   dist;
     int   x;
     int   y;
+    bool   onTable;
 }lidarAnalize_t;

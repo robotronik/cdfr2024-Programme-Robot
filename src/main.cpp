@@ -27,16 +27,19 @@ int main() {
     signal(SIGTERM, ctrlc);
 
     lidarAnalize_t lidarData[SIZEDATALIDAR];
-    position_t position = {1000,0,15,0};
-    // fetech result and print it out...
+    position_t position = {0,0,0,0};
+    bool b_collidefordward;
+    bool b_collideBackward;
+    
     while (1) {
         
         int count = SIZEDATALIDAR;
         if(getlidarData(lidarData,count)){
-            //printAngular(lidarData,count);
             convertAngularToAxial(lidarData,count,position);
-            pixelArtPrint(lidarData, count,60,60,100,position);
-            //ctrl_c_pressed = true;
+            printf("Colide backward : %d \t colide forward %d\n", b_collideBackward, b_collidefordward);
+            //pixelArtPrint(lidarData, count,60,60,100,position);
+            b_collidefordward = collideFordward(lidarData,count);
+            b_collideBackward = collideBackward(lidarData,count);
         }
 
 
