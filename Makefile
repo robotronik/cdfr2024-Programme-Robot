@@ -1,8 +1,8 @@
-# Makefile
 CXX = g++
-CXXFLAGS = -Wall -g -Iinclude -Irplidar_sdk/sdk/include -Irplidar_sdk/sdk/src
+CXXFLAGS = -Wall -g -O0 -Iinclude -Irplidar_sdk/sdk/include -Irplidar_sdk/sdk/src
 LDFLAGS = -Lrplidar_sdk/output/Linux/Release
-LDLIBS = -lsl_lidar_sdk -pthread
+LDLIBS = -lsl_lidar_sdk -pthread -li2c
+
 
 TARGET = bin/myprogram
 SRCDIR = src
@@ -14,7 +14,7 @@ OBJ = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRC))
 all: lidarLib $(TARGET)
 	@echo "Compilation terminée. Exécutez './$(TARGET)' pour exécuter le programme."
 
-$(TARGET): $(OBJ) rplidar_sdk/output/Linux/Release/libsl_lidar_sdk.a| bin
+$(TARGET): $(OBJ) | bin
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp | $(OBJDIR)
