@@ -19,7 +19,7 @@ void ctrlc(int)
 
 int main() {
 
-    if(!lidarSetup("/dev/ttyUSB0",256000)){
+    if(!lidarSetup("/dev/ttyAMA0",256000)){
         return -1;
     }
 
