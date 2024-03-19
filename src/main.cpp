@@ -6,7 +6,7 @@ using namespace std;
 // I2C setup temp
 
 int main(){
-  Asser *robot = new Asser();
+  Asser *robot = new Asser(I2C_ASSER_ADDR);
 
   robot->turnOnLed(1);
   robot->turnOnLed(2);

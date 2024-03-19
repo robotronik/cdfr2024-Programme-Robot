@@ -13,7 +13,7 @@ static void generateBytes(int *values, size_t length, uint8_t *result) {
     }
 }
 
-Asser::Asser() {
+Asser::Asser(int slave_address) {
     int adapter_nr = 1; /* probably dynamically determined */
     char filename[20];
 
@@ -25,8 +25,7 @@ Asser::Asser() {
         exit(1);
     }
 
-    int addr = I2C_ADDR;
-    if (ioctl(i2cFile, I2C_SLAVE, addr) < 0) {
+    if (ioctl(i2cFile, I2C_SLAVE, slave_address) < 0) {
         cout << "ioctl failed\n";
         exit(1);
     }

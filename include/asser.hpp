@@ -11,14 +11,14 @@ extern "C" {
 #include <cstdint>
 #include <iostream>
 
-#define I2C_ADDR 42
+#define I2C_ASSER_ADDR 42
 
 class Asser {
    private:
     int i2cFile;
 
    public:
-    Asser();
+    Asser(int slave_address);
     int turnOnLed(int ledN);
     int turnOffLed(int ledN);
 
