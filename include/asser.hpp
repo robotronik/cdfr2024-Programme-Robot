@@ -29,4 +29,5 @@ class Asser {
     int angularSetpoint(int angle, int rotation);
     int setLookForward(int x, int y, int rotation);
     int setLookBackward(int x, int y, int rotation);
+    int getPostion(uint8_t* buffer, int length);
 };

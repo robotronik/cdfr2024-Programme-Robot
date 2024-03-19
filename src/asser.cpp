@@ -104,3 +104,24 @@ int Asser::setCoords(int x, int y, int z){
     i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t) 21, length, message);
     return 0;
 }
+
+
+int Asser::getPostion(uint8_t* buffer, int length) {
+    // La longueur indique le nombre de bytes à recevoir
+    // buffer est un pointeur vers un tableau de uint8_t où stocker les données reçues
+    //printf("test");
+
+    i2c_smbus_write_byte(i2cFile, 20);
+    int bytesRead = read(i2cFile, buffer, 6);
+
+    //int bytesRead = i2c_smbus_read_i2c_block_data(i2cFile, (uint8_t)20, 6, buffer);
+    
+    // Vérification si la lecture a réussi
+    if (bytesRead != length) {
+        // La lecture n'a pas réussi correctement
+        // Gérer l'erreur ici
+        return -1; // Ou tout autre code d'erreur que vous préférez
+    }
+    
+    return 0; // La lecture a réussi
+}
