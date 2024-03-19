@@ -1,13 +1,14 @@
 #include "asser.hpp"
+#include <iostream>
 
 using namespace std;
 
 // Takes in input an array of ints to convert to an array of uint8_t LSB first then MSB (Little Endian)
 static void generateBytes(int *values, size_t length, uint8_t *result) {
-    for (size_t i = 0; i < length; i++) {
+    for (size_t i = 0; i < (length/2); i++) {
         uint8_t resultMSB, resultLSB;
-        resultLSB = (uint8_t)(values[i] & 0xFF);
-        resultMSB = (uint8_t)((values[i] >> 8) & 0xFF);
+        resultMSB = (uint8_t)(values[i] & 0xFF);
+        resultLSB = (uint8_t)((values[i] >> 8) & 0xFF);
         result[2 * i] = resultLSB;
         result[2 * i + 1] = resultMSB;
     }
@@ -59,7 +60,8 @@ int Asser::linearSetpoint(int x, int y) {
     int values[] = {x, y};
 
     generateBytes(values, length, message);
-    i2c_smbus_write_block_data(i2cFile, (uint8_t)31, length, message);
+    for(int i =0; i<4;i++)printf("%d\n",message[i]);
+    i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)31, length, message);
     return 0;
 }
 
@@ -67,9 +69,9 @@ int Asser::angularSetpoint(int angle, int rotation) {
     int length = 4;  // Nb of bytes to send
     uint8_t message[4];
     int values[] = {angle, rotation};
-
     generateBytes(values, length, message);
-    i2c_smbus_write_block_data(i2cFile, (uint8_t)31, length, message);
+    for(int i =0; i<4;i++)printf("%d\n",message[i]);
+    i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)32, length, message);
     return 0;
 }
 
@@ -79,7 +81,7 @@ int Asser::setLookForward(int x, int y, int rotation) {
     int values[] = {x, y, rotation};
 
     generateBytes(values, length, message);
-    i2c_smbus_write_block_data(i2cFile, (uint8_t)31, length, message);
+    i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)33, length, message);
     return 0;
 }
 
@@ -89,7 +91,7 @@ int Asser::setLookBackward(int x, int y, int rotation) {
     int values[] = {x, y, rotation};
 
     generateBytes(values, length, message);
-    i2c_smbus_write_block_data(i2cFile, (uint8_t)31, length, message);
+    i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)34, length, message);
     return 0;
 }
 
@@ -99,6 +101,6 @@ int Asser::setCoords(int x, int y, int z){
     int values[] = {x, y, z};
 
     generateBytes(values, length, message);
-    i2c_smbus_write_block_data(i2cFile, (uint8_t) 31, length, message);
+    i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t) 21, length, message);
     return 0;
 }

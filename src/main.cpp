@@ -10,6 +10,7 @@ int main(){
 
   robot->turnOnLed(1);
   robot->turnOnLed(2);
-  robot->angularSetpoint(90, 0);
+  //robot->angularSetpoint(45, 0);
+  robot->linearSetpoint(600,0);
   
 }
