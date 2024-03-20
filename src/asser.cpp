@@ -113,8 +113,26 @@ int Asser::getPostion(uint8_t* buffer, int length) {
 
     i2c_smbus_write_byte(i2cFile, 20);
     int bytesRead = read(i2cFile, buffer, 6);
+    //int bytesRead = i2c_smbus_read_i2c_block_data(i2cFile, 20, 6, buffer);
 
-    //int bytesRead = i2c_smbus_read_i2c_block_data(i2cFile, (uint8_t)20, 6, buffer);
+    int16_t valuesX = 0;
+    int16_t valuesY = 0;
+    int16_t rotation = 0;
+    uint8_t resultMSB, resultLSB;
+    resultLSB = buffer[2 * 0];
+    resultMSB = buffer[2 * 0 + 1];
+    valuesX = resultMSB<<8 | resultLSB;
+    printf("x : %d\n",valuesX );
+
+    resultLSB = buffer[2 * 1];
+    resultMSB = buffer[2 * 1 + 1];
+    valuesY = resultMSB<<8 | resultLSB;
+    printf("y : %d\n",valuesY );
+
+    resultLSB = buffer[2 * 2];
+    resultMSB = buffer[2 * 2 + 1];
+    rotation = resultMSB<<8 | resultLSB;
+    printf("teta : %d\n",rotation );
     
     // Vérification si la lecture a réussi
     if (bytesRead != length) {
@@ -124,4 +142,20 @@ int Asser::getPostion(uint8_t* buffer, int length) {
     }
     
     return 0; // La lecture a réussi
+}
+
+int Asser::servo1Position(int position) {
+    int length = 2;  // Nb of bytes to send
+    uint8_t message[2];
+    int values[] = {position};
+
+    if (ioctl(i2cFile, I2C_SLAVE, 100) < 0) {
+        cout << "ioctl failed\n";
+        exit(1);
+    }
+
+    generateBytes(values, length, message);
+    for(int i =0; i<2;i++)printf("%d\n",message[i]);
+    i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)1, length, message);
+    return 0;
 }

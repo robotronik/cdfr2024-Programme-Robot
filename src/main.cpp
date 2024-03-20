@@ -10,14 +10,16 @@ int main(){
 
   robot->turnOnLed(1);
   robot->turnOnLed(2);
-  //robot->angularSetpoint(45, 0);
-  robot->linearSetpoint(600,0);
+  //robot->angularSetpoint(15, 2);
+  //robot->linearSetpoint(600,0);
 
   uint8_t buffer[20];
   robot->getPostion(buffer,20);
 
-  for(int i =0; i < 0; i++){
+  for(int i =0; i < 6; i++){
     printf("data out : %d\n",buffer[i]);
   }
+
+  robot->servo1Position(0);
   
 }
