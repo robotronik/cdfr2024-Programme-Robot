@@ -3,33 +3,8 @@
 
 using namespace std;
 
-// Takes in input an array of ints to convert to an array of uint8_t LSB first then MSB (Little Endian)
-static void generateBytes(int *values, size_t length, uint8_t *result) {
-    for (size_t i = 0; i < (length/2); i++) {
-        uint8_t resultMSB, resultLSB;
-        resultMSB = (uint8_t)(values[i] & 0xFF);
-        resultLSB = (uint8_t)((values[i] >> 8) & 0xFF);
-        result[2 * i] = resultLSB;
-        result[2 * i + 1] = resultMSB;
-    }
-}
-
-Asser::Asser(int slave_address) {
-    int adapter_nr = 1; /* probably dynamically determined */
-    char filename[20];
-
-    snprintf(filename, 19, "/dev/i2c-%d", adapter_nr);
-    i2cFile = open(filename, O_RDWR);
-    if (i2cFile < 0) {
-        /* ERROR HANDLING; you can check errno to see what went wrong */
-        cout << "Couldn't open I2C file\n";
-        exit(1);
-    }
-
-    if (ioctl(i2cFile, I2C_SLAVE, slave_address) < 0) {
-        cout << "ioctl failed\n";
-        exit(1);
-    }
+Asser::Asser(int slave_address) :I2CDevice(slave_address) {
+    
 }
 
 int Asser::turnOnLed(int ledN) {
@@ -60,7 +35,7 @@ int Asser::linearSetpoint(int x, int y) {
     int values[] = {x, y};
 
     generateBytes(values, length, message);
-    for(int i =0; i<4;i++)printf("%d\n",message[i]);
+    // for(int i =0; i<4;i++)printf("%d\n",message[i]);
     i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)31, length, message);
     return 0;
 }
@@ -119,18 +94,18 @@ int Asser::getCoords(int &x, int &y, int &theta) {
     uint8_t resultMSB, resultLSB;
     resultLSB = buffer[2 * 0];
     resultMSB = buffer[2 * 0 + 1];
-    x = resultMSB<<8 | resultLSB;
-    printf("x : %d\n",x );
+    x = (int16_t) (resultMSB<<8 | resultLSB);
+    // printf("x : %d\n",x );
 
     resultLSB = buffer[2 * 1];
     resultMSB = buffer[2 * 1 + 1];
-    y = resultMSB<<8 | resultLSB;
-    printf("y : %d\n",y );
+    y = (int16_t) (resultMSB<<8 | resultLSB);
+    // printf("y : %d\n",y );
 
     resultLSB = buffer[2 * 2];
     resultMSB = buffer[2 * 2 + 1];
-    theta = resultMSB<<8 | resultLSB;
-    printf("teta : %d\n",theta );
+    theta = (int16_t) (resultMSB<<8 | resultLSB);
+    // printf("teta : %d\n",theta );
     
     // Vérification si la lecture a réussi
     if (bytesRead != 6) {
@@ -140,22 +115,6 @@ int Asser::getCoords(int &x, int &y, int &theta) {
     }
     
     return 0; // La lecture a réussi
-}
-
-int Asser::servo1Position(int position) {
-    int length = 2;  // Nb of bytes to send
-    uint8_t message[2];
-    int values[] = {position};
-
-    if (ioctl(i2cFile, I2C_SLAVE, 100) < 0) {
-        cout << "ioctl failed\n";
-        exit(1);
-    }
-
-    generateBytes(values, length, message);
-    for(int i =0; i<2;i++)printf("%d\n",message[i]);
-    i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)1, length, message);
-    return 0;
 }
 
 bool Asser::getRobotFinished(status_finished status){
@@ -203,7 +162,7 @@ int Asser::getError(asser_error_type error_type, int &error){
     resultLSB = buffer[2 * 0];
     resultMSB = buffer[2 * 0 + 1];
     error = resultMSB<<8 | resultLSB;
-    printf("Error : %d\n", error);
+    // printf("Error : %d\n", error);
     
     // Vérification si la lecture a réussi
     if (bytesRead != 2) {

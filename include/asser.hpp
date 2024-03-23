@@ -1,15 +1,8 @@
 #pragma once
 
-extern "C" {
-#include <i2c/smbus.h>
-#include <linux/i2c-dev.h>
-#include <unistd.h>				//Needed for I2C port
-#include <fcntl.h>				//Needed for I2C port
-#include <sys/ioctl.h>			//Needed for I2C port
-}
-
 #include <cstdint>
 #include <iostream>
+#include "I2CDevice.hpp"
 
 #define I2C_ASSER_ADDR 42
 
@@ -28,10 +21,9 @@ typedef enum{
 //     TURN_CLOCKWISE = 
 // }
 
-class Asser {
-   private:
-    int i2cFile;
-
+class Asser : public I2CDevice {
+    using I2CDevice::I2CDevice;
+   
    public:
     Asser(int slave_address);
     int turnOnLed(int ledN);
@@ -44,8 +36,6 @@ class Asser {
     int angularSetpoint(int angle, int rotation);
     int setLookForward(int x, int y, int rotation);
     int setLookBackward(int x, int y, int rotation);
-    // int getPostion(int &x, int &y, int &theta);
-    int servo1Position(int position);
     bool getRobotFinished(status_finished status);
     int getError(asser_error_type error_type, int &error);
     int getBrakingDistance(int &distance);
