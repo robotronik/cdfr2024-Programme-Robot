@@ -24,6 +24,10 @@ typedef enum{
     LINEAR_ERROR = 1 
 } asser_error_type;
 
+// typedef enum{
+//     TURN_CLOCKWISE = 
+// }
+
 class Asser {
    private:
     int i2cFile;
