@@ -9,15 +9,19 @@ using namespace std;
 
 int main() {
   Asser *robot = new Asser(I2C_ASSER_ADDR);
-  Arduino *servo = new Arduino(100);
+  Arduino *arduino = new Arduino(100);
 
+  int state;
+  arduino->readCapteur(1,state);
+  printf("state %d\n",state);
+
+  robot->linearSetpoint(60,0);
+  sleep(1);
+  arduino->servo1Position(135);
+  sleep(1);
   robot->angularSetpoint(15, 2);
   sleep(1);
-  servo->servo1Position(135);
-  sleep(1);
-  robot->linearSetpoint(0,0);
-  sleep(1);
-  servo->servo1Position(0);
+  arduino->servo1Position(20);
   int x, y, theta, angularError, linearError;
   robot->getCoords(x, y, theta);
   robot->getError(ANGULAR_ERROR, angularError);
