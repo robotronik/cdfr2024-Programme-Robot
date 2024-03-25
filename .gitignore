@@ -54,4 +54,4 @@ dkms.conf
 #folder
 obj/
 bin/
-.vscode
+.vscode/

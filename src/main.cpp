@@ -4,12 +4,16 @@
 #include <string.h>
 #include <iostream>
 
-
 #include "fonction.h"
 #include "lidarAnalize.h"
 #include "lidar.h"
+#include "asser.hpp"
+#include "arduino.hpp"
+#include "utils.h"
 
 #define SIZEDATALIDAR 10000
+
+
 
 bool ctrl_c_pressed;
 void ctrlc(int)
@@ -30,18 +34,19 @@ int main() {
     position_t position = {0,0,0,0};
     bool b_collidefordward;
     bool b_collideBackward;
-    
+    Asser *robot = new Asser(I2C_ASSER_ADDR);
+    Arduino *arduino = new Arduino(100);
+
     while (1) {
         
         int count = SIZEDATALIDAR;
         if(getlidarData(lidarData,count)){
             convertAngularToAxial(lidarData,count,position);
-            printf("Colide backward : %d \t colide forward %d\n", b_collideBackward, b_collidefordward);
-            //pixelArtPrint(lidarData, count,60,60,100,position);
             b_collidefordward = collideFordward(lidarData,count);
             b_collideBackward = collideBackward(lidarData,count);
         }
 
+        printf("%d\n",millis());
 
         if (ctrl_c_pressed){ 
             break;

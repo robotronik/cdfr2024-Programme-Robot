@@ -1,6 +1,9 @@
 #ifndef MYFUNCTION_H
 #define MYFUNCTION_H
 
-int add(int a, int b);
+#include "asser.hpp"
+#include "utils.h"
+
+int initPositon(Asser* robot);
 
 #endif // MYFUNCTION_H
