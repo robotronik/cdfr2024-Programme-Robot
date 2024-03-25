@@ -27,10 +27,6 @@ $(OBJDIR):
 bin:
 	mkdir -p bin
 
-lidarLib:
-	@echo "Compilation du sous-dossier lidarLib..."
-	$(MAKE) -C rplidar_sdk
-
 clean:
 	rm -rf $(OBJDIR) bin/
 	$(MAKE) -C rplidar_sdk clean
