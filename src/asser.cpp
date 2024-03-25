@@ -171,5 +171,11 @@ int Asser::getError(asser_error_type error_type, int &error){
         return -1; // Ou tout autre code d'erreur que vous préférez
     }
     
-    return 0; // La lecture a réussi
+    return error; // La lecture a réussi
+}
+
+int Asser::getError(asser_error_type error_type){
+    int ivalRet;
+    this->getError(error_type,ivalRet);
+    return ivalRet;
 }

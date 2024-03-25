@@ -5,5 +5,6 @@
 #include "utils.h"
 
 int initPositon(Asser* robot);
+int turnSolarPannel(Asser* robot);
 
 #endif // MYFUNCTION_H
