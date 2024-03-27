@@ -37,6 +37,11 @@ int main() {
     Asser *robot = new Asser(I2C_ASSER_ADDR);
     Arduino *arduino = new Arduino(100);
 
+    robot->enableMotor(true);
+    robot->setCoords(0,0,0);
+    robot->linearSetpoint(2000,0);
+
+
     while (1) {
         
         int count = SIZEDATALIDAR;
@@ -46,12 +51,15 @@ int main() {
             b_collideBackward = collideBackward(lidarData,count);
         }
 
-        ctrl_c_pressed |= turnSolarPannel(robot,arduino);
+        //ctrl_c_pressed |= turnSolarPannel(robot,arduino);
 
         if (ctrl_c_pressed){ 
             break;
         }
     }
+
+
+
 
     robot->enableMotor(false);
     robot->stop();
