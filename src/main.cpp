@@ -23,7 +23,7 @@ void ctrlc(int)
 
 int main() {
 
-    if(!lidarSetup("/dev/ttyUSB0",256000)){
+    if(!lidarSetup("/dev/ttyAMA0",256000)){
         return -1;
     }
 
@@ -46,13 +46,14 @@ int main() {
             b_collideBackward = collideBackward(lidarData,count);
         }
 
-        printf("%d\n",millis());
+        turnSolarPannel(robot);
 
         if (ctrl_c_pressed){ 
             break;
         }
     }
 
+    robot->stop();
     lidarStop();
 
     return 0;

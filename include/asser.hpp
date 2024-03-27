@@ -38,6 +38,7 @@ class Asser : public I2CDevice {
     int setLookBackward(int x, int y, int rotation);
     bool getRobotFinished(status_finished status);
     int getError(asser_error_type error_type, int &error);
+    int getError(asser_error_type error_type);
     int getBrakingDistance(int &distance);
     int enableMotor(bool status);
 };

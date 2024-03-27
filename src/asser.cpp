@@ -170,8 +170,13 @@ int Asser::getError(asser_error_type error_type, int &error){
         // Gérer l'erreur ici
         return -1; // Ou tout autre code d'erreur que vous préférez
     }
-    
-    return 0; // La lecture a réussi
+    return error; // La lecture a réussi
+}
+
+int Asser::getError(asser_error_type error_type){
+    int ivalRet;
+    this->getError(error_type,ivalRet);
+    return ivalRet;
 }
 
 int Asser::enableMotor(bool status) {
