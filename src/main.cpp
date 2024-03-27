@@ -46,13 +46,14 @@ int main() {
             b_collideBackward = collideBackward(lidarData,count);
         }
 
-        turnSolarPannel(robot);
+        ctrl_c_pressed |= turnSolarPannel(robot,arduino);
 
         if (ctrl_c_pressed){ 
             break;
         }
     }
 
+    robot->enableMotor(false);
     robot->stop();
     lidarStop();
 
