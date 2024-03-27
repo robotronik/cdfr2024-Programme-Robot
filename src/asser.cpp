@@ -173,3 +173,12 @@ int Asser::getError(asser_error_type error_type, int &error){
     
     return 0; // La lecture a réussi
 }
+
+int Asser::enableMotor(bool status) {
+    uint8_t message = (status == true) ? 51 : 50;
+    if (i2c_smbus_write_byte(i2cFile, (char)message)) {
+        cout << "Error: couldn't turn off LED\n";
+        return 1;
+    }
+    return 0;
+}
