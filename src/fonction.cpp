@@ -81,6 +81,7 @@ int turnSolarPannel(Asser* robot,Arduino* arduino){
     static unsigned long startTime;
     static int step = 0;
     static int loop = 0;
+    //const int table[9] = {1225,1000,775,225,0,-225,-775,-1000,-1225};
     const int table[6] = {-50,-275,-400,-900,-1125,-1350};
 
     if(step == 0){
