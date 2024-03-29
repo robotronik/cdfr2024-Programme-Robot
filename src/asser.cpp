@@ -86,26 +86,16 @@ int Asser::getCoords(int &x, int &y, int &theta) {
     // buffer est un pointeur vers un tableau de uint8_t où stocker les données reçues
     //printf("test");
     uint8_t buffer[6];
+    int16_t wordBuffer[3];
 
     i2c_smbus_write_byte(i2cFile, 20);
     int bytesRead = read(i2cFile, buffer, 6);
     //int bytesRead = i2c_smbus_read_i2c_block_data(i2cFile, 20, 6, buffer);
 
-    uint8_t resultMSB, resultLSB;
-    resultLSB = buffer[2 * 0];
-    resultMSB = buffer[2 * 0 + 1];
-    x = (int16_t) (resultMSB<<8 | resultLSB);
-    // printf("x : %d\n",x );
-
-    resultLSB = buffer[2 * 1];
-    resultMSB = buffer[2 * 1 + 1];
-    y = (int16_t) (resultMSB<<8 | resultLSB);
-    // printf("y : %d\n",y );
-
-    resultLSB = buffer[2 * 2];
-    resultMSB = buffer[2 * 2 + 1];
-    theta = (int16_t) (resultMSB<<8 | resultLSB);
-    // printf("teta : %d\n",theta );
+    bytesToWords(buffer, wordBuffer, 6);
+    x = wordBuffer[0];
+    y = wordBuffer[1];
+    theta = wordBuffer[3];
     
     // Vérification si la lecture a réussi
     if (bytesRead != 6) {
@@ -129,17 +119,14 @@ bool Asser::getRobotFinished(status_finished status){
 
 int Asser::getBrakingDistance(int &distance){
     uint8_t buffer[2];
+    int16_t wordBuffer;
 
     i2c_smbus_write_byte(i2cFile, 45);
     int bytesRead = read(i2cFile, buffer, 2);
     //int bytesRead = i2c_smbus_read_i2c_block_data(i2cFile, 20, 6, buffer);
+    bytesToWords(buffer, &wordBuffer, 2);
+    distance = wordBuffer;
 
-    uint8_t resultMSB, resultLSB;
-    resultLSB = buffer[2 * 0];
-    resultMSB = buffer[2 * 0 + 1];
-    distance = resultMSB<<8 | resultLSB;
-    printf("Braking distance : %d\n", distance);
-    
     // Vérification si la lecture a réussi
     if (bytesRead != 2) {
         // La lecture n'a pas réussi correctement
@@ -152,16 +139,15 @@ int Asser::getBrakingDistance(int &distance){
 
 int Asser::getError(asser_error_type error_type, int &error){
     uint8_t buffer[2];
-    int command = 40 + error_type;
+    int16_t wordBuffer;
+    int command = 43 + error_type;
 
     i2c_smbus_write_byte(i2cFile, command);
     int bytesRead = read(i2cFile, buffer, 2);
     //int bytesRead = i2c_smbus_read_i2c_block_data(i2cFile, 20, 6, buffer);
+    bytesToWords(buffer, &wordBuffer, 6);
 
-    uint8_t resultMSB, resultLSB;
-    resultLSB = buffer[2 * 0];
-    resultMSB = buffer[2 * 0 + 1];
-    error = resultMSB<<8 | resultLSB;
+    error = wordBuffer;
     // printf("Error : %d\n", error);
     
     // Vérification si la lecture a réussi
