@@ -30,27 +30,27 @@ int Asser::stop() {
 }
 
 int Asser::linearSetpoint(int x, int y) {
+    printf("set Consigne Lineaire : %d %d\n",x,y);
     int length = 4;  // Nb of bytes to send
     uint8_t message[4];
     int values[] = {x, y};
-
     generateBytes(values, length, message);
-    // for(int i =0; i<4;i++)printf("%d\n",message[i]);
     i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)31, length, message);
     return 0;
 }
 
 int Asser::angularSetpoint(int angle, int rotation) {
+    printf("set Consigne Angulaire : %d %s\n",angle,rotation==0?"ROTATION_DIRECT":rotation==1?"ROTATION_TRIGO":"ROTATION_HORRAIRE");
     int length = 4;  // Nb of bytes to send
     uint8_t message[4];
     int values[] = {angle, rotation};
     generateBytes(values, length, message);
-    // for(int i =0; i<4;i++)printf("%d\n",message[i]);
     i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)32, length, message);
     return 0;
 }
 
 int Asser::setLookForward(int x, int y, int rotation) {
+    printf("set Consigne LookAt Forward : %d %s\n",x,y,rotation==0?"ROTATION_DIRECT":rotation==1?"ROTATION_TRIGO":"ROTATION_HORRAIRE");
     int length = 6;  // Nb of bytes to send
     uint8_t message[6];
     int values[] = {x, y, rotation};
@@ -61,6 +61,7 @@ int Asser::setLookForward(int x, int y, int rotation) {
 }
 
 int Asser::setLookBackward(int x, int y, int rotation) {
+    printf("set Consigne LookAt Backward : %d %s\n",x,y,rotation==0?"ROTATION_DIRECT":rotation==1?"ROTATION_TRIGO":"ROTATION_HORRAIRE");
     int length = 6;  // Nb of bytes to send
     uint8_t message[6];
     int values[] = {x, y, rotation};
@@ -71,6 +72,7 @@ int Asser::setLookBackward(int x, int y, int rotation) {
 }
 
 int Asser::setCoords(int x, int y, int z){
+    printf("Set Coordinates : %d %d %d\n",x,y,z);
     int length = 6; // Nb of bytes to send
     uint8_t message[6];
     int values[] = {x, y, z};
@@ -180,6 +182,7 @@ int Asser::getError(asser_error_type error_type){
 }
 
 int Asser::enableMotor(bool status) {
+    printf("%s motor\n",status?"Enable":"disble");
     uint8_t message = (status == true) ? 51 : 50;
     if (i2c_smbus_write_byte(i2cFile, (char)message)) {
         cout << "Error: couldn't turn off LED\n";

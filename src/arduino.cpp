@@ -14,7 +14,6 @@ int Arduino::servo1Position(int position) {
     // }
 
     generateBytes(values, length, message);
-    for(int i =0; i<2;i++)printf("Dans la fonction: %d\n",message[i]);
     i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)1, length, message);
     return 0;
 }
@@ -31,7 +30,6 @@ int Arduino::readCapteur(int capteurNumber, int &state){
     resultLSB = buffer[2 * 0];
     resultMSB = buffer[2 * 0 + 1];
     state = resultMSB<<8 | resultLSB;
-    // printf("Error : %d\n", error);
     
     // Vérification si la lecture a réussi
     if (bytesRead != 2) {
