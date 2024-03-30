@@ -8,13 +8,8 @@ int Arduino::servoPosition(int servoNb, int position) {
     uint8_t message[2];
     int values[] = {position};
 
-    // if (ioctl(i2cFile, I2C_SLAVE, 100) < 0) {
-    //     cout << "ioctl failed\n";
-    //     exit(1);
-    // }
-
     generateBytes(values, length, message);
-    for(int i =0; i<2;i++)printf("Dans la fonction: %d\n",message[i]);
+    // for(int i =0; i<2;i++)printf("Dans la fonction: %d\n",message[i]);
     i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t) servoNb, length, message);
     return 0;
 }
