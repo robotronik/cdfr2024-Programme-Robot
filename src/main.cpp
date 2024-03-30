@@ -20,6 +20,7 @@ typedef enum {
     WAITSTART,
     START,
     RUN,
+    RETURNHOME,
     FIN,
     STOP
 } main_State_t;
@@ -51,8 +52,8 @@ int main() {
     signal(SIGTERM, ctrlc);
 
     lidarAnalize_t lidarData[SIZEDATALIDAR];
-    bool b_collidefordward;
-    bool b_collideBackward;
+    bool b_collidefordward = false;
+    bool b_collideBackward = false;
     Asser *robot = new Asser(I2C_ASSER_ADDR);
     Arduino *arduino = new Arduino(100);
     main_State_t currentState = INIT;
@@ -74,9 +75,6 @@ int main() {
             b_collidefordward = collideFordward(lidarData,count);
             b_collideBackward = collideBackward(lidarData,count);
         }
-        // int x,y,teta;
-        // robot->getCoords(x,y,teta);
-        // printf("%d \t%d \t%d\n",x,y,teta);
 
         switch (currentState) {
             //****************************************************************
@@ -118,17 +116,26 @@ int main() {
             }
             //****************************************************************      
             case START:
-                startTime = millis()+90000;
+                startTime = millis();
                 nextState = RUN;
                 if(initStat) printf("=> STATE : START\n");
                 break;
             //****************************************************************
             case RUN:{
-                bool finish = turnSolarPannel(robot, arduino);
-                if(startTime < millis() || finish){
-                    nextState = FIN;
+                //bool finish = turnSolarPannel(robot, arduino,b_collideBackward);
+                bool finish =  FSMMatch(robot, arduino,b_collidefordward,b_collideBackward);
+                if(startTime+80000 < millis() || finish){
+                    nextState = RETURNHOME;
                 }
                 if(initStat) printf("=> STATE : RUN\n");
+                break;
+            }
+            case RETURNHOME:{
+                bool finish =  returnToHome(robot, b_collidefordward);
+                if(startTime+90000 < millis() || finish){
+                    nextState = FIN;
+                }
+                if(initStat) printf("=> STATE : RETURNHOME\n");
                 break;
             }
             //****************************************************************

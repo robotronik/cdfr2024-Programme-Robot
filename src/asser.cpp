@@ -50,7 +50,7 @@ int Asser::angularSetpoint(int angle, int rotation) {
 }
 
 int Asser::setLookForward(int x, int y, int rotation) {
-    printf("set Consigne LookAt Forward : %d %s\n",x,y,rotation==0?"ROTATION_DIRECT":rotation==1?"ROTATION_TRIGO":"ROTATION_HORRAIRE");
+    //printf("set Consigne LookAt Forward : %d %s\n",x,y,rotation==0?"ROTATION_DIRECT":rotation==1?"ROTATION_TRIGO":"ROTATION_HORRAIRE");
     int length = 6;  // Nb of bytes to send
     uint8_t message[6];
     int values[] = {x, y, rotation};

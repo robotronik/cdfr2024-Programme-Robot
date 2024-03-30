@@ -1,5 +1,6 @@
 #include "fonction.h"
 
+fsmMatch_t currentStateMatch = SOLARPANNEL;
 
 // Fonction pour mettre à jour l'état de la FSM en fonction de l'entrée
 int initPositon(Asser* robot){
@@ -75,7 +76,7 @@ int pullpush(Arduino* arduino){
     return bret;    
 }
 
-int turnSolarPannel(Asser* robot,Arduino* arduino){
+int turnSolarPannel(Asser* robot,Arduino* arduino,int collide){
     static unsigned long startTime;
     static int step = 0;
     static int loop = 0;
@@ -127,6 +128,63 @@ int turnSolarPannel(Asser* robot,Arduino* arduino){
         loop = 0;
         breturn = true;
     }
+    if(collide){
+        printf("collide!!!!\n");
+        breturn = true;
+    }
     return breturn;
 
+}
+
+int returnToHome(Asser* robot,int collide){
+    static int step = 0;
+    bool breturn = false;
+    if(step == 0){
+        robot->setLookForward(0,-1300,0);
+        step++;   
+    }
+    else if(step == 1 && !robot->getError(ANGULAR_ERROR)){
+        robot->linearSetpoint(0,-1300);
+        step++;
+    }
+    else if(step == 2){
+        if(collide){
+            breturn = true;
+        }
+        if(!robot->getError(LINEAR_ERROR)){
+            step++;
+        }        
+    }
+    else if(step == 3){
+        breturn = true;
+    }
+
+    return breturn; 
+}
+
+int FSMMatch(Asser* robot,Arduino* arduino, int collideF, int collideB){
+    int  bFinMatch = turnSolarPannel(robot, arduino,collideB);
+    if(bFinMatch == 1){
+        printf("FIN turnSolarPannel\n");
+    }
+    // fsmMatch_t nextStateMatch = currentStateMatch;
+    // switch (currentStateMatch)
+    // {
+    // case SOLARPANNEL:{
+    //     bool bret = turnSolarPannel(robot, arduino,collideB);
+    //     if(bret){
+    //         nextStateMatch = RETURNHOME;
+    //     }
+    //     break;
+    // }
+    // case RETURNHOME:{
+    //     int bFinMatch = returnToHome(robot,collideF);
+    //     break;
+    // }       
+    
+    // default:
+    //     break;
+    // }
+
+    return bFinMatch;
 }
