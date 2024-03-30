@@ -9,6 +9,7 @@ extern "C" {
 }
 
 #include <iostream>
+#include <cstdint>
 
 class I2CDevice {
    protected:
