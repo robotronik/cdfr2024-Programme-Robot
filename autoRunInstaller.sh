@@ -44,13 +44,16 @@ WantedBy=multi-user.target
     fi
 
     # Écrit le contenu dans le fichier de service
-    echo "$service_content" | sudo tee "$service_file" > /dev/null
+    sudo touch "$service_file"
+    echo "$service_content" | sudo tee -a "$service_file" > /dev/null
 
     # Recharge systemd pour prendre en compte les modifications
     sudo systemctl daemon-reload
 
     # Active le service pour qu'il démarre automatiquement au démarrage
     sudo systemctl enable "${program_name}.service"
+
+    sudo systemctl start "${program_name}.service"
 
     echo "Le service a été installé avec succès : $service_file"
 }
