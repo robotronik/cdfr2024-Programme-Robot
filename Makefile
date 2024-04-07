@@ -4,7 +4,7 @@ LDFLAGS = -Lrplidar_sdk/output/Linux/Release
 LDLIBS = -lsl_lidar_sdk -pthread -li2c
 
 
-TARGET = bin/myprogram
+TARGET = bin/programCDFR
 SRCDIR = src
 OBJDIR = obj
 

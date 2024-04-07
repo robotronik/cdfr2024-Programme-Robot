@@ -96,7 +96,7 @@ int turnSolarPannel(Asser* robot,Arduino* arduino,int collide){
     }
     else if(step == 1 && !robot->getError(LINEAR_ERROR)){
         step++;
-        startTime = millis() + 2000;
+        startTime = millis() + 000;
     }
     else if(step == 2 && startTime < millis()){
         step++;
@@ -112,7 +112,7 @@ int turnSolarPannel(Asser* robot,Arduino* arduino,int collide){
     }
     else if(step == 5 && !robot->getError(LINEAR_ERROR)){
         step++;
-        startTime = millis() + 2000;
+        startTime = millis() + 000;
     }
     else if(step == 6 && startTime < millis()){
         step++;
