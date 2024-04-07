@@ -61,12 +61,12 @@ int pullpush(Arduino* arduino){
     bool bret = false;
 
     if(step == 0 ){
-        arduino->servo1Position(0);
+        arduino->servoPosition(1,0);
         step++;
         startTime = millis()+350;
     }
     else if(step == 1 && startTime < millis()){
-        arduino->servo1Position(180);
+        arduino->servoPosition(1,180);
         step++;
         startTime = millis()+350;
     }
