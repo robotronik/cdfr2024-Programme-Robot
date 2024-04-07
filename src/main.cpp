@@ -74,84 +74,89 @@ int main() {
             //pixelArtPrint(lidarData,count,50,50,100,position);
             b_collidefordward = collideFordward(lidarData,count);
             b_collideBackward = collideBackward(lidarData,count);
+            b_collidefordward = false;
+            b_collideBackward = false;
+
         }
 
         switch (currentState) {
             //****************************************************************
             case INIT:
-                nextState = INITIALIZE;
                 if(initStat) printf("=> STATE : INIT\n");
+                nextState = INITIALIZE;
                 break;
             //****************************************************************
             case INITIALIZE:{
+                if(initStat) printf("=> STATE : INITIALIZE\n");
                 if(initStat){
                     int bStateCapteur2;
                     arduino->readCapteur(2,bStateCapteur2);
                     colorTeam = bStateCapteur2 ? BLUE : YELLOW;
+                    if(colorTeam == YELLOW){
+                        robot->setCoords(830,1365,-90);
+                        printf("teams : YELLOW\n");
+                    }
+                    else{
+                        robot->setCoords(830,-1440,-90);
+                        printf("teams : BLUE\n");
+                    }
+                    robot->enableMotor(true);
                 }
-                if(colorTeam == YELLOW){
-                    robot->setCoords(830,1365,-90);
-                    printf("teams : YELLOW\n");
-                }
-                else{
-                    robot->setCoords(830,-1440,-90);
-                    printf("teams : BLUE\n");
-                } 
                 //robot->setCoords(0,1500,-90);   
-                robot->enableMotor(true);
                 //robot->linearSetpoint(0,1400);
-                nextState = WAITSTART;
-                if(initStat) printf("=> STATE : INITIALIZE\n");
+                if(initPositon(robot)){
+                    nextState = WAITSTART;
+                }
                 break;
             }
             //****************************************************************
             case WAITSTART:{
+                if(initStat) printf("=> STATE : WAITSTART\n");
                 int bStateCapteur1;
                 arduino->readCapteur(1,bStateCapteur1);
                 if(bStateCapteur1 == 0){
                     nextState = START;
                 }
-                if(initStat) printf("=> STATE : WAITSTART\n");
                 break;
             }
             //****************************************************************      
             case START:
+                if(initStat) printf("=> STATE : WAITSTART\n");
                 startTime = millis();
                 nextState = RUN;
-                if(initStat) printf("=> STATE : START\n");
                 break;
             //****************************************************************
             case RUN:{
+                if(initStat) printf("=> STATE : RUN\n");
                 //bool finish = turnSolarPannel(robot, arduino,b_collideBackward);
                 bool finish =  FSMMatch(robot, arduino,b_collidefordward,b_collideBackward);
                 if(startTime+80000 < millis() || finish){
                     nextState = RETURNHOME;
                 }
-                if(initStat) printf("=> STATE : RUN\n");
                 break;
             }
             case RETURNHOME:{
+                if(initStat) printf("=> STATE : RETURNHOME\n");
                 bool finish =  returnToHome(robot, b_collidefordward);
                 if(startTime+90000 < millis() || finish){
                     nextState = FIN;
                 }
-                if(initStat) printf("=> STATE : RETURNHOME\n");
                 break;
             }
             //****************************************************************
             case FIN:
-                nextState = STOP;
                 if(initStat) printf("=> STATE : FIN\n");
+                nextState = STOP;
                 break;
             //****************************************************************
             case STOP:
-                nextState = STOP;
                 if(initStat) printf("=> STATE : STOP\n");
+                nextState = STOP;
                 break;
             //****************************************************************
             default:
-                nextState = STOP;
                 printf("=> STATE : non reconize event in main FSM\n");
+                nextState = STOP;
                 break;
         }
 

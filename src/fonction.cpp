@@ -12,13 +12,13 @@ int initPositon(Asser* robot){
         robot->setCoords(1000-ROBOT_X_OFFSET-150,-1500+ROBOT_Y_OFFSET+150,270);
         printf("-1\n");
         step++;
-        startTime = millis()+6000;
+        startTime = millis()+1000;
     }
     else if(step == 0 && startTime < millis()){
         robot->linearSetpoint(1000-ROBOT_X_OFFSET-150,-1500+ROBOT_Y_OFFSET);
         printf("0\n");
         step++;
-        startTime = millis()+000;
+        startTime = millis()+10000;
     }
     else if(step == 1 && startTime < millis()){
         robot->setCoords(1000-ROBOT_X_OFFSET-100,-1500+ROBOT_Y_OFFSET,-90);
@@ -34,7 +34,7 @@ int initPositon(Asser* robot){
     else if(step == 3 && !robot->getError(ANGULAR_ERROR)){
         robot->linearSetpoint(1000-ROBOT_X_OFFSET,-1500+ROBOT_Y_OFFSET+150);
         printf("3\n");
-        startTime = millis()+2000;
+        startTime = millis()+10000;
         step++;
     }
     else if(step == 4 && startTime < millis()){
@@ -52,6 +52,7 @@ int initPositon(Asser* robot){
         printf("6\n");
         step++;
     }
+    return step>6;
 }
 
 int pullpush(Arduino* arduino){
