@@ -17,6 +17,7 @@
 typedef enum {
     INIT,
     INITIALIZE,
+    SETHOME,
     WAITSTART,
     START,
     RUN,
@@ -33,8 +34,15 @@ void ctrlc(int)
 
 int main() {
 
+printf("  _____   ____  ____   ____ _______ _____   ____  _   _ _____ _  __\n");
+printf(" |  __ \\ / __ \\|  _ \\ / __ \\__   __|  __ \\ / __ \\| \\ | |_   _| |/ /\n");
+printf(" | |__) | |  | | |_) | |  | | | |  | |__) | |  | |  \\| | | | | ' / \n");
+printf(" |  _  /| |  | |  _ <| |  | | | |  |  _  /| |  | | . ` | | | |  <  \n");
+printf(" | | \\ \\| |__| | |_) | |__| | | |  | | \\ \\| |__| | |\\  |_| |_| . \\ \n");
+printf(" |_|  \\_\\\\____/|____/ \\____/  |_|  |_|  \\\\_\\____/|_| \\_|_____|_|\\_\\\n\n");                                                                 
+                                                                   
     printf("ROBOTRONIK\n");
-    printf("PROGRAM ROBOT FRENCH ROBOTIQUE CUP\n");
+    printf("PROGRAM ROBOT CDFR\n");
     time_t temps;
     struct tm date;
     char tempsFormate[80];
@@ -104,12 +112,17 @@ int main() {
                 }
                 //robot->setCoords(0,1500,-90);   
                 //robot->linearSetpoint(0,1400);
+                nextState = SETHOME;
+                break;
+            }
+            //****************************************************************
+            case SETHOME:{
+                if(initStat) printf("=> STATE : SETHOME\n");
                 if(initPositon(robot)){
                     nextState = WAITSTART;
                 }
                 break;
-            }
-            //****************************************************************
+            }            
             case WAITSTART:{
                 if(initStat) printf("=> STATE : WAITSTART\n");
                 int bStateCapteur1;
