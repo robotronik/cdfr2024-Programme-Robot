@@ -9,37 +9,37 @@ int initPositon(Asser* robot){
     //printf(" %d\n",robot->getError(LINEAR_ERROR));
 
     if(step == -1){
-        robot->setCoords(1000-ROBOT_X_OFFSET-150,-1500+ROBOT_Y_OFFSET+150,270);
+        robot->setCoords(0,0,0);
         printf("-1\n");
         step++;
         startTime = millis()+1000;
     }
     else if(step == 0 && startTime < millis()){
-        robot->linearSetpoint(1000-ROBOT_X_OFFSET-150,-1500+ROBOT_Y_OFFSET);
+        robot->linearSetpoint(-150,0);
         printf("0\n");
         step++;
-        startTime = millis()+10000;
+        startTime = millis()+2000;
     }
     else if(step == 1 && startTime < millis()){
-        robot->setCoords(1000-ROBOT_X_OFFSET-100,-1500+ROBOT_Y_OFFSET,-90);
-        robot->linearSetpoint(1000-ROBOT_X_OFFSET-150, -1500+ROBOT_Y_OFFSET+150);
+        robot->setCoords(ROBOT_X_OFFSET,0,0);
+        robot->linearSetpoint(ROBOT_X_OFFSET + 150,0);
         printf("1\n");
         step++;
     }
     else if(step == 2 && !robot->getError(LINEAR_ERROR)){
-        robot->angularSetpoint(180,0);
+        robot->angularSetpoint(-90,0);
         printf("2\n");
         step++;
     }
     else if(step == 3 && !robot->getError(ANGULAR_ERROR)){
-        robot->linearSetpoint(1000-ROBOT_X_OFFSET,-1500+ROBOT_Y_OFFSET+150);
+        robot->linearSetpoint(ROBOT_X_OFFSET + 150,-200);
         printf("3\n");
-        startTime = millis()+10000;
+        startTime = millis()+2000;
         step++;
     }
     else if(step == 4 && startTime < millis()){
-        robot->setCoords(1000-ROBOT_X_OFFSET,-1500+ROBOT_Y_OFFSET+150,180);
-        robot->linearSetpoint(1000-ROBOT_X_OFFSET-100,-1500+ROBOT_Y_OFFSET+150);
+        robot->setCoords(ROBOT_X_OFFSET + 150,ROBOT_X_OFFSET,-90);
+        robot->linearSetpoint(ROBOT_X_OFFSET + 150,ROBOT_X_OFFSET + 150);
         printf("4\n");
         step++;
     }
