@@ -28,3 +28,14 @@ void I2CDevice::generateBytes(int *values, size_t length, uint8_t *result) {
         result[2 * i + 1] = resultMSB;
     }
 }
+
+void I2CDevice::bytesToWords(uint8_t *byteBuffer, int16_t *wordBuffer, size_t byteLength){
+    // Fills the word buffer with a mix of byte buffer and signs the numbers
+   
+    uint8_t resultMSB, resultLSB;
+    for (size_t i = 0; i < (byteLength / 2); i++){
+        resultMSB = byteBuffer[2*i];
+        resultLSB = byteBuffer[2*i + 1];
+        wordBuffer[i] = (int16_t) (resultMSB >> 8 | resultLSB);
+    }
+}
