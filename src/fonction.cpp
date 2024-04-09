@@ -10,9 +10,9 @@ int initPositon(Asser* robot,int x, int y,int teta){
 
     int TetaStart = 90;
     int TetaSecond = -180;
-    int xSecond = 150;
-    int xStart = 1000 - ROBOT_X_OFFSET;
-    int yStart = 1500 - ROBOT_X_OFFSET;
+    int xSecond = 200;
+    int xStart = 1000 - ROBOT_Y_OFFSET;
+    int yStart = 1500 - ROBOT_Y_OFFSET;
     if(y<0){
         TetaStart = -90;
     }
@@ -21,7 +21,7 @@ int initPositon(Asser* robot,int x, int y,int teta){
     }
     if(x<0){
         TetaSecond = 0;
-        xSecond = -150;
+        xSecond = -xSecond;
         xStart = -xStart;
     }
 
@@ -101,6 +101,7 @@ int turnSolarPannel(Asser* robot,Arduino* arduino,int collide){
     const int offsetRobotYellow1 = 5;
     const int offsetRobotYellow2 = 15;
     const int table[9] = {1225,1000,775,225,0,-225,-775,-1000,-1225};
+    const int axeX = 800;
     //const int table[6] = {-50,-275,-400,-900,-1125,-1350};
 
     if(loop<3 && step == 0){
@@ -108,7 +109,7 @@ int turnSolarPannel(Asser* robot,Arduino* arduino,int collide){
     }
 
     if(step == 0){
-        robot->linearSetpoint(830,table[loop]-offsetRobotYellow1);
+        robot->linearSetpoint(axeX,table[loop]-offsetRobotYellow1);
         step++;   
     }
     else if(step == 1 && !robot->getError(LINEAR_ERROR)){
@@ -124,7 +125,7 @@ int turnSolarPannel(Asser* robot,Arduino* arduino,int collide){
         }
     }
     else if(step == 4){
-        robot->linearSetpoint(830,table[loop]-offsetRobotYellow2);
+        robot->linearSetpoint(axeX,table[loop]-offsetRobotYellow2);
         step++;
     }
     else if(step == 5 && !robot->getError(LINEAR_ERROR)){

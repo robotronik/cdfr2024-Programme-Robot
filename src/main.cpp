@@ -118,8 +118,7 @@ printf(" |_|  \\_\\\\____/|____/ \\____/  |_|  |_|  \\\\_\\____/|_| \\_|_____|_|
             //****************************************************************
             case SETHOME:{
                 if(initStat) printf("=> STATE : SETHOME\n");
-                if(initPositon(robot,800,-1350,-90)){
-                    robot->setCoords(830,1365,-90);
+                if(initPositon(robot,800,1250,-90)){
                     nextState = WAITSTART;
                 }
                 break;
