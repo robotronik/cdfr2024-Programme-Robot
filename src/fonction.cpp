@@ -3,10 +3,27 @@
 fsmMatch_t currentStateMatch = SOLARPANNEL;
 
 // Fonction pour mettre à jour l'état de la FSM en fonction de l'entrée
-int initPositon(Asser* robot){
+int initPositon(Asser* robot,int x, int y,int teta){
     static unsigned long startTime;
     static int step = -1;
     //printf(" %d\n",robot->getError(LINEAR_ERROR));
+
+    int TetaStart = 90;
+    int TetaSecond = -180;
+    int xSecond = 150;
+    int xStart = 1000 - ROBOT_X_OFFSET;
+    int yStart = 1500 - ROBOT_X_OFFSET;
+    if(y<0){
+        TetaStart = -90;
+    }
+    if(y<0){
+        yStart = -yStart;
+    }
+    if(x<0){
+        TetaSecond = 0;
+        xSecond = -150;
+        xStart = -xStart;
+    }
 
     if(step == -1){
         robot->setCoords(0,0,0);
@@ -21,30 +38,30 @@ int initPositon(Asser* robot){
         startTime = millis()+2000;
     }
     else if(step == 1 && startTime < millis()){
-        robot->setCoords(ROBOT_X_OFFSET,0,0);
-        robot->linearSetpoint(ROBOT_X_OFFSET + 150,0);
+        robot->setCoords(0,yStart,TetaStart);
+        robot->linearSetpoint(0,y);
         printf("1\n");
         step++;
     }
     else if(step == 2 && !robot->getError(LINEAR_ERROR)){
-        robot->angularSetpoint(-90,0);
+        robot->angularSetpoint(TetaSecond,0);
         printf("2\n");
         step++;
     }
     else if(step == 3 && !robot->getError(ANGULAR_ERROR)){
-        robot->linearSetpoint(ROBOT_X_OFFSET + 150,-200);
+        robot->linearSetpoint(xSecond,y);
         printf("3\n");
         startTime = millis()+2000;
         step++;
     }
     else if(step == 4 && startTime < millis()){
-        robot->setCoords(ROBOT_X_OFFSET + 150,ROBOT_X_OFFSET,-90);
-        robot->linearSetpoint(ROBOT_X_OFFSET + 150,ROBOT_X_OFFSET + 150);
+        robot->setCoords(xStart, y,TetaSecond);
+        robot->linearSetpoint(x , y);
         printf("4\n");
         step++;
     }
     else if(step == 5 && !robot->getError(LINEAR_ERROR)){
-        robot->angularSetpoint(-90,0);
+        robot->angularSetpoint(teta,0);
         printf("5\n");
         step++;
     }

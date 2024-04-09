@@ -10,7 +10,7 @@ typedef enum {
     SOLARPANNEL
 } fsmMatch_t;
 
-int initPositon(Asser* robot);
+int initPositon(Asser* robot,int x, int y,int teta);
 int turnSolarPannel(Asser* robot,Arduino* arduino, int collide);
 int returnToHome(Asser* robot, int collide);
 int pullpush(Arduino* arduino);
