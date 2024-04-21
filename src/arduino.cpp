@@ -4,6 +4,7 @@ Arduino::Arduino(int slave_address) : I2CDevice (slave_address){}
 
 
 int Arduino::servoPosition(int servoNb, int position) {
+    printf("servo %d postion : %d\n",servoNb,position);
     int length = 2;  // Nb of bytes to send
     uint8_t message[2];
     int values[] = {position};

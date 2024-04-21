@@ -5,6 +5,8 @@
 #include "config.h"
 #include "arduino.hpp"
 
+#define DELAYUPDOWN 1000
+
 
 int pullpush(Arduino* arduino);
 int catchPlant(Arduino* arduino);
