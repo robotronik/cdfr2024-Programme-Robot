@@ -184,7 +184,7 @@ int Asser::enableMotor(bool status) {
     printf("%s motor\n",status?"Enable":"disable");
     uint8_t message = (status == true) ? 51 : 50;
     if (i2c_smbus_write_byte(i2cFile, (char)message)) {
-        cout << "Error: couldn't turn off LED\n";
+        printf("Error: couldn't stop motor\n");
         return 1;
     }
     return 0;

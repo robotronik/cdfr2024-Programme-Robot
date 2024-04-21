@@ -41,25 +41,23 @@ bool lidarSetup(const char* serialPort ,int baudrate){
     }
 
     // print out the device serial number, firmware and hardware version number..
+    printf("============================\n");
     printf("SLAMTEC LIDAR S/N: ");
     for (int pos = 0; pos < 16 ;++pos) {
         printf("%02X", devinfo.serialnum[pos]);
     }
-
     printf("\n"
             "Firmware Ver: %d.%02d\n"
             "Hardware Rev: %d\n"
             , devinfo.firmware_version>>8
             , devinfo.firmware_version & 0xFF
             , (int)devinfo.hardware_version);
-
-
-
     // check health...
     if (!checkSLAMTECLIDARHealth(drv)) {
         lidarDelete();
         return false;
     }
+    printf("============================\n");
     
 
     drv->setMotorSpeed();
