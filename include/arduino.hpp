@@ -11,4 +11,5 @@ class Arduino : public I2CDevice {
     Arduino(int slave_address);
     int servoPosition(int servoNb, int position);
     int readCapteur(int capteurNumber, int &state);
+    int moveStepper(int absPosition, int stepperNb);
 };

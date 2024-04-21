@@ -36,3 +36,13 @@ int Arduino::readCapteur(int capteurNumber, int &state){
     
     return 0; // La lecture a réussi
 }
+
+int Arduino::moveStepper(int absPosition, int stepperNb) {
+    int length = 2;  // Nb of bytes to send
+    uint8_t message[2];
+    int values[] = {absPosition};
+
+    generateBytes(values, length, message);
+    i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)(10+stepperNb), length, message);
+    return 0; 
+}
