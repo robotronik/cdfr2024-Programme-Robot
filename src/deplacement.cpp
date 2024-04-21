@@ -6,6 +6,7 @@ int deplacementLinearPoint(Asser* robot, int x, int y){
     static unsigned long startTime;
     static int memx;
     static int memy;
+    static bool initStat = true; 
     static deplcement_State_t step = DEPLACEMENT_INIT;
     deplcement_State_t nextstep = step;
     int iret = 0;
@@ -15,6 +16,7 @@ int deplacementLinearPoint(Asser* robot, int x, int y){
     switch (step)
     {
     case DEPLACEMENT_INIT:
+        if(initStat) printf("=> DeplacementState : INIT\n");
         memx = x;
         memy = y;
         if(robot->collide < DISTANCESTOP){
@@ -29,6 +31,7 @@ int deplacementLinearPoint(Asser* robot, int x, int y){
         break;
     
     case DEPLACEMENT_MOVE:
+        if(initStat) printf("=> DeplacementState : MOVE\n");
         if(!robot->getError(ANGULAR_ERROR)){
             nextstep = DEPLACEMENT_INIT;
             iret = 1; //GOOD END
@@ -41,6 +44,7 @@ int deplacementLinearPoint(Asser* robot, int x, int y){
         break;
 
     case DEPLACEMENT_STOP:
+        if(initStat) printf("=> DeplacementState : STOP\n");
         robot->getBrakingDistance(distance);
         if(distance==0){
             startTime = millis() + 5000;
@@ -49,6 +53,7 @@ int deplacementLinearPoint(Asser* robot, int x, int y){
         break;
 
     case DEPLACEMENT_WAIT:
+        if(initStat) printf("=> DeplacementState : WAIT\n");
         if(startTime < millis()){
             nextstep = DEPLACEMENT_INIT;
             iret = -1; //BAD END
@@ -61,36 +66,15 @@ int deplacementLinearPoint(Asser* robot, int x, int y){
         break;
     
     default:
+        printf("=> DeplacementState : default\n");
         nextstep = DEPLACEMENT_INIT;
         break;
     }
 
+    initStat = false;
     if(nextstep != step){
-        switch (nextstep)
-        {
-        case DEPLACEMENT_INIT:
-            printf("=>DeplacementState : INIT\n");
-            break;
-        
-        case DEPLACEMENT_MOVE:
-            printf("=>DeplacementState : MOVE\n");
-            break;
-
-        case DEPLACEMENT_STOP:
-            printf("=>DeplacementState : STOP\n");
-            break;
-
-        case DEPLACEMENT_WAIT:
-            printf("=>DeplacementState : WAIT\n");
-            break;
-        
-        default:
-            printf("=>DeplacementState : default\n");
-            break;
-        }
+        initStat = true;
     }
-
     step = nextstep;
-
     return iret;
 }

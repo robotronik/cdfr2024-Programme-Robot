@@ -147,7 +147,7 @@ int main() {
             }
             //****************************************************************      
             case START:
-                if(initStat) printf("=> STATE : WAITSTART\n");
+                if(initStat) printf("=> STATE : START\n");
                 startTime = millis();
                 nextState = RUN;
                 break;
