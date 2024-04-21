@@ -35,12 +35,12 @@ void ctrlc(int)
 
 int main() {
 
-printf("  _____   ____  ____   ____ _______ _____   ____  _   _ _____ _  __\n");
-printf(" |  __ \\ / __ \\|  _ \\ / __ \\__   __|  __ \\ / __ \\| \\ | |_   _| |/ /\n");
-printf(" | |__) | |  | | |_) | |  | | | |  | |__) | |  | |  \\| | | | | ' / \n");
-printf(" |  _  /| |  | |  _ <| |  | | | |  |  _  /| |  | | . ` | | | |  <  \n");
-printf(" | | \\ \\| |__| | |_) | |__| | | |  | | \\ \\| |__| | |\\  |_| |_| . \\ \n");
-printf(" |_|  \\_\\\\____/|____/ \\____/  |_|  |_|  \\\\_\\____/|_| \\_|_____|_|\\_\\\n\n");                                                                 
+    printf("  _____   ____  ____   ____ _______ _____   ____  _   _ _____ _  __\n");
+    printf(" |  __ \\ / __ \\|  _ \\ / __ \\__   __|  __ \\ / __ \\| \\ | |_   _| |/ /\n");
+    printf(" | |__) | |  | | |_) | |  | | | |  | |__) | |  | |  \\| | | | | ' / \n");
+    printf(" |  _  /| |  | |  _ <| |  | | | |  |  _  /| |  | | . ` | | | |  <  \n");
+    printf(" | | \\ \\| |__| | |_) | |__| | | |  | | \\ \\| |__| | |\\  |_| |_| . \\ \n");
+    printf(" |_|  \\_\\\\____/|____/ \\____/  |_|  |_|  \\\\_\\____/|_| \\_|_____|_|\\_\\\n\n");                                                                 
                                                                    
     printf("ROBOTRONIK\n");
     printf("PROGRAM ROBOT CDFR\n");
@@ -61,8 +61,6 @@ printf(" |_|  \\_\\\\____/|____/ \\____/  |_|  |_|  \\\\_\\____/|_| \\_|_____|_|
     signal(SIGTERM, ctrlc);
 
     lidarAnalize_t lidarData[SIZEDATALIDAR];
-    bool b_collidefordward = false;
-    bool b_collideBackward = false;
     Asser *robot = new Asser(I2C_ASSER_ADDR);
     Arduino *arduino = new Arduino(100);
     main_State_t currentState = INIT;
@@ -87,14 +85,13 @@ printf(" |_|  \\_\\\\____/|____/ \\____/  |_|  |_|  \\\\_\\____/|_| \\_|_____|_|
         int count = SIZEDATALIDAR;
         if(getlidarData(lidarData,count)){
             int x, y, teta;
+            int distance;
             robot->getCoords(x,y,teta);
             position_t position = {x,y,teta,0};
             convertAngularToAxial(lidarData,count,position);
             //pixelArtPrint(lidarData,count,50,50,100,position);
-            b_collidefordward = collideFordward(lidarData,count);
-            b_collideBackward = collideBackward(lidarData,count);
-            b_collidefordward = false;
-            b_collideBackward = false;
+            robot->getBrakingDistance(distance);
+            robot->collide = collide(lidarData,count,distance);
 
         }
 
@@ -120,6 +117,9 @@ printf(" |_|  \\_\\\\____/|____/ \\____/  |_|  |_|  \\\\_\\____/|_| \\_|_____|_|
                         printf("teams : BLUE\n");
                     }
                     robot->enableMotor(true);
+                    arduino->moveStepper(0,1);
+                    arduino->servoPosition(1,180);
+                    arduino->servoPosition(2200,0);
                 }
                 //robot->setCoords(0,1500,-90);   
                 //robot->linearSetpoint(0,1400);
@@ -154,15 +154,15 @@ printf(" |_|  \\_\\\\____/|____/ \\____/  |_|  |_|  \\\\_\\____/|_| \\_|_____|_|
             case RUN:{
                 if(initStat) printf("=> STATE : RUN\n");
                 //bool finish = turnSolarPannel(robot, arduino,b_collideBackward);
-                bool finish =  FSMMatch(robot, arduino,b_collidefordward,b_collideBackward);
+                bool finish =  FSMMatch(robot, arduino);
                 if(startTime+80000 < millis() || finish){
-                    nextState = RETURNHOME;
+                    nextState = FIN;
                 }
                 break;
             }
             case RETURNHOME:{
                 if(initStat) printf("=> STATE : RETURNHOME\n");
-                bool finish =  returnToHome(robot, b_collidefordward);
+                bool finish =  returnToHome(robot);
                 if(startTime+90000 < millis() || finish){
                     nextState = FIN;
                 }

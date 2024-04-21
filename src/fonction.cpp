@@ -74,7 +74,7 @@ int initPositon(Asser* robot,int x, int y,int teta){
 
 
 
-int turnSolarPannel(Asser* robot,Arduino* arduino,int collide){
+int turnSolarPannel(Asser* robot,Arduino* arduino){
     static unsigned long startTime;
     static int step = 0;
     static int loop = 0;
@@ -82,6 +82,7 @@ int turnSolarPannel(Asser* robot,Arduino* arduino,int collide){
     const int offsetRobotYellow2 = 15;
     const int table[9] = {1225,1000,775,225,0,-225,-775,-1000,-1225};
     const int axeX = 800;
+    bool breturn = false;
     //const int table[6] = {-50,-275,-400,-900,-1125,-1350};
 
     if(loop<3 && step == 0){
@@ -89,7 +90,7 @@ int turnSolarPannel(Asser* robot,Arduino* arduino,int collide){
     }
 
     if(step == 0){
-        robot->linearSetpoint(axeX,table[loop]-offsetRobotYellow1);
+        breturn = deplacementLinearPoint(robot,axeX,table[loop]-offsetRobotYellow1);
         step++;   
     }
     else if(step == 1 && !robot->getError(LINEAR_ERROR)){
@@ -105,7 +106,7 @@ int turnSolarPannel(Asser* robot,Arduino* arduino,int collide){
         }
     }
     else if(step == 4){
-        robot->linearSetpoint(axeX,table[loop]-offsetRobotYellow2);
+        breturn = deplacementLinearPoint(robot,axeX,table[loop]-offsetRobotYellow2);
         step++;
     }
     else if(step == 5 && !robot->getError(LINEAR_ERROR)){
@@ -122,20 +123,15 @@ int turnSolarPannel(Asser* robot,Arduino* arduino,int collide){
         }
     }
 
-    bool breturn = false;
     if(loop == 6){
         loop = 0;
-        breturn = true;
-    }
-    if(collide){
-        printf("collide!!!!\n");
         breturn = true;
     }
     return breturn;
 
 }
 
-int returnToHome(Asser* robot,int collide){
+int returnToHome(Asser* robot){
     static int step = 0;
     bool breturn = false;
     if(step == 0){
@@ -147,9 +143,6 @@ int returnToHome(Asser* robot,int collide){
         step++;
     }
     else if(step == 2){
-        if(collide){
-            breturn = true;
-        }
         if(!robot->getError(LINEAR_ERROR)){
             step++;
         }        
@@ -161,8 +154,8 @@ int returnToHome(Asser* robot,int collide){
     return breturn; 
 }
 
-int FSMMatch(Asser* robot,Arduino* arduino, int collideF, int collideB){
-    int  bFinMatch = turnSolarPannel(robot, arduino,collideB);
+int FSMMatch(Asser* robot,Arduino* arduino){
+    int  bFinMatch = turnSolarPannel(robot, arduino);
     if(bFinMatch == 1){
         printf("FIN turnSolarPannel\n");
     }
