@@ -92,6 +92,7 @@ int main() {
             //pixelArtPrint(lidarData,count,50,50,100,position);
             robot->getBrakingDistance(distance);
             robot->collide = collide(lidarData,count,distance);
+            //printf("distance : %d \t collide : %d\n",distance,robot->collide);
 
         }
 
@@ -117,9 +118,9 @@ int main() {
                         printf("teams : BLUE\n");
                     }
                     robot->enableMotor(true);
-                    arduino->moveStepper(0,1);
                     arduino->servoPosition(1,180);
-                    arduino->servoPosition(2200,0);
+                    arduino->servoPosition(2,0);
+                    arduino->moveStepper(2200,1);
                 }
                 //robot->setCoords(0,1500,-90);   
                 //robot->linearSetpoint(0,1400);
@@ -139,7 +140,7 @@ int main() {
                 if(initStat) printf("=> STATE : WAITSTART\n");
                 int bStateCapteur1;
                 arduino->readCapteur(1,bStateCapteur1);
-                if(bStateCapteur1 == 0){
+                if(bStateCapteur1 == 0 && robot->collide > 500){
                     nextState = START;
                 }
                 break;
@@ -171,6 +172,7 @@ int main() {
             //****************************************************************
             case FIN:
                 if(initStat) printf("=> STATE : FIN\n");
+                arduino->servoPosition(2,180);
                 nextState = STOP;
                 break;
             //****************************************************************

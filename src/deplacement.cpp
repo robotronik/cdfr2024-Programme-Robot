@@ -7,62 +7,90 @@ int deplacementLinearPoint(Asser* robot, int x, int y){
     static int memx;
     static int memy;
     static deplcement_State_t step = DEPLACEMENT_INIT;
+    deplcement_State_t nextstep = step;
     int iret = 0;
     int distance;
+
 
     switch (step)
     {
     case DEPLACEMENT_INIT:
-        printf("=>DeplacementState : INIT\n");
-        memx = y;
-        memy = x;
+        memx = x;
+        memy = y;
         if(robot->collide < DISTANCESTOP){
-            step = DEPLACEMENT_WAIT;
+            printf("distance colide : %d\n",robot->collide);
+            nextstep = DEPLACEMENT_WAIT;
             startTime = millis() + 5000; //TIME waiting
         }
         else{
-            step = DEPLACEMENT_MOVE;
+            nextstep = DEPLACEMENT_MOVE;
             robot->linearSetpoint(memx,memy);
         }
         break;
     
     case DEPLACEMENT_MOVE:
-        printf("=>DeplacementState : MOVE\n");
         if(!robot->getError(ANGULAR_ERROR)){
-            step = DEPLACEMENT_INIT;
+            nextstep = DEPLACEMENT_INIT;
             iret = 1; //GOOD END
         }
         if(robot->collide < DISTANCESTOP){
-            step = DEPLACEMENT_STOP;
+            printf("distance colide : %d\n",robot->collide);
+            nextstep = DEPLACEMENT_STOP;
             robot->stop();
         }
         break;
 
     case DEPLACEMENT_STOP:
-        printf("=>DeplacementState : STOP\n");
         robot->getBrakingDistance(distance);
         if(distance==0){
             startTime = millis() + 5000;
-            step = DEPLACEMENT_WAIT;
+            nextstep = DEPLACEMENT_WAIT;
         }
         break;
 
     case DEPLACEMENT_WAIT:
-        printf("=>DeplacementState : WAIT\n");
         if(startTime < millis()){
-            step = DEPLACEMENT_INIT;
+            nextstep = DEPLACEMENT_INIT;
             iret = -1; //BAD END
         }
         if(robot->collide > DISTANCERESTART){
-            step = DEPLACEMENT_MOVE;
+            printf("distance colide : %d\n",robot->collide);
+            nextstep = DEPLACEMENT_MOVE;
             robot->linearSetpoint(memx,memy);
         }
         break;
     
     default:
-        step = DEPLACEMENT_INIT;
+        nextstep = DEPLACEMENT_INIT;
         break;
     }
+
+    if(nextstep != step){
+        switch (nextstep)
+        {
+        case DEPLACEMENT_INIT:
+            printf("=>DeplacementState : INIT\n");
+            break;
+        
+        case DEPLACEMENT_MOVE:
+            printf("=>DeplacementState : MOVE\n");
+            break;
+
+        case DEPLACEMENT_STOP:
+            printf("=>DeplacementState : STOP\n");
+            break;
+
+        case DEPLACEMENT_WAIT:
+            printf("=>DeplacementState : WAIT\n");
+            break;
+        
+        default:
+            printf("=>DeplacementState : default\n");
+            break;
+        }
+    }
+
+    step = nextstep;
 
     return iret;
 }
