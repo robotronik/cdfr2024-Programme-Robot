@@ -101,7 +101,7 @@ printf(" |_|  \\_\\\\____/|____/ \\____/  |_|  |_|  \\\\_\\____/|_| \\_|_____|_|
                     arduino->readCapteur(2,bStateCapteur2);
                     colorTeam = bStateCapteur2 ? BLUE : YELLOW;
                     if(colorTeam == YELLOW){
-                        robot->setCoords(830,1365,-90);
+                        robot->setCoords(800,1250,-90);
                         printf("teams : YELLOW\n");
                     }
                     else{
@@ -118,9 +118,10 @@ printf(" |_|  \\_\\\\____/|____/ \\____/  |_|  |_|  \\\\_\\____/|_| \\_|_____|_|
             //****************************************************************
             case SETHOME:{
                 if(initStat) printf("=> STATE : SETHOME\n");
-                if(initPositon(robot,800,1250,-90)){
-                    nextState = WAITSTART;
-                }
+                nextState = WAITSTART;
+                // if(initPositon(robot,800,1250,-90)){
+                //     nextState = WAITSTART;
+                // }
                 break;
             }            
             case WAITSTART:{

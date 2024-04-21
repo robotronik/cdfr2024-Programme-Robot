@@ -139,8 +139,7 @@ int Asser::getBrakingDistance(int &distance){
     uint8_t resultMSB, resultLSB;
     resultLSB = buffer[2 * 0];
     resultMSB = buffer[2 * 0 + 1];
-    distance = resultMSB<<8 | resultLSB;
-    printf("Braking distance : %d\n", distance);
+    distance = (int16_t)(resultMSB<<8 | resultLSB);
     
     // Vérification si la lecture a réussi
     if (bytesRead != 2) {
