@@ -82,7 +82,7 @@ int turnSolarPannel(Asser* robot,Arduino* arduino){
     const int offsetRobotYellow2 = 15;
     const int table[9] = {1225,1000,775,225,0,-225,-775,-1000,-1225};
     const int axeX = 800;
-    bool breturn = false;
+    int breturn = 0;
     //const int table[6] = {-50,-275,-400,-900,-1125,-1350};
 
     if(loop<3 && step == 0){
@@ -90,10 +90,11 @@ int turnSolarPannel(Asser* robot,Arduino* arduino){
     }
 
     if(step == 0){
-        breturn = deplacementLinearPoint(robot,axeX,table[loop]-offsetRobotYellow1);
-        step++;   
+        if(deplacementLinearPoint(robot,axeX,table[loop]-offsetRobotYellow1)){
+            step++; 
+        }  
     }
-    else if(step == 1 && !robot->getError(LINEAR_ERROR)){
+    else if(step == 1){
         step++;
         startTime = millis() + 000;
     }
@@ -106,10 +107,11 @@ int turnSolarPannel(Asser* robot,Arduino* arduino){
         }
     }
     else if(step == 4){
-        breturn = deplacementLinearPoint(robot,axeX,table[loop]-offsetRobotYellow2);
-        step++;
+        if(deplacementLinearPoint(robot,axeX,table[loop]-offsetRobotYellow2)){
+            step++;
+        }
     }
-    else if(step == 5 && !robot->getError(LINEAR_ERROR)){
+    else if(step == 5){
         step++;
         startTime = millis() + 000;
     }

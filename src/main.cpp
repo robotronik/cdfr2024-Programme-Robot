@@ -69,16 +69,16 @@ int main() {
     bool initStat; 
     colorTeam_t colorTeam;
 
-    while (1) {
-        while(!releasePlant(arduino));
-        sleep(2);
-        while(!catchPlant(arduino));
-        sleep(2);
+    // while (1) {
+    //     while(!releasePlant(arduino));
+    //     sleep(2);
+    //     while(!catchPlant(arduino));
+    //     sleep(2);
 
-        if (ctrl_c_pressed){ 
-            break;
-        }
-    }
+    //     if (ctrl_c_pressed){ 
+    //         break;
+    //     }
+    // }
 
     while (1) {
         
