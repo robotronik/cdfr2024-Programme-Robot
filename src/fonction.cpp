@@ -72,27 +72,7 @@ int initPositon(Asser* robot,int x, int y,int teta){
     return step>6;
 }
 
-int pullpush(Arduino* arduino){
-    static unsigned long startTime;
-    static int step = 0;
-    bool bret = false;
 
-    if(step == 0 ){
-        arduino->servoPosition(1,0);
-        step++;
-        startTime = millis()+350;
-    }
-    else if(step == 1 && startTime < millis()){
-        arduino->servoPosition(1,180);
-        step++;
-        startTime = millis()+350;
-    }
-    else if(step == 2 && startTime < millis()){
-        step = 0;
-        bret = true;
-    }
-    return bret;    
-}
 
 int turnSolarPannel(Asser* robot,Arduino* arduino,int collide){
     static unsigned long startTime;

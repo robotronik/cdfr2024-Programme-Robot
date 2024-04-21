@@ -11,6 +11,7 @@
 #include "asser.hpp"
 #include "arduino.hpp"
 #include "utils.h"
+#include "arduinoSubFonction.h"
 
 #define SIZEDATALIDAR 10000
 
@@ -68,8 +69,7 @@ printf(" |_|  \\_\\\\____/|____/ \\____/  |_|  |_|  \\\\_\\____/|_| \\_|_____|_|
     main_State_t nextState = INIT;
     unsigned long startTime;
     bool initStat; 
-    colorTeam_t colorTeam; 
-
+    colorTeam_t colorTeam;
 
     while (1) {
         
