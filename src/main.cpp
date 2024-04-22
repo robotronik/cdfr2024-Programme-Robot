@@ -69,16 +69,16 @@ int main() {
     bool initStat; 
     colorTeam_t colorTeam;
 
-    // while (1) {
-    //     while(!releasePlant(arduino));
-    //     sleep(2);
-    //     while(!catchPlant(arduino));
-    //     sleep(2);
-
-    //     if (ctrl_c_pressed){ 
-    //         break;
-    //     }
-    // }
+    // arduino->servoPosition(1,180);
+    // arduino->servoPosition(2,0);
+    // arduino->moveStepper(2200,1);
+    // while(!ctrl_c_pressed);
+    // ctrl_c_pressed = false;
+    // while(!catchPlant(arduino));
+    // while(!ctrl_c_pressed);
+    // ctrl_c_pressed = false;
+    // while(!releasePlant(arduino));
+    // while(!ctrl_c_pressed);
 
     while (1) {
         

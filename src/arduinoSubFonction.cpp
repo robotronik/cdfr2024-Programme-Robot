@@ -34,7 +34,7 @@ int catchPlant(Arduino* arduino){
         startTime = millis()+350;
     }
     else if(step == 1 && startTime < millis()){
-        arduino->moveStepper(1000,1);
+        arduino->moveStepper(600,1);
         step++;
         startTime = millis()+DELAYUPDOWN;
     }
@@ -61,7 +61,7 @@ int releasePlant(Arduino* arduino){
 
     if(step == 0 ){
         printf("release plant\n");
-        arduino->moveStepper(1000,1);
+        arduino->moveStepper(600,1);
         step++;
         startTime = millis()+DELAYUPDOWN;
     }
