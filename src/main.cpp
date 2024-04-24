@@ -110,7 +110,8 @@ int main() {
                     arduino->readCapteur(2,bStateCapteur2);
                     colorTeam = bStateCapteur2 ? BLUE : YELLOW;
                     if(colorTeam == YELLOW){
-                        robot->setCoords(800,1250,-90);
+                        //robot->setCoords(800,1250,-90);
+                        robot->setCoords(-1000,0,0);
                         printf("teams : YELLOW\n");
                     }
                     else{
@@ -154,8 +155,8 @@ int main() {
             //****************************************************************
             case RUN:{
                 if(initStat) printf("=> STATE : RUN\n");
-                //bool finish = turnSolarPannel(robot, arduino,b_collideBackward);
-                bool finish =  FSMMatch(robot, arduino);
+                bool finish = takePlant(robot, arduino,0,-1000,0,3);
+                //bool finish =  FSMMatch(robot, arduino);
                 if(startTime+80000 < millis() || finish){
                     nextState = FIN;
                 }

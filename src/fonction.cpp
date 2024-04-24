@@ -138,6 +138,87 @@ int turnSolarPannel(Asser* robot,Arduino* arduino){
 
 }
 
+int takePlant(Asser* robot,Arduino* arduino,int yPos,int xStart, int xEnd, int numPlante){
+    int ireturn = 0;
+    const int plantexAxis[6] = {500,300,-300,-500,-300,300};
+    static bool initStat = true;
+    static fsmtakePlant_t currentState = TAKEPLANT_INIT;
+    fsmtakePlant_t nextState = currentState;
+    int deplacementreturn;
+    static int positionToGo = 0;
+
+
+    switch (currentState)
+    {
+    case TAKEPLANT_INIT :
+        if(initStat) printf("=> take plant : TAKEPLANT_INIT\n");
+        currentState = TAKEPLANT_FORWARD;
+        positionToGo = plantexAxis[numPlante]+300;
+        break;
+    case TAKEPLANT_FORWARD :
+        if(initStat) printf("=> take plant : TAKEPLANT_FORWARD\n");
+        deplacementreturn = deplacementLinearPoint(robot,positionToGo,yPos);
+        if(deplacementreturn>=1){
+            currentState = TAKEPLANT_BACKWARD;
+        }
+        else if(deplacementreturn<=-1){
+            currentState = TAKEPLANT_INIT;
+            ireturn = -1;
+        }
+        break;
+    case TAKEPLANT_REFORWARD : 
+        if(initStat){ printf("=> take plant : TAKEPLANT_REFORWARD\n");
+            positionToGo += 400;
+        }
+        deplacementreturn = deplacementLinearPoint(robot,positionToGo,yPos);
+        if(deplacementreturn>=1){
+            currentState = TAKEPLANT_BACKWARD;
+        }
+        else if(deplacementreturn<=-1){
+            currentState = TAKEPLANT_INIT;
+            ireturn = -1;
+        }
+        break;
+    case TAKEPLANT_BACKWARD :
+        if(initStat){ printf("=> take plant : TAKEPLANT_BACKWARD\n");
+            positionToGo -= 200;
+        }
+        deplacementreturn = deplacementLinearPoint(robot,positionToGo,yPos);
+        if(deplacementreturn>=1){
+            currentState = TAKEPLANT_TAKE;
+        }
+        else if(deplacementreturn<=-1){
+            currentState = TAKEPLANT_REFORWARD;
+        }
+        break;
+    case TAKEPLANT_TAKE :
+        if(initStat) printf("=> take plant : TAKEPLANT_TAKE\n");
+        deplacementreturn = catchPlant(arduino);
+        if(deplacementreturn){
+            currentState = TAKEPLANT_END;
+        }
+        break;
+    case TAKEPLANT_END :
+        if(initStat) printf("=> take plant : TAKEPLANT_END\n");
+        currentState = TAKEPLANT_INIT;
+        ireturn = 1;
+        break;
+    
+    default:
+        if(initStat) printf("=> take plant : TAKEPLANT_INIT\n");
+        currentState = TAKEPLANT_INIT;
+        break;
+    }
+
+    initStat = false;
+    if(nextState != currentState){
+        initStat = true;
+    }
+    currentState = nextState;
+    return ireturn;
+
+}
+
 int returnToHome(Asser* robot){
     static int step = 0;
     bool breturn = false;
