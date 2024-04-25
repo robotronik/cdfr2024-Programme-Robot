@@ -32,7 +32,7 @@ int deplacementLinearPoint(Asser* robot, int x, int y){
     
     case DEPLACEMENT_MOVE:
         if(initStat) printf("=> DeplacementState : MOVE\n");
-        if(!robot->getError(ANGULAR_ERROR)){
+        if(!robot->getError(LINEAR_ERROR)){
             nextstep = DEPLACEMENT_INIT;
             iret = 1; //GOOD END
         }

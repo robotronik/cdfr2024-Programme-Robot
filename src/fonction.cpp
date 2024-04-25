@@ -152,17 +152,17 @@ int takePlant(Asser* robot,Arduino* arduino,int yPos,int xStart, int xEnd, int n
     {
     case TAKEPLANT_INIT :
         if(initStat) printf("=> take plant : TAKEPLANT_INIT\n");
-        currentState = TAKEPLANT_FORWARD;
+        nextState = TAKEPLANT_FORWARD;
         positionToGo = plantexAxis[numPlante]+300;
         break;
     case TAKEPLANT_FORWARD :
         if(initStat) printf("=> take plant : TAKEPLANT_FORWARD\n");
         deplacementreturn = deplacementLinearPoint(robot,positionToGo,yPos);
         if(deplacementreturn>=1){
-            currentState = TAKEPLANT_BACKWARD;
+            nextState = TAKEPLANT_BACKWARD;
         }
         else if(deplacementreturn<=-1){
-            currentState = TAKEPLANT_INIT;
+            nextState = TAKEPLANT_INIT;
             ireturn = -1;
         }
         break;
@@ -172,46 +172,49 @@ int takePlant(Asser* robot,Arduino* arduino,int yPos,int xStart, int xEnd, int n
         }
         deplacementreturn = deplacementLinearPoint(robot,positionToGo,yPos);
         if(deplacementreturn>=1){
-            currentState = TAKEPLANT_BACKWARD;
+            nextState = TAKEPLANT_BACKWARD;
         }
         else if(deplacementreturn<=-1){
-            currentState = TAKEPLANT_INIT;
+            nextState = TAKEPLANT_INIT;
             ireturn = -1;
         }
         break;
     case TAKEPLANT_BACKWARD :
         if(initStat){ printf("=> take plant : TAKEPLANT_BACKWARD\n");
-            positionToGo -= 200;
+            positionToGo -= 100;
         }
         deplacementreturn = deplacementLinearPoint(robot,positionToGo,yPos);
         if(deplacementreturn>=1){
-            currentState = TAKEPLANT_TAKE;
+            nextState = TAKEPLANT_TAKE;
         }
         else if(deplacementreturn<=-1){
-            currentState = TAKEPLANT_REFORWARD;
+            nextState = TAKEPLANT_REFORWARD;
         }
         break;
     case TAKEPLANT_TAKE :
         if(initStat) printf("=> take plant : TAKEPLANT_TAKE\n");
         deplacementreturn = catchPlant(arduino);
         if(deplacementreturn){
-            currentState = TAKEPLANT_END;
+            nextState = TAKEPLANT_END;
         }
         break;
     case TAKEPLANT_END :
         if(initStat) printf("=> take plant : TAKEPLANT_END\n");
-        currentState = TAKEPLANT_INIT;
+        nextState = TAKEPLANT_INIT;
         ireturn = 1;
         break;
     
     default:
         if(initStat) printf("=> take plant : TAKEPLANT_INIT\n");
-        currentState = TAKEPLANT_INIT;
+        nextState = TAKEPLANT_INIT;
         break;
     }
 
     initStat = false;
     if(nextState != currentState){
+        int x,y,teta;
+        robot->getCoords(x,y,teta);
+        printf("[ x : %d, y : %d, teta : %d, ]\n",x,y,teta);
         initStat = true;
     }
     currentState = nextState;

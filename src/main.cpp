@@ -161,7 +161,7 @@ int main() {
             //****************************************************************
             case FIN:
                 if(initStat) printf("=> STATE : FIN\n");
-                arduino->servoPosition(2,180);
+                //arduino->servoPosition(2,180);
                 nextState = STOP;
                 break;
             //****************************************************************
