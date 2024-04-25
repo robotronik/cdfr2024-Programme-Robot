@@ -12,6 +12,7 @@
 #include "arduino.hpp"
 #include "utils.h"
 #include "arduinoSubFonction.h"
+#include "logger.hpp"
 
 #define SIZEDATALIDAR 10000
 
@@ -34,23 +35,7 @@ void ctrlc(int)
 }
 
 int main() {
-
-    printf("  _____   ____  ____   ____ _______ _____   ____  _   _ _____ _  __\n");
-    printf(" |  __ \\ / __ \\|  _ \\ / __ \\__   __|  __ \\ / __ \\| \\ | |_   _| |/ /\n");
-    printf(" | |__) | |  | | |_) | |  | | | |  | |__) | |  | |  \\| | | | | ' / \n");
-    printf(" |  _  /| |  | |  _ <| |  | | | |  |  _  /| |  | | . ` | | | |  <  \n");
-    printf(" | | \\ \\| |__| | |_) | |__| | | |  | | \\ \\| |__| | |\\  |_| |_| . \\ \n");
-    printf(" |_|  \\_\\\\____/|____/ \\____/  |_|  |_|  \\\\_\\____/|_| \\_|_____|_|\\_\\\n\n");                                                                 
-                                                                   
-    printf("ROBOTRONIK\n");
-    printf("PROGRAM ROBOT CDFR\n");
-    time_t temps;
-    struct tm date;
-    char tempsFormate[80];
-    time(&temps);
-    date = *localtime(&temps);
-    strftime(tempsFormate, sizeof(tempsFormate), "%Y-%m-%d %H:%M:%S", &date);
-    printf("Start Time : %s\n", tempsFormate);
+    LOG_INIT();
 
 
     if(!lidarSetup("/dev/ttyAMA0",256000)){
@@ -60,8 +45,9 @@ int main() {
     signal(SIGINT, ctrlc);
     signal(SIGTERM, ctrlc);
 
-    lidarAnalize_t lidarData[SIZEDATALIDAR];
     Asser *robot = new Asser(I2C_ASSER_ADDR);
+    LOG_SETROBOT(robot);
+    lidarAnalize_t lidarData[SIZEDATALIDAR];    
     Arduino *arduino = new Arduino(100);
     main_State_t currentState = INIT;
     main_State_t nextState = INIT;
@@ -81,6 +67,8 @@ int main() {
     // while(!ctrl_c_pressed);
 
     while (1) {
+
+        LOG_SCOPE("Main");
         
         int count = SIZEDATALIDAR;
         if(getlidarData(lidarData,count)){
