@@ -66,6 +66,8 @@ int main() {
     // while(!releasePlant(arduino));
     // while(!ctrl_c_pressed);
 
+    LOG_DEBUG("test");
+
     while (1) {
 
         LOG_SCOPE("Main");
@@ -87,12 +89,12 @@ int main() {
         switch (currentState) {
             //****************************************************************
             case INIT:
-                if(initStat) printf("=> STATE : INIT\n");
+                if(initStat) LOG_STATE("INIT");
                 nextState = INITIALIZE;
                 break;
             //****************************************************************
             case INITIALIZE:{
-                if(initStat) printf("=> STATE : INITIALIZE\n");
+                if(initStat) LOG_STATE("INITIALIZE");
                 if(initStat){
                     int bStateCapteur2;
                     arduino->readCapteur(2,bStateCapteur2);
@@ -118,7 +120,7 @@ int main() {
             }
             //****************************************************************
             case SETHOME:{
-                if(initStat) printf("=> STATE : SETHOME\n");
+                if(initStat) LOG_STATE("SETHOME");
                 nextState = WAITSTART;
                 // if(initPositon(robot,800,1250,-90)){
                 //     nextState = WAITSTART;
@@ -126,7 +128,7 @@ int main() {
                 break;
             }            
             case WAITSTART:{
-                if(initStat) printf("=> STATE : WAITSTART\n");
+                if(initStat) LOG_STATE("WAITSTART");
                 int bStateCapteur1;
                 arduino->readCapteur(1,bStateCapteur1);
                 if(bStateCapteur1 == 0 && robot->collide > 500){
@@ -136,13 +138,13 @@ int main() {
             }
             //****************************************************************      
             case START:
-                if(initStat) printf("=> STATE : START\n");
+                if(initStat) LOG_STATE("START");
                 startTime = millis();
                 nextState = RUN;
                 break;
             //****************************************************************
             case RUN:{
-                if(initStat) printf("=> STATE : RUN\n");
+                if(initStat) LOG_STATE("RUN");
                 bool finish = takePlant(robot, arduino,0,-1000,0,3);
                 //bool finish =  FSMMatch(robot, arduino);
                 if(startTime+80000 < millis() || finish){
@@ -151,7 +153,7 @@ int main() {
                 break;
             }
             case RETURNHOME:{
-                if(initStat) printf("=> STATE : RETURNHOME\n");
+                if(initStat) LOG_STATE("RETURNHOME");
                 bool finish =  returnToHome(robot);
                 if(startTime+90000 < millis() || finish){
                     nextState = FIN;
@@ -160,18 +162,18 @@ int main() {
             }
             //****************************************************************
             case FIN:
-                if(initStat) printf("=> STATE : FIN\n");
+                if(initStat) LOG_STATE("FIN");
                 //arduino->servoPosition(2,180);
                 nextState = STOP;
                 break;
             //****************************************************************
             case STOP:
-                if(initStat) printf("=> STATE : STOP\n");
+                if(initStat) LOG_STATE("STOP");
                 nextState = STOP;
                 break;
             //****************************************************************
             default:
-                printf("=> STATE : non reconize event in main FSM\n");
+                LOG_STATE("default");
                 nextState = STOP;
                 break;
         }

@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -83,7 +84,7 @@ public:
             noLog = true;
             robot->getCoords(x,y,teta);
             noLog = false;
-            returnstring << "[" << std::setw(4) << x << " " << std::setw(4) << y << " " << std::setw(3) << teta <<"]";
+            returnstring << "[" << std::setw(5) << x << " " << std::setw(5) << y << " " << std::setw(4) << teta <<"]";
         }        
         return returnstring.str();
     }
@@ -135,3 +136,4 @@ private:
 #define LOG_INIT() Logger::getInstance().initLog()
 #define LOG_SETROBOT(robot) Logger::getInstance().logSetRobot(robot)
 #define LOG_SCOPE(message) ScopeLogger __logger__(message)
+#define LOG_STATE(message, ...) Logger::getInstance().log(LogLevel::INFO, message, ##__VA_ARGS__)

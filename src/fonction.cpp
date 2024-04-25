@@ -139,6 +139,7 @@ int turnSolarPannel(Asser* robot,Arduino* arduino){
 }
 
 int takePlant(Asser* robot,Arduino* arduino,int yPos,int xStart, int xEnd, int numPlante){
+    LOG_SCOPE("take plant");
     int ireturn = 0;
     const int plantexAxis[6] = {500,300,-300,-500,-300,300};
     static bool initStat = true;
@@ -151,12 +152,12 @@ int takePlant(Asser* robot,Arduino* arduino,int yPos,int xStart, int xEnd, int n
     switch (currentState)
     {
     case TAKEPLANT_INIT :
-        if(initStat) printf("=> take plant : TAKEPLANT_INIT\n");
+        if(initStat) LOG_STATE("TAKEPLANT_INIT");
         nextState = TAKEPLANT_FORWARD;
         positionToGo = plantexAxis[numPlante]+300;
         break;
     case TAKEPLANT_FORWARD :
-        if(initStat) printf("=> take plant : TAKEPLANT_FORWARD\n");
+        if(initStat) LOG_STATE("TAKEPLANT_FORWARD");
         deplacementreturn = deplacementLinearPoint(robot,positionToGo,yPos);
         if(deplacementreturn>=1){
             nextState = TAKEPLANT_BACKWARD;
@@ -167,7 +168,7 @@ int takePlant(Asser* robot,Arduino* arduino,int yPos,int xStart, int xEnd, int n
         }
         break;
     case TAKEPLANT_REFORWARD : 
-        if(initStat){ printf("=> take plant : TAKEPLANT_REFORWARD\n");
+        if(initStat){ LOG_STATE("TAKEPLANT_REFORWARD");
             positionToGo += 400;
         }
         deplacementreturn = deplacementLinearPoint(robot,positionToGo,yPos);
@@ -180,7 +181,7 @@ int takePlant(Asser* robot,Arduino* arduino,int yPos,int xStart, int xEnd, int n
         }
         break;
     case TAKEPLANT_BACKWARD :
-        if(initStat){ printf("=> take plant : TAKEPLANT_BACKWARD\n");
+        if(initStat){ LOG_STATE("TAKEPLANT_BACKWARD");
             positionToGo -= 100;
         }
         deplacementreturn = deplacementLinearPoint(robot,positionToGo,yPos);
@@ -192,20 +193,20 @@ int takePlant(Asser* robot,Arduino* arduino,int yPos,int xStart, int xEnd, int n
         }
         break;
     case TAKEPLANT_TAKE :
-        if(initStat) printf("=> take plant : TAKEPLANT_TAKE\n");
+        if(initStat) LOG_STATE("TAKEPLANT_TAKE");
         deplacementreturn = catchPlant(arduino);
         if(deplacementreturn){
             nextState = TAKEPLANT_END;
         }
         break;
     case TAKEPLANT_END :
-        if(initStat) printf("=> take plant : TAKEPLANT_END\n");
+        if(initStat) LOG_STATE("TAKEPLANT_END");
         nextState = TAKEPLANT_INIT;
         ireturn = 1;
         break;
     
     default:
-        if(initStat) printf("=> take plant : TAKEPLANT_INIT\n");
+        if(initStat) LOG_STATE("default");
         nextState = TAKEPLANT_INIT;
         break;
     }
@@ -214,7 +215,6 @@ int takePlant(Asser* robot,Arduino* arduino,int yPos,int xStart, int xEnd, int n
     if(nextState != currentState){
         int x,y,teta;
         robot->getCoords(x,y,teta);
-        printf("[ x : %d, y : %d, teta : %d, ]\n",x,y,teta);
         initStat = true;
     }
     currentState = nextState;

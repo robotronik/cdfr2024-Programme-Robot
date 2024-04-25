@@ -7,6 +7,7 @@
 #include "arduino.hpp"
 #include "deplacement.h"
 #include "arduinoSubFonction.h"
+#include "logger.hpp"
 
 typedef enum {
     SOLARPANNEL
