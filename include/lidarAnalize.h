@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include "config.h"
 #include "math.h"
+#include "logger.hpp"
 
 #define MAP(value, fromLow, fromHigh, toLow, toHigh) ((toLow) + (((value) - (fromLow)) * ((toHigh) - (toLow)) / ((fromHigh) - (fromLow))))
 

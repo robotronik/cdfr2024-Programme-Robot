@@ -72,12 +72,19 @@ bool collideBackward(lidarAnalize_t* data, int count){
 }
 
 int collide(lidarAnalize_t* data, int count ,int distanceStop){
+    int countData = 0;
+    int dataValid = 0;
+    int dataOnTable = 0;
     static int iRetPre = 0;
     int iRet = 12000; //maximum capation distance for lidar
     for(int i = 0; i <count; i++){
-        if(data[i].valid && data[i].onTable){
+        if(data[i].valid){
+            dataValid++;
+            if(data[i].onTable){            
+            dataOnTable++;
             if(distanceStop > 0){
                 if(data[i].angle <45 || data[i].angle>(360-45)){
+                    countData++;
                     if(data[i].dist-distanceStop < iRet){
                         iRet = data[i].dist-distanceStop;
                     }
@@ -85,16 +92,22 @@ int collide(lidarAnalize_t* data, int count ,int distanceStop){
             }
             else{
                 if(data[i].angle<(180+45) && data[i].angle>(180-45)){
+                    countData++;
                     if(data[i].dist+distanceStop < iRet){
                         iRet = data[i].dist+distanceStop;
                     }
                 }
+            }
             }
         }
     }
     if(iRet != 12000){
         iRetPre = iRet;
     }
+    LOG_DEBUG("DATA Final : ",countData);
+    LOG_DEBUG("DATA : ",count);
+    LOG_DEBUG("DATA_valid : ",dataValid);
+    LOG_DEBUG("DATA_onTable : ",dataOnTable);
     return iRetPre;
 }
 

@@ -72,17 +72,24 @@ int main() {
 
         LOG_SCOPE("Main");
         
-        int count = SIZEDATALIDAR;
-        if(getlidarData(lidarData,count)){
-            int x, y, teta;
-            int distance;
-            robot->getCoords(x,y,teta);
-            position_t position = {x,y,teta,0};
-            convertAngularToAxial(lidarData,count,position);
-            //pixelArtPrint(lidarData,count,50,50,100,position);
-            robot->getBrakingDistance(distance);
-            robot->collide = collide(lidarData,count,distance);
-            //printf("distance : %d \t collide : %d\n",distance,robot->collide);
+        while (1){
+       
+            int count = SIZEDATALIDAR;
+            if(getlidarData(lidarData,count)){
+                int x, y, teta;
+                int distance;
+                robot->getCoords(x,y,teta);
+                position_t position = {x,y,teta,0};
+                convertAngularToAxial(lidarData,count,position);
+                //pixelArtPrint(lidarData,count,50,50,100,position);
+                printAngular(lidarData,count);
+                robot->getBrakingDistance(distance);
+                robot->collide = collide(lidarData,count,distance);
+                //printf("distance : %d \t collide : %d\n",distance,robot->collide);
+            }
+            if (ctrl_c_pressed){ 
+                break;
+            }
 
         }
 
