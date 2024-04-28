@@ -38,7 +38,7 @@ int main() {
     LOG_INIT();
 
 
-    if(!lidarSetup("/dev/ttyAMA0",256000)){
+    if(!lidarSetup("/dev/ttyUSB0",256000)){
         return -1;
     }
 
@@ -72,26 +72,29 @@ int main() {
 
         LOG_SCOPE("Main");
         
-        while (1){
-       
-            int count = SIZEDATALIDAR;
-            if(getlidarData(lidarData,count)){
-                int x, y, teta;
-                int distance;
-                robot->getCoords(x,y,teta);
-                position_t position = {x,y,teta,0};
-                convertAngularToAxial(lidarData,count,position);
-                //pixelArtPrint(lidarData,count,50,50,100,position);
-                printAngular(lidarData,count);
-                robot->getBrakingDistance(distance);
-                robot->collide = collide(lidarData,count,distance);
-                //printf("distance : %d \t collide : %d\n",distance,robot->collide);
-            }
-            if (ctrl_c_pressed){ 
-                break;
-            }
-
+       while (1)
+       {
+         int count = SIZEDATALIDAR;
+        if(getlidarData(lidarData,count)){
+            int x, y, teta;
+            int distance;
+            robot->getCoords(x,y,teta);
+            position_t position = {x,y,teta,0};
+            convertAngularToAxial(lidarData,count,position);
+            //pixelArtPrint(lidarData,count,50,50,100,position);
+            //printAngular(lidarData,count);
+            //robot->getBrakingDistance(distance);
+            //robot->collide = collide(lidarData,count,distance);
+            LOG_DEBUG("test");
+            //printf("distance : %d \t collide : %d\n",distance,robot->collide);
         }
+        if (ctrl_c_pressed){ 
+            break;
+        }
+       }
+       
+       
+
 
         switch (currentState) {
             //****************************************************************
@@ -138,6 +141,7 @@ int main() {
                 if(initStat) LOG_STATE("WAITSTART");
                 int bStateCapteur1;
                 arduino->readCapteur(1,bStateCapteur1);
+                LOG_DEBUG("waitStart collide : ",robot->collide);
                 if(bStateCapteur1 == 0 && robot->collide > 500){
                     nextState = START;
                 }

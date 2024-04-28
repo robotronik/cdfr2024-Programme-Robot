@@ -108,6 +108,13 @@ int Asser::getCoords(int &x, int &y, int &theta) {
     resultMSB = buffer[2 * 2 + 1];
     theta = (int16_t) (resultMSB<<8 | resultLSB);
     // printf("teta : %d\n",theta );
+
+    if (bytesRead != 6) {
+        // La lecture n'a pas réussi correctement
+        // Gérer l'erreur ici
+        cout<<"problem\n";
+        return -1; // Ou tout autre code d'erreur que vous préférez
+    }
     
     // Vérification si la lecture a réussi
     if (bytesRead != 6) {
