@@ -75,6 +75,13 @@ int initPositon(Asser* robot,int x, int y,int teta){
 
 
 int turnSolarPannel(Asser* robot,Arduino* arduino){
+    LOG_SCOPE("SolarPanel");
+    static fsmSolarPanel_t currentState = SOLARPANEL_INIT;
+    fsmSolarPanel_t nextState = currentState;
+    static bool initStat = true;
+    int ireturn = 0;
+
+
     static unsigned long startTime;
     static int step = 0;
     static int loop = 0;
@@ -82,9 +89,32 @@ int turnSolarPannel(Asser* robot,Arduino* arduino){
     const int offsetRobotYellow2 = 15;
     const int table[9] = {1225,1000,775,225,0,-225,-775,-1000,-1225};
     const int axeX = 800;
-    int ireturn = 0;
     int returnValDeplacement;
     //const int table[6] = {-50,-275,-400,-900,-1125,-1350};
+
+    switch (currentState)
+    {
+    case SOLARPANEL_INIT :
+        break;
+
+    case SOLARPANEL_FORWARD :
+        break;
+
+    case SOLARPANEL_PUSHFOR :
+        break;
+
+    case SOLARPANEL_BACKWARD :
+        break;
+
+    case SOLARPANEL_PUSHBACK :
+        break;
+
+    case SOLARPANEL_END :
+        break;
+    
+    default:
+        break;
+    }
 
     if(loop<3 && step == 0){
         step = 4;
@@ -95,7 +125,7 @@ int turnSolarPannel(Asser* robot,Arduino* arduino){
         ireturn = returnValDeplacement<0? returnValDeplacement : ireturn;
         if(returnValDeplacement){
             step++; 
-        }  
+        }
     }
     else if(step == 1){
         step++;
@@ -130,10 +160,13 @@ int turnSolarPannel(Asser* robot,Arduino* arduino){
         }
     }
 
-    if(loop == 6){
-        loop = 0;
-        ireturn = 1;
+    initStat = false;
+    if(nextState != currentState){
+        int x,y,teta;
+        robot->getCoords(x,y,teta);
+        initStat = true;
     }
+    currentState = nextState;
     return ireturn;
 
 }
@@ -213,8 +246,6 @@ int takePlant(Asser* robot,Arduino* arduino,int yPos,int xStart, int xEnd, int n
 
     initStat = false;
     if(nextState != currentState){
-        int x,y,teta;
-        robot->getCoords(x,y,teta);
         initStat = true;
     }
     currentState = nextState;

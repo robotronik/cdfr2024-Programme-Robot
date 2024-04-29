@@ -4,9 +4,10 @@
 #include "utils.h"
 #include "config.h"
 #include "arduino.hpp"
+#include "logger.hpp"
 
 #define DISTANCESTOP   500
-#define DISTANCERESTART 750
+#define DISTANCERESTART 600
 
 typedef enum {
     DEPLACEMENT_INIT,

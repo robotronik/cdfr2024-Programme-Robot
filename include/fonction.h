@@ -22,6 +22,15 @@ typedef enum {
     TAKEPLANT_END
 } fsmtakePlant_t;
 
+typedef enum {
+    SOLARPANEL_INIT,
+    SOLARPANEL_FORWARD,
+    SOLARPANEL_PUSHFOR,
+    SOLARPANEL_BACKWARD,
+    SOLARPANEL_PUSHBACK,
+    SOLARPANEL_END
+} fsmSolarPanel_t;
+
 
 int initPositon(Asser* robot,int x, int y,int teta);
 int turnSolarPannel(Asser* robot,Arduino* arduino);

@@ -3,6 +3,7 @@
 
 
 int deplacementLinearPoint(Asser* robot, int x, int y){
+    LOG_SCOPE("MOVE");
     static unsigned long startTime;
     static int memx;
     static int memy;
@@ -16,7 +17,7 @@ int deplacementLinearPoint(Asser* robot, int x, int y){
     switch (step)
     {
     case DEPLACEMENT_INIT:
-        if(initStat) printf("=> DeplacementState : INIT\n");
+        if(initStat) LOG_STATE("DEPLACEMENT_INIT");
         memx = x;
         memy = y;
         if(robot->collide < DISTANCESTOP){
@@ -31,7 +32,7 @@ int deplacementLinearPoint(Asser* robot, int x, int y){
         break;
     
     case DEPLACEMENT_MOVE:
-        if(initStat) printf("=> DeplacementState : MOVE\n");
+        if(initStat) LOG_STATE("DEPLACEMENT_MOVEt");
         if(!robot->getError(LINEAR_ERROR)){
             nextstep = DEPLACEMENT_INIT;
             iret = 1; //GOOD END
@@ -44,7 +45,7 @@ int deplacementLinearPoint(Asser* robot, int x, int y){
         break;
 
     case DEPLACEMENT_STOP:
-        if(initStat) printf("=> DeplacementState : STOP\n");
+        if(initStat) LOG_STATE("DEPLACEMENT_STOP");
         robot->getBrakingDistance(distance);
         if(distance==0){
             startTime = millis() + 5000;
@@ -53,7 +54,7 @@ int deplacementLinearPoint(Asser* robot, int x, int y){
         break;
 
     case DEPLACEMENT_WAIT:
-        if(initStat) printf("=> DeplacementState : WAIT\n");
+        if(initStat) LOG_STATE("DEPLACEMENT_WAIT");
         if(startTime < millis()){
             nextstep = DEPLACEMENT_INIT;
             iret = -1; //BAD END
@@ -66,7 +67,7 @@ int deplacementLinearPoint(Asser* robot, int x, int y){
         break;
     
     default:
-        printf("=> DeplacementState : default\n");
+        LOG_ERROR("DEFAULT");
         nextstep = DEPLACEMENT_INIT;
         break;
     }
