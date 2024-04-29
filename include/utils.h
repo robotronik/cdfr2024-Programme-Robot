@@ -2,10 +2,6 @@
 #define UTILS_H
 #include <time.h>
 
-typedef enum {
-    BLUE,
-    YELLOW
-} colorTeam_t;
 
 inline unsigned long millis() {
     struct timespec ts;

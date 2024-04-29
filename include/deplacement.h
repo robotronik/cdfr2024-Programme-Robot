@@ -5,6 +5,7 @@
 #include "config.h"
 #include "arduino.hpp"
 #include "logger.hpp"
+#include "robot.h"
 
 #define DISTANCESTOP   500
 #define DISTANCERESTART 600
@@ -16,4 +17,4 @@ typedef enum {
     DEPLACEMENT_WAIT
 } deplcement_State_t;
 
-int deplacementLinearPoint(Asser* robot, int x, int y);
+int deplacementLinearPoint(robot mainRobot,Asser* robot, int x, int y);

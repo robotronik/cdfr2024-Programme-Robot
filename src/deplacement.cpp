@@ -2,7 +2,7 @@
 
 
 
-int deplacementLinearPoint(Asser* robot, int x, int y){
+int deplacementLinearPoint(robot mainRobot, Asser* robot, int x, int y){
     LOG_SCOPE("MOVE");
     static unsigned long startTime;
     static int memx;
@@ -20,8 +20,8 @@ int deplacementLinearPoint(Asser* robot, int x, int y){
         if(initStat) LOG_STATE("DEPLACEMENT_INIT");
         memx = x;
         memy = y;
-        if(robot->collide < DISTANCESTOP){
-            printf("distance colide : %d\n",robot->collide);
+        if(mainRobot.robotStatus.collide < DISTANCESTOP){
+            printf("distance colide : %d\n",mainRobot.robotStatus.collide);
             nextstep = DEPLACEMENT_WAIT;
             startTime = millis() + 5000; //TIME waiting
         }
@@ -37,8 +37,8 @@ int deplacementLinearPoint(Asser* robot, int x, int y){
             nextstep = DEPLACEMENT_INIT;
             iret = 1; //GOOD END
         }
-        if(robot->collide < DISTANCESTOP){
-            printf("distance colide : %d\n",robot->collide);
+        if(mainRobot.robotStatus.collide < DISTANCESTOP){
+            printf("distance colide : %d\n",mainRobot.robotStatus.collide);
             nextstep = DEPLACEMENT_STOP;
             robot->stop();
         }
@@ -59,8 +59,8 @@ int deplacementLinearPoint(Asser* robot, int x, int y){
             nextstep = DEPLACEMENT_INIT;
             iret = -1; //BAD END
         }
-        if(robot->collide > DISTANCERESTART){
-            printf("distance colide : %d\n",robot->collide);
+        if(mainRobot.robotStatus.collide > DISTANCERESTART){
+            printf("distance colide : %d\n",mainRobot.robotStatus.collide);
             nextstep = DEPLACEMENT_MOVE;
             robot->linearSetpoint(memx,memy);
         }

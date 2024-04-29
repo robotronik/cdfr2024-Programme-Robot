@@ -8,6 +8,7 @@
 #include "deplacement.h"
 #include "arduinoSubFonction.h"
 #include "logger.hpp"
+#include "robot.h"
 
 typedef enum {
     SOLARPANNEL
@@ -33,10 +34,10 @@ typedef enum {
 
 
 int initPositon(Asser* robot,int x, int y,int teta);
-int turnSolarPannel(Asser* robot,Arduino* arduino);
-int takePlant(Asser* robot,Arduino* arduino,int yPos,int xStart, int xEnd, int numPlante);
+int turnSolarPannel(robot mainRobot,Asser* robot,Arduino* arduino);
+int takePlant(robot mainRobot,Asser* robot,Arduino* arduino,int yPos,int xStart, int xEnd, int numPlante);
 int returnToHome(Asser* robot);
 int pullpush(Arduino* arduino);
-int FSMMatch(Asser* robot,Arduino* arduino);
+int FSMMatch(robot mainRobot,Asser* robot,Arduino* arduino);
 
 #endif // MYFUNCTION_H

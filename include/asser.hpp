@@ -23,9 +23,6 @@ typedef enum{
 
 class Asser : public I2CDevice {
     using I2CDevice::I2CDevice;
-
-    public:
-        int collide;
    
     public:
         Asser(int slave_address);

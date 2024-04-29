@@ -13,6 +13,7 @@
 #include "utils.h"
 #include "arduinoSubFonction.h"
 #include "logger.hpp"
+#include "robot.h"
 
 #define SIZEDATALIDAR 10000
 
@@ -45,15 +46,16 @@ int main() {
     signal(SIGINT, ctrlc);
     signal(SIGTERM, ctrlc);
 
-    Asser *robot = new Asser(I2C_ASSER_ADDR);
-    LOG_SETROBOT(robot);
+    robot mainRobot;
+    Asser *robotI2C = new Asser(I2C_ASSER_ADDR);
+    LOG_SETROBOT(robotI2C);
     lidarAnalize_t lidarData[SIZEDATALIDAR];    
     Arduino *arduino = new Arduino(100);
     main_State_t currentState = INIT;
     main_State_t nextState = INIT;
     unsigned long startTime;
-    bool initStat; 
-    colorTeam_t colorTeam;
+    bool initStat;
+    
 
     // arduino->servoPosition(1,180);
     // arduino->servoPosition(2,0);
@@ -77,13 +79,13 @@ int main() {
         if(getlidarData(lidarData,count)){
             int x, y, teta;
             int distance;
-            robot->getCoords(x,y,teta);
+            robotI2C->getCoords(x,y,teta);
             position_t position = {x,y,teta,0};
             convertAngularToAxial(lidarData,count,position);
             //pixelArtPrint(lidarData,count,50,50,100,position);
             //printAngular(lidarData,count);
-            robot->getBrakingDistance(distance);
-            robot->collide = collide(lidarData,count,distance);
+            robotI2C->getBrakingDistance(distance);
+            mainRobot.robotStatus.collide = collide(lidarData,count,distance);
             //LOG_DEBUG("collide : ", robot->collide);
             //printf("distance : %d \t collide : %d\n",distance,robot->collide);
         }
@@ -104,23 +106,23 @@ int main() {
                 if(initStat){
                     int bStateCapteur2;
                     arduino->readCapteur(2,bStateCapteur2);
-                    colorTeam = bStateCapteur2 ? BLUE : YELLOW;
-                    if(colorTeam == YELLOW){
+                    mainRobot.robotStatus.colorTeam = bStateCapteur2 ? BLUE : YELLOW;
+                    if(mainRobot.robotStatus.colorTeam  == YELLOW){
                         //robot->setCoords(800,1250,-90);
-                        robot->setCoords(-1000,0,0);
+                        robotI2C->setCoords(-1000,0,0);
                         printf("teams : YELLOW\n");
                     }
                     else{
-                        robot->setCoords(830,-1440,-90);
+                        robotI2C->setCoords(830,-1440,-90);
                         printf("teams : BLUE\n");
                     }
-                    robot->enableMotor(true);
+                    robotI2C->enableMotor(true);
                     arduino->servoPosition(1,180);
                     arduino->servoPosition(2,0);
                     arduino->moveStepper(2200,1);
                 }
-                //robot->setCoords(0,1500,-90);   
-                //robot->linearSetpoint(0,1400);
+                //robotI2C->setCoords(0,1500,-90);   
+                //robotI2C->linearSetpoint(0,1400);
                 nextState = SETHOME;
                 break;
             }
@@ -128,7 +130,7 @@ int main() {
             case SETHOME:{
                 if(initStat) LOG_STATE("SETHOME");
                 nextState = WAITSTART;
-                // if(initPositon(robot,800,1250,-90)){
+                // if(initPositon(robotI2C,800,1250,-90)){
                 //     nextState = WAITSTART;
                 // }
                 break;
@@ -137,7 +139,7 @@ int main() {
                 if(initStat) LOG_STATE("WAITSTART");
                 int bStateCapteur1;
                 arduino->readCapteur(1,bStateCapteur1);
-                if(bStateCapteur1 == 0 && robot->collide > 500){
+                if(bStateCapteur1 == 0 && mainRobot.robotStatus.collide > 500){
                     nextState = START;
                 }
                 break;
@@ -151,8 +153,8 @@ int main() {
             //****************************************************************
             case RUN:{
                 if(initStat) LOG_STATE("RUN");
-                bool finish = takePlant(robot, arduino,0,-1000,0,3);
-                //bool finish =  FSMMatch(robot, arduino);
+                bool finish = takePlant(mainRobot,robotI2C, arduino,0,-1000,0,3);
+                //bool finish =  FSMMatch(mainRobot,robotI2C, arduino);
                 if(startTime+80000 < millis() || finish){
                     nextState = FIN;
                 }
@@ -160,7 +162,7 @@ int main() {
             }
             case RETURNHOME:{
                 if(initStat) LOG_STATE("RETURNHOME");
-                bool finish =  returnToHome(robot);
+                bool finish =  returnToHome(robotI2C);
                 if(startTime+90000 < millis() || finish){
                     nextState = FIN;
                 }
@@ -191,7 +193,7 @@ int main() {
         currentState = nextState;
 
 
-        //ctrl_c_pressed |= turnSolarPannel(robot,arduino);
+        //ctrl_c_pressed |= turnSolarPannel(robotI2C,arduino);
 
         if (ctrl_c_pressed){ 
             break;
@@ -201,8 +203,8 @@ int main() {
     arduino->servoPosition(1,180);
     arduino->servoPosition(2,0);
     arduino->moveStepper(0,1);
-    robot->enableMotor(false);
-    robot->stop();
+    robotI2C->enableMotor(false);
+    robotI2C->stop();
     lidarStop();
 
     return 0;
