@@ -2,7 +2,7 @@
 
 
 
-int deplacementLinearPoint(robot mainRobot, Asser* robot, int x, int y){
+int deplacementLinearPoint(robotCDFR mainRobot, Asser* robot, int x, int y){
     LOG_SCOPE("MOVE");
     static unsigned long startTime;
     static int memx;
@@ -32,7 +32,7 @@ int deplacementLinearPoint(robot mainRobot, Asser* robot, int x, int y){
         break;
     
     case DEPLACEMENT_MOVE:
-        if(initStat) LOG_STATE("DEPLACEMENT_MOVEt");
+        if(initStat) LOG_STATE("DEPLACEMENT_MOVE");
         if(!robot->getError(LINEAR_ERROR)){
             nextstep = DEPLACEMENT_INIT;
             iret = 1; //GOOD END

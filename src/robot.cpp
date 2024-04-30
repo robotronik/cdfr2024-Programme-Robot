@@ -1,14 +1,14 @@
 #include "robot.h"
 
-robot::robot(/* args */)
+robotCDFR::robotCDFR(/* args */)
 {
 }
 
-void robot::robotloop(void){
+void robotCDFR::robotCDFRloop(void){
 
 }
 
 
-robot::~robot()
+robotCDFR::~robotCDFR()
 {
 }

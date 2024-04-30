@@ -3,7 +3,7 @@
 #include "robotState.h"
 #include "tableState.hpp"
 
-class robot
+class robotCDFR
 {
 private:
 
@@ -12,9 +12,9 @@ public:
     tableState tableStatus;
     /* data */
 public:
-    robot(/* args */);
-    void robotloop(void);
-    ~robot();
+    robotCDFR(/* args */);
+    void robotCDFRloop(void);
+    ~robotCDFR();
 };
 
 

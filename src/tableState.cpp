@@ -2,7 +2,7 @@
 
 
 tableState::tableState(/* args */){
-    for(int i = 0; i<6;){
+    for(int i = 0; i<6;i++){
         planteStockFull[i] = true;
     }
     

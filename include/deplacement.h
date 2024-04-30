@@ -17,4 +17,4 @@ typedef enum {
     DEPLACEMENT_WAIT
 } deplcement_State_t;
 
-int deplacementLinearPoint(robot mainRobot,Asser* robot, int x, int y);
+int deplacementLinearPoint(robotCDFR mainRobot,Asser* robot, int x, int y);

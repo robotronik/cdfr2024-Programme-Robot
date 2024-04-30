@@ -34,10 +34,10 @@ typedef enum {
 
 
 int initPositon(Asser* robot,int x, int y,int teta);
-int turnSolarPannel(robot mainRobot,Asser* robot,Arduino* arduino);
-int takePlant(robot mainRobot,Asser* robot,Arduino* arduino,int yPos,int xStart, int xEnd, int numPlante);
+int turnSolarPannel(robotCDFR mainRobot,Asser* robot,Arduino* arduino);
+int takePlant(robotCDFR mainRobot,Asser* robot,Arduino* arduino,int yPos,int xStart, int xEnd, int numPlante);
 int returnToHome(Asser* robot);
 int pullpush(Arduino* arduino);
-int FSMMatch(robot mainRobot,Asser* robot,Arduino* arduino);
+int FSMMatch(robotCDFR mainRobot,Asser* robot,Arduino* arduino);
 
 #endif // MYFUNCTION_H

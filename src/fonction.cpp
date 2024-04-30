@@ -74,20 +74,28 @@ int initPositon(Asser* robot,int x, int y,int teta){
 
 
 
-int turnSolarPannel(robot mainRobot, Asser* robot,Arduino* arduino){
+int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
     LOG_SCOPE("SolarPanel");
     static fsmSolarPanel_t currentState = SOLARPANEL_INIT;
     fsmSolarPanel_t nextState = currentState;
     static bool initStat = true;
-    static int solarPanelNuber = 0;
     int ireturn = 0;
     int deplacementreturn;
     const int axeX = 800;
     static int solarPanelNumber;
-    const int offsetRobotYellow1 = 5;
-    const int offsetRobotYellow2 = 15;
+    int offsetRobot1;
+    int offsetRobot2;
     const int table[9] = {1225,1000,775,225,0,-225,-775,-1000,-1225};
 
+    if(mainRobot.robotStatus.colorTeam == YELLOW){
+        offsetRobot1 = 5;
+        offsetRobot2 = 15;
+    }
+    else{
+        offsetRobot1 = -5;
+        offsetRobot2 = -15;
+    }
+    
     switch (currentState)
     {
     case SOLARPANEL_INIT :
@@ -103,7 +111,7 @@ int turnSolarPannel(robot mainRobot, Asser* robot,Arduino* arduino){
 
     case SOLARPANEL_FORWARD :
         if(initStat) LOG_STATE("SOLARPANEL_FORWARD");
-        deplacementreturn = deplacementLinearPoint(mainRobot,robot,axeX,table[solarPanelNumber]-offsetRobotYellow1);
+        deplacementreturn = deplacementLinearPoint(mainRobot,robot,axeX,table[solarPanelNumber]-offsetRobot1);
         if(deplacementreturn>0){
             nextState = SOLARPANEL_PUSHFOR; 
         }
@@ -145,9 +153,13 @@ int turnSolarPannel(robot mainRobot, Asser* robot,Arduino* arduino){
 
     case SOLARPANEL_BACKWARD :
         if(initStat) LOG_STATE("SOLARPANEL_BACKWARD");
-        deplacementreturn = deplacementLinearPoint(mainRobot,robot,axeX,table[solarPanelNumber]-offsetRobotYellow1);
-        if(deplacementreturn<0){
+        deplacementreturn = deplacementLinearPoint(mainRobot,robot,axeX,table[solarPanelNumber]-offsetRobot2);
+        if(deplacementreturn>0){
             nextState = SOLARPANEL_PUSHBACK;
+        }
+        else if(deplacementreturn<0){
+            ireturn = -1;
+            nextState = SOLARPANEL_INIT;
         }
         break;
 
@@ -192,7 +204,7 @@ int turnSolarPannel(robot mainRobot, Asser* robot,Arduino* arduino){
 
 }
 
-int takePlant(robot mainRobot, Asser* robot,Arduino* arduino,int yPos,int xStart, int xEnd, int numPlante){
+int takePlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,int yPos,int xStart, int xEnd, int numPlante){
     LOG_SCOPE("take plant");
     int ireturn = 0;
     const int plantexAxis[6] = {500,300,-300,-500,-300,300};
@@ -297,7 +309,7 @@ int returnToHome(Asser* robot){
     return breturn; 
 }
 
-int FSMMatch(robot mainRobot, Asser* robot,Arduino* arduino){
+int FSMMatch(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
     int  bFinMatch = turnSolarPannel(mainRobot,robot, arduino);
     if(bFinMatch == 1){
         printf("FIN turnSolarPannel\n");

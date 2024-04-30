@@ -1,5 +1,6 @@
 #include "asser.hpp"
 #include <iostream>
+#include "logger.hpp"
 
 using namespace std;
 
@@ -8,18 +9,20 @@ Asser::Asser(int slave_address) :I2CDevice(slave_address) {
 }
 
 int Asser::turnOnLed(int ledN) {
+    LOG_DEBUG("linear n° ",ledN," off");
     uint8_t message = (ledN == 1) ? 10 : 12;
     if (i2c_smbus_write_byte(i2cFile, (char)message)) {
-        cout << "Error: couldn't turn on LED\n";
+        LOG_ERROR("Error: couldn't turn on LED\n");
         return 1;
     }
     return 0;
 }
 
 int Asser::turnOffLed(int ledN) {
+    LOG_DEBUG("linear n° ",ledN," on");
     uint8_t message = (ledN == 1) ? 11 : 13;
     if (i2c_smbus_write_byte(i2cFile, (char)message)) {
-        cout << "Error: couldn't turn off LED\n";
+        LOG_ERROR("Error: couldn't turn off LED\n");
         return 1;
     }
     return 0;
@@ -30,55 +33,71 @@ int Asser::stop() {
 }
 
 int Asser::linearSetpoint(int x, int y) {
+    LOG_DEBUG("linear set point : ",x," ",y);
     printf("set Consigne Lineaire : %d %d\n",x,y);
     int length = 4;  // Nb of bytes to send
     uint8_t message[4];
     int values[] = {x, y};
     generateBytes(values, length, message);
-    i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)31, length, message);
+    if (i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)31, length, message)){
+        LOG_ERROR("Error: couldn't set linear point\n");
+        return 1;
+    }
     return 0;
 }
 
 int Asser::angularSetpoint(int angle, int rotation) {
-    printf("set Consigne Angulaire : %d %s\n",angle,rotation==0?"ROTATION_DIRECT":rotation==1?"ROTATION_TRIGO":"ROTATION_HORRAIRE");
+    LOG_DEBUG("set lookat forward : ",angle," ",rotation);
     int length = 4;  // Nb of bytes to send
     uint8_t message[4];
     int values[] = {angle, rotation};
     generateBytes(values, length, message);
-    i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)32, length, message);
+    if(i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)32, length, message)){
+        LOG_ERROR("Error: couldn't set angular point\n");
+        return 1;
+    }
     return 0;
 }
 
 int Asser::setLookForward(int x, int y, int rotation) {
-    //printf("set Consigne LookAt Forward : %d %s\n",x,y,rotation==0?"ROTATION_DIRECT":rotation==1?"ROTATION_TRIGO":"ROTATION_HORRAIRE");
+    LOG_DEBUG("set lookat forward : ",x," ",y," ",rotation);
     int length = 6;  // Nb of bytes to send
     uint8_t message[6];
     int values[] = {x, y, rotation};
 
     generateBytes(values, length, message);
-    i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)33, length, message);
+    if(i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)33, length, message)){
+        LOG_ERROR("Error: couldn't set lookat forward\n");
+        return 1;
+    }
     return 0;
 }
 
 int Asser::setLookBackward(int x, int y, int rotation) {
-    printf("set Consigne LookAt Backward : %d %s\n",x,y,rotation==0?"ROTATION_DIRECT":rotation==1?"ROTATION_TRIGO":"ROTATION_HORRAIRE");
+    LOG_DEBUG("set lookat backward : ",x," ",y," ",rotation);
     int length = 6;  // Nb of bytes to send
     uint8_t message[6];
     int values[] = {x, y, rotation};
 
     generateBytes(values, length, message);
-    i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)34, length, message);
+    if(i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)34, length, message)){
+        LOG_ERROR("Error: couldn't set lookat backward\n");
+        return 1;
+    }
     return 0;
 }
 
 int Asser::setCoords(int x, int y, int z){
-    printf("Set Coordinates : %d %d %d\n",x,y,z);
+    LOG_DEBUG("Set Coordonates : ",x," ",y," ",z);
     int length = 6; // Nb of bytes to send
     uint8_t message[6];
     int values[] = {x, y, z};
 
     generateBytes(values, length, message);
-    i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t) 21, length, message);
+    if(i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t) 21, length, message)){
+        LOG_ERROR("Error: couldn't set coord\n");
+        return 1;
+    }
     return 0;
 }
 

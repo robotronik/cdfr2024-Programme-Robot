@@ -46,7 +46,10 @@ int main() {
     signal(SIGINT, ctrlc);
     signal(SIGTERM, ctrlc);
 
-    robot mainRobot;
+
+    LOG_DEBUG("test");
+    robotCDFR mainRobot;
+    LOG_DEBUG("test");
     Asser *robotI2C = new Asser(I2C_ASSER_ADDR);
     LOG_SETROBOT(robotI2C);
     lidarAnalize_t lidarData[SIZEDATALIDAR];    
@@ -108,8 +111,8 @@ int main() {
                     arduino->readCapteur(2,bStateCapteur2);
                     mainRobot.robotStatus.colorTeam = bStateCapteur2 ? BLUE : YELLOW;
                     if(mainRobot.robotStatus.colorTeam  == YELLOW){
-                        //robot->setCoords(800,1250,-90);
-                        robotI2C->setCoords(-1000,0,0);
+                        robotI2C->setCoords(800,1250,-90);
+                        //robotI2C->setCoords(-1000,0,0);
                         printf("teams : YELLOW\n");
                     }
                     else{
@@ -129,17 +132,19 @@ int main() {
             //****************************************************************
             case SETHOME:{
                 if(initStat) LOG_STATE("SETHOME");
-                nextState = WAITSTART;
-                // if(initPositon(robotI2C,800,1250,-90)){
-                //     nextState = WAITSTART;
-                // }
+                if(initPositon(robotI2C,800,1250,-90)){
+                    nextState = WAITSTART;
+                }
                 break;
             }            
             case WAITSTART:{
                 if(initStat) LOG_STATE("WAITSTART");
                 int bStateCapteur1;
                 arduino->readCapteur(1,bStateCapteur1);
-                if(bStateCapteur1 == 0 && mainRobot.robotStatus.collide > 500){
+                if(mainRobot.robotStatus.collide <= 500){
+                    LOG_ERROR("Wait start collide : ",mainRobot.robotStatus.collide);
+                }
+                else if(bStateCapteur1 == 0 && mainRobot.robotStatus.collide > 500){
                     nextState = START;
                 }
                 break;
@@ -153,8 +158,8 @@ int main() {
             //****************************************************************
             case RUN:{
                 if(initStat) LOG_STATE("RUN");
-                bool finish = takePlant(mainRobot,robotI2C, arduino,0,-1000,0,3);
-                //bool finish =  FSMMatch(mainRobot,robotI2C, arduino);
+                //bool finish = takePlant(mainRobot,robotI2C, arduino,0,-1000,0,3);
+                bool finish =  FSMMatch(mainRobot,robotI2C, arduino);
                 if(startTime+80000 < millis() || finish){
                     nextState = FIN;
                 }

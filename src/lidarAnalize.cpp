@@ -72,7 +72,6 @@ bool collideBackward(lidarAnalize_t* data, int count){
 }
 
 int collide(lidarAnalize_t* data, int count ,int distanceStop){
-    static int iRetPre = 12000;
     static int PreviousDistanceStop  = 0;
 
     //keep direction
@@ -94,26 +93,23 @@ int collide(lidarAnalize_t* data, int count ,int distanceStop){
             if(distanceStop >= 0){
                 if(data[i].angle <45 || data[i].angle>(360-45)){
                     if(data[i].dist-distanceStop < iRet){
-                        iRet = data[i].dist+distanceStop;
+                        iRet = data[i].dist-distanceStop;
                     }
                 }
             }
             else{
                 if(data[i].angle<(180+45) && data[i].angle>(180-45)){
                     if(data[i].dist+distanceStop < iRet){
-                        iRet = data[i].dist-distanceStop;
+                        iRet = data[i].dist+distanceStop;
                     }
                 }
             }
         }
     }
-    if(iRet!=12000){
-        iRetPre = iRet;
-    }
-    LOG_DEBUG("Distance Stop : ",distanceStop);
-    LOG_DEBUG("iRetPre : ",iRetPre);
+    //LOG_DEBUG("Distance Stop : ",distanceStop);
+    //LOG_DEBUG("iRetPre : ",iRetPre);
     // LOG_DEBUG("Prec : ",iRetPre);
-    return iRetPre;
+    return iRet;
 }
 
 void getTableValid(lidarAnalize_t* data, int count){
