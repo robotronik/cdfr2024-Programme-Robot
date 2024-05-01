@@ -89,11 +89,11 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
 
     if(mainRobot.robotStatus.colorTeam == YELLOW){
         offsetRobot1 = 5;
-        offsetRobot2 = 15;
+        offsetRobot2 = -10;
     }
     else{
         offsetRobot1 = -5;
-        offsetRobot2 = -15;
+        offsetRobot2 = 10;
     }
     
     switch (currentState)
@@ -125,10 +125,7 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
         if(initStat) LOG_STATE("SOLARPANEL_PUSHFOR");
         if(pullpush(arduino)){
             if(mainRobot.robotStatus.colorTeam == YELLOW){
-                if(solarPanelNumber==5){
-                    nextState = SOLARPANEL_END;
-                }
-                else if(solarPanelNumber<3){
+                if(solarPanelNumber<3){
                     solarPanelNumber++;
                     nextState = SOLARPANEL_FORWARD;
                 }
@@ -137,10 +134,7 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
                 }
             }
             else{
-                if(solarPanelNumber==3){
-                    nextState = SOLARPANEL_END;
-                }
-                else if(solarPanelNumber>5){
+                if(solarPanelNumber>5){
                     solarPanelNumber--;
                     nextState = SOLARPANEL_FORWARD;
                 }
@@ -165,12 +159,13 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
 
     case SOLARPANEL_PUSHBACK :
         if(initStat) LOG_STATE("SOLARPANEL_PUSHBACK");
-        if(mainRobot.robotStatus.colorTeam == YELLOW){
-                solarPanelNumber++;
+        if(pullpush(arduino)){
+            if(mainRobot.robotStatus.colorTeam == YELLOW){
                 if(solarPanelNumber==5){
                     nextState = SOLARPANEL_END;
                 }
                 else{
+                    solarPanelNumber++;
                     nextState = SOLARPANEL_FORWARD;
                 }
             }
@@ -183,11 +178,13 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
                     nextState = SOLARPANEL_FORWARD;
                 }
             }
+        }
         break;
 
     case SOLARPANEL_END :
         if(initStat) LOG_STATE("SOLARPANEL_END");
         nextState = SOLARPANEL_INIT;
+        ireturn = 1;
         break;
     
     default:

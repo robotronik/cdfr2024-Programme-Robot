@@ -10,6 +10,9 @@ OBJDIR = obj
 
 SRC = $(wildcard $(SRCDIR)/*.cpp)
 OBJ = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRC))
+DEPENDS := $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.d,$(SRC))
+
+.PHONY: all clean
 
 all: lidarLib $(TARGET)
 	@echo "Compilation terminée. Exécutez './$(TARGET)' pour exécuter le programme."
@@ -17,8 +20,10 @@ all: lidarLib $(TARGET)
 $(TARGET): $(OBJ) | bin
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
+-include $(DEPENDS)
+
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp | $(OBJDIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -MMD -MP -c $< -o $@
 
 $(OBJDIR):
 	mkdir -p $@

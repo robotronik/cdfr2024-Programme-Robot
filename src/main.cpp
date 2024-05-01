@@ -4,6 +4,8 @@
 #include <string.h>
 #include <iostream>
 #include <time.h>
+#include <cstdlib>
+#include <filesystem>
 
 #include "fonction.h"
 #include "lidarAnalize.h"
@@ -35,7 +37,7 @@ void ctrlc(int)
     ctrl_c_pressed = true;
 }
 
-int main() {
+int main(int argc, char *argv[]) {
     LOG_INIT();
 
 
@@ -121,8 +123,8 @@ int main() {
                     }
                     robotI2C->enableMotor(true);
                     arduino->servoPosition(1,180);
-                    arduino->servoPosition(2,0);
-                    arduino->moveStepper(2200,1);
+                    arduino->servoPosition(2,CLAMPSLEEP);
+                    arduino->moveStepper(ELEVATORUP,1);
                 }
                 //robotI2C->setCoords(0,1500,-90);   
                 //robotI2C->linearSetpoint(0,1400);
@@ -150,11 +152,19 @@ int main() {
                 break;
             }
             //****************************************************************      
-            case START:
+            case START:{
                 if(initStat) LOG_STATE("START");
                 startTime = millis();
+                //LAUNCH PYTHON
+                std::string color = mainRobot.robotStatus.colorTeam == YELLOW ? "YELLOW" : "BLUE";
+                std::filesystem::path exe_path = std::filesystem::canonical(std::filesystem::path(argv[0])).parent_path();
+                std::filesystem::path python_script_path = exe_path / "../startPAMI.py";
+                std::string command = "python3 " + python_script_path.string() + " " +  color;
+                std::system(command.c_str());
+                //
                 nextState = RUN;
                 break;
+            }
             //****************************************************************
             case RUN:{
                 if(initStat) LOG_STATE("RUN");
@@ -206,7 +216,7 @@ int main() {
     }
 
     arduino->servoPosition(1,180);
-    arduino->servoPosition(2,0);
+    arduino->servoPosition(2,CLAMPSTOP);
     arduino->moveStepper(0,1);
     robotI2C->enableMotor(false);
     robotI2C->stop();
