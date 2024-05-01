@@ -103,24 +103,27 @@ int main(int argc, char *argv[]) {
             //****************************************************************
             case INIT:
                 if(initStat) LOG_STATE("INIT");
-                nextState = INITIALIZE;
+                int bStateCapteur3;
+                arduino->readCapteur(3,bStateCapteur3);
+                blinkLed(arduino,2,500);
+                if(1 || bStateCapteur3 == 1){
+                    nextState = INITIALIZE;
+                    arduino->ledOff(2);
+                }
                 break;
             //****************************************************************
             case INITIALIZE:{
                 if(initStat) LOG_STATE("INITIALIZE");
                 if(initStat){
-                    int bStateCapteur2;
-                    arduino->readCapteur(2,bStateCapteur2);
-                    mainRobot.robotStatus.colorTeam = bStateCapteur2 ? BLUE : YELLOW;
-                    if(mainRobot.robotStatus.colorTeam  == YELLOW){
-                        robotI2C->setCoords(800,1250,-90);
-                        //robotI2C->setCoords(-1000,0,0);
-                        printf("teams : YELLOW\n");
-                    }
-                    else{
-                        robotI2C->setCoords(830,-1440,-90);
-                        printf("teams : BLUE\n");
-                    }
+                    // if(mainRobot.robotStatus.colorTeam  == YELLOW){
+                    //     robotI2C->setCoords(800,1250,-90);
+                    //     //robotI2C->setCoords(-1000,0,0);
+                    //     printf("teams : YELLOW\n");
+                    // }
+                    // else{
+                    //     robotI2C->setCoords(830,-1440,-90);
+                    //     printf("teams : BLUE\n");
+                    // }
                     robotI2C->enableMotor(true);
                     arduino->enableStepper(1);
                     arduino->servoPosition(1,180);
@@ -129,7 +132,22 @@ int main(int argc, char *argv[]) {
                 }
                 //robotI2C->setCoords(0,1500,-90);   
                 //robotI2C->linearSetpoint(0,1400);
-                nextState = SETHOME;
+                int bStateCapteur2;
+                arduino->readCapteur(2,bStateCapteur2);
+                if(bStateCapteur2 == 1){
+                    mainRobot.robotStatus.colorTeam = YELLOW;
+                    nextState = SETHOME;
+                    robotI2C->setCoords(800,1250,-90);
+                    //robotI2C->setCoords(-1000,0,0);
+                    printf("teams : YELLOW\n");
+                }
+                else if(bStateCapteur2 == 0){
+                    mainRobot.robotStatus.colorTeam = BLUE;
+                    nextState = SETHOME;
+                    robotI2C->setCoords(830,-1440,-90);
+                    printf("teams : BLUE\n");
+                }
+                //IF bStateCapteur2 != 1 && != 2 alors problem
                 break;
             }
             //****************************************************************
@@ -144,11 +162,10 @@ int main(int argc, char *argv[]) {
                 if(initStat) LOG_STATE("WAITSTART");
                 int bStateCapteur1;
                 arduino->readCapteur(1,bStateCapteur1);
-                if(mainRobot.robotStatus.collide <= 500){
-                    LOG_ERROR("Wait start collide : ",mainRobot.robotStatus.collide);
-                }
-                else if(bStateCapteur1 == 0 && mainRobot.robotStatus.collide > 500){
+                blinkLed(arduino,1,500);
+               if(bStateCapteur1 == 0){
                     nextState = START;
+                    arduino->ledOff(1);
                 }
                 break;
             }
@@ -176,6 +193,7 @@ int main(int argc, char *argv[]) {
                 }
                 break;
             }
+            //****************************************************************
             case RETURNHOME:{
                 if(initStat) LOG_STATE("RETURNHOME");
                 bool finish =  returnToHome(robotI2C);
@@ -216,12 +234,15 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    arduino->ledOff(2);
+    arduino->ledOff(1);
     arduino->servoPosition(1,180);
     arduino->servoPosition(2,CLAMPSTOP);
     arduino->moveStepper(0,1);
     robotI2C->enableMotor(false);
     robotI2C->stop();
     lidarStop();
+    sleep(2);
     arduino->disableStepper(1);
 
     return 0;

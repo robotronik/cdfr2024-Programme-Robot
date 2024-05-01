@@ -14,4 +14,6 @@ class Arduino : public I2CDevice {
     int moveStepper(int absPosition, int stepperNb);
     int enableStepper(int stepperNb);
     int disableStepper(int stepperNb);
+    int ledOn(int LedNb);
+    int ledOff(int LedNb);
 };

@@ -39,12 +39,22 @@ int Arduino::readCapteur(int capteurNumber, int &state){
 }
 
 int Arduino::enableStepper(int stepperNb) {
-    i2c_smbus_write_byte(i2cFile, stepperNb + 20);
+    i2c_smbus_write_byte(i2cFile, (stepperNb-1)*2 + 21);
     return 0; 
 }
 
 int Arduino::disableStepper(int stepperNb) {
-    i2c_smbus_write_byte(i2cFile, stepperNb + 20 + 1);
+    i2c_smbus_write_byte(i2cFile,(stepperNb-1)*2 + 22);
+    return 0; 
+}
+
+int Arduino::ledOn(int LedNb) {
+    i2c_smbus_write_byte(i2cFile, (LedNb-1)*2 + 31);
+    return 0; 
+}
+
+int Arduino::ledOff(int LedNb) {
+    i2c_smbus_write_byte(i2cFile, (LedNb-1)*2 + 32);
     return 0; 
 }
 

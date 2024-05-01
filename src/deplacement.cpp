@@ -20,17 +20,40 @@ int deplacementLinearPoint(robotCDFR mainRobot, Asser* robot, int x, int y){
         if(initStat) LOG_STATE("DEPLACEMENT_INIT");
         memx = x;
         memy = y;
-        if(mainRobot.robotStatus.collide < DISTANCESTOP){
-            printf("distance colide : %d\n",mainRobot.robotStatus.collide);
-            nextstep = DEPLACEMENT_WAIT;
-            startTime = millis() + 5000; //TIME waiting
-        }
-        else{
-            nextstep = DEPLACEMENT_MOVE;
-            robot->linearSetpoint(memx,memy);
+
+        // TOFIX in future
+        // Go directly in wait if collide
+        // Actual problem : at the begengin, the collide system not watch the good side
+
+        nextstep = DEPLACEMENT_MOVE;
+        robot->linearSetpoint(memx,memy);
+
+        // if(mainRobot.robotStatus.collide < DISTANCESTOP){
+        //     printf("distance colide : %d\n",mainRobot.robotStatus.collide);
+        //     nextstep = DEPLACEMENT_WAIT;
+        //     startTime = millis() + 5000; //TIME waiting
+        // }
+        // else{
+        //     nextstep = DEPLACEMENT_MOVE;
+        //     robot->linearSetpoint(memx,memy);
+        // }
+        break;
+    case DEPLACEMENT_WAITFIRSTMOVE:
+        if(initStat) LOG_STATE("DEPLACEMENT_WAITFIRSTMOVE");
+        robot->getBrakingDistance(distance);
+        if(distance != 0){
+            if(mainRobot.robotStatus.collide < DISTANCESTOP){
+                printf("distance colide : %d\n",mainRobot.robotStatus.collide);
+                nextstep = DEPLACEMENT_WAIT;
+                startTime = millis() + 5000; //TIME waiting
+            }
+            else{
+                nextstep = DEPLACEMENT_MOVE;
+                robot->linearSetpoint(memx,memy);
+            }
         }
         break;
-    
+        
     case DEPLACEMENT_MOVE:
         if(initStat) LOG_STATE("DEPLACEMENT_MOVE");
         if(!robot->getError(LINEAR_ERROR)){

@@ -19,7 +19,7 @@ int pullpush(Arduino* arduino){
         step = 0;
         bret = true;
     }
-    return bret;    
+    return bret;
 }
 
 int catchPlant(Arduino* arduino){
@@ -85,4 +85,21 @@ int releasePlant(Arduino* arduino){
         bret = true;
     }
     return bret;
+}
+
+void blinkLed(Arduino* arduino,int LedNb,int periode){
+    static unsigned long startTime = millis();
+    static int step = 0;
+
+    if(step == 0 && startTime < millis()){
+        arduino->ledOn(LedNb);
+        step++;
+        startTime = millis()+periode/2;
+    }
+    else if(step == 1 && startTime < millis()){
+        arduino->ledOff(LedNb);
+        step = 0;
+        startTime = millis()+periode/2;
+    }
+    return;
 }
