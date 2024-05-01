@@ -137,8 +137,8 @@ int main(int argc, char *argv[]) {
                 if(bStateCapteur2 == 1){
                     mainRobot.robotStatus.colorTeam = YELLOW;
                     nextState = SETHOME;
-                    robotI2C->setCoords(800,1250,-90);
-                    //robotI2C->setCoords(-1000,0,0);
+                    //robotI2C->setCoords(800,1250,-90);
+                    robotI2C->setCoords(-1000,0,0);
                     printf("teams : YELLOW\n");
                 }
                 else if(bStateCapteur2 == 0){
@@ -152,10 +152,11 @@ int main(int argc, char *argv[]) {
             }
             //****************************************************************
             case SETHOME:{
+                 nextState = WAITSTART;
                 if(initStat) LOG_STATE("SETHOME");
-                if(initPositon(robotI2C,800,1250,-90)){
-                    nextState = WAITSTART;
-                }
+                // if(initPositon(robotI2C,800,1250,-90)){
+                //     nextState = WAITSTART;
+                // }
                 break;
             }            
             case WAITSTART:{
@@ -186,8 +187,8 @@ int main(int argc, char *argv[]) {
             //****************************************************************
             case RUN:{
                 if(initStat) LOG_STATE("RUN");
-                //bool finish = takePlant(mainRobot,robotI2C, arduino,0,-1000,0,3);
-                bool finish =  FSMMatch(mainRobot,robotI2C, arduino);
+                bool finish = takePlant(mainRobot,robotI2C, arduino,0,-750,0,3);
+                //bool finish =  FSMMatch(mainRobot,robotI2C, arduino);
                 if(startTime+80000 < millis() || finish){
                     nextState = FIN;
                 }

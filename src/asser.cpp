@@ -215,3 +215,33 @@ int Asser::enableMotor(bool status) {
     }
     return 0;
 }
+
+int Asser::setLinearMaxSpeed(int maxSpeed) {
+    LOG_DEBUG("set linear max speed : ",maxSpeed);
+    int length = 2;
+    uint8_t message[2];
+    int values[] = {maxSpeed};
+    generateBytes(values, length, message);
+    if(i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)60, length, message)){
+        LOG_ERROR("Error: couldn't set angular point\n");
+    }
+    if(i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)61, length, message)){
+        LOG_ERROR("Error: couldn't set angular point\n");
+    }
+    return 0;
+}
+
+int Asser::setAngularMaxSpeed(int maxSpeed) {
+    LOG_DEBUG("set angular max speed : ",maxSpeed);
+    int length = 2;
+    uint8_t message[2];
+    int values[] = {maxSpeed};
+    generateBytes(values, length, message);
+    if(i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)62, length, message)){
+        LOG_ERROR("Error: couldn't set angular point\n");
+    }
+     if(i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)63, length, message)){
+        LOG_ERROR("Error: couldn't set angular point\n");
+    }
+    return 0;
+}

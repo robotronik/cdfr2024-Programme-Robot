@@ -218,6 +218,7 @@ int takePlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,int yPos,int xS
         if(initStat) LOG_STATE("TAKEPLANT_INIT");
         nextState = TAKEPLANT_FORWARD;
         positionToGo = plantexAxis[numPlante]+300;
+        robot->setLinearMaxSpeed(100);
         break;
     case TAKEPLANT_FORWARD :
         if(initStat) LOG_STATE("TAKEPLANT_FORWARD");
@@ -245,7 +246,7 @@ int takePlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,int yPos,int xS
         break;
     case TAKEPLANT_BACKWARD :
         if(initStat){ LOG_STATE("TAKEPLANT_BACKWARD");
-            positionToGo -= 100;
+            positionToGo -= 125;
         }
         deplacementreturn = deplacementLinearPoint(mainRobot,robot,positionToGo,yPos);
         if(deplacementreturn>=1){
@@ -265,6 +266,7 @@ int takePlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,int yPos,int xS
     case TAKEPLANT_END :
         if(initStat) LOG_STATE("TAKEPLANT_END");
         nextState = TAKEPLANT_INIT;
+        robot->setLinearMaxSpeed(10000);
         ireturn = 1;
         break;
     
