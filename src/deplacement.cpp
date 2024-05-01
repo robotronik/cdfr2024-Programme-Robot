@@ -53,7 +53,7 @@ int deplacementLinearPoint(robotCDFR mainRobot, Asser* robot, int x, int y){
             }
         }
         break;
-        
+
     case DEPLACEMENT_MOVE:
         if(initStat) LOG_STATE("DEPLACEMENT_MOVE");
         if(!robot->getError(LINEAR_ERROR)){
@@ -101,4 +101,65 @@ int deplacementLinearPoint(robotCDFR mainRobot, Asser* robot, int x, int y){
     }
     step = nextstep;
     return iret;
+}
+
+
+
+int deplacementgoToPoint(robotCDFR mainRobot, Asser* robot, int x, int y, int teta, int direction,int rotation){
+    LOG_SCOPE("go to");
+    int ireturn = 0;
+    static bool initStat = true;
+    static go_to_State_t currentState = GOTO_INIT;
+    go_to_State_t nextState = currentState;
+    int deplacementreturn;
+
+
+    switch (currentState)
+    {
+    case GOTO_INIT :
+        if(initStat) LOG_STATE("GOTO_INIT");
+        nextState = GOTO_LOOKAT;
+        break;
+    case GOTO_LOOKAT :
+        if(initStat){ LOG_STATE("GOTO_LOOKAT");
+            robot->setLookForward(x,y,direction);
+        }
+        if(!robot->getError(LINEAR_ERROR)){
+            nextState = GOTO_MOVE;
+        }
+        break;
+    case GOTO_MOVE :
+        if(initStat) LOG_STATE("GOTO_MOVE");
+        deplacementreturn = deplacementLinearPoint(mainRobot,robot,x,y);
+        if(deplacementreturn){
+            nextState = GOTO_TURN;
+        }
+        else{
+            nextState = GOTO_INIT;
+            ireturn = deplacementreturn;
+        }
+        break;
+    case GOTO_TURN :
+        if(initStat){ LOG_STATE("GOTO_TURN");
+            robot->angularSetpoint(teta,rotation);
+        }
+        if(!robot->getError(LINEAR_ERROR)){
+            nextState = GOTO_INIT;
+            ireturn = 1;
+        }
+        break;
+    
+    default:
+        if(initStat) LOG_ERROR("default");
+        nextState = GOTO_INIT;
+        break;
+    }
+
+    initStat = false;
+    if(nextState != currentState){
+        initStat = true;
+    }
+    currentState = nextState;
+    return ireturn;
+
 }

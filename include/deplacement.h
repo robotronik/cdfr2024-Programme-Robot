@@ -18,4 +18,12 @@ typedef enum {
     DEPLACEMENT_WAIT
 } deplcement_State_t;
 
+typedef enum {
+    GOTO_INIT,
+    GOTO_LOOKAT,
+    GOTO_MOVE,
+    GOTO_TURN,
+} go_to_State_t;
+
 int deplacementLinearPoint(robotCDFR mainRobot,Asser* robot, int x, int y);
+int deplacementgoToPoint(robotCDFR mainRobot, Asser* robot, int x, int y, int teta, int direction,int rotation);

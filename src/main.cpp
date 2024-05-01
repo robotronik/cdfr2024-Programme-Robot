@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
                 int bStateCapteur3;
                 arduino->readCapteur(3,bStateCapteur3);
                 blinkLed(arduino,2,500);
-                if(1 || bStateCapteur3 == 1){
+                if(bStateCapteur3 == 1){
                     nextState = INITIALIZE;
                     arduino->ledOff(2);
                 }
@@ -115,20 +115,12 @@ int main(int argc, char *argv[]) {
             case INITIALIZE:{
                 if(initStat) LOG_STATE("INITIALIZE");
                 if(initStat){
-                    // if(mainRobot.robotStatus.colorTeam  == YELLOW){
-                    //     robotI2C->setCoords(800,1250,-90);
-                    //     //robotI2C->setCoords(-1000,0,0);
-                    //     printf("teams : YELLOW\n");
-                    // }
-                    // else{
-                    //     robotI2C->setCoords(830,-1440,-90);
-                    //     printf("teams : BLUE\n");
-                    // }
                     robotI2C->enableMotor(true);
                     arduino->enableStepper(1);
                     arduino->servoPosition(1,180);
                     arduino->servoPosition(2,CLAMPSLEEP);
                     arduino->moveStepper(ELEVATORUP,1);
+                    robotI2C->setLinearMaxSpeed(10000);
                 }
                 //robotI2C->setCoords(0,1500,-90);   
                 //robotI2C->linearSetpoint(0,1400);
@@ -137,8 +129,7 @@ int main(int argc, char *argv[]) {
                 if(bStateCapteur2 == 1){
                     mainRobot.robotStatus.colorTeam = YELLOW;
                     nextState = SETHOME;
-                    //robotI2C->setCoords(800,1250,-90);
-                    robotI2C->setCoords(-1000,0,0);
+                    robotI2C->setCoords(800,1250,-90);
                     printf("teams : YELLOW\n");
                 }
                 else if(bStateCapteur2 == 0){
@@ -152,11 +143,18 @@ int main(int argc, char *argv[]) {
             }
             //****************************************************************
             case SETHOME:{
-                 nextState = WAITSTART;
                 if(initStat) LOG_STATE("SETHOME");
-                // if(initPositon(robotI2C,800,1250,-90)){
-                //     nextState = WAITSTART;
-                // }
+                if(mainRobot.robotStatus.colorTeam == YELLOW){
+                    if(initPositon(robotI2C,800,1250,-90)){
+                        nextState = WAITSTART;
+                    }
+                }
+                else{
+                    if(initPositon(robotI2C,-800,-1250,-90)){
+                        nextState = WAITSTART;
+                    }
+                }
+                
                 break;
             }            
             case WAITSTART:{
@@ -187,8 +185,13 @@ int main(int argc, char *argv[]) {
             //****************************************************************
             case RUN:{
                 if(initStat) LOG_STATE("RUN");
-                bool finish = takePlant(mainRobot,robotI2C, arduino,0,-750,0,3);
-                //bool finish =  FSMMatch(mainRobot,robotI2C, arduino);
+                bool finish;
+                if(mainRobot.robotStatus.colorTeam == YELLOW){
+                    finish =  FSMMatch(mainRobot,robotI2C, arduino);
+                }
+                else{
+                    finish =  TestPinceFSM(mainRobot,robotI2C, arduino);
+                }
                 if(startTime+80000 < millis() || finish){
                     nextState = FIN;
                 }
