@@ -122,6 +122,7 @@ int main(int argc, char *argv[]) {
                         printf("teams : BLUE\n");
                     }
                     robotI2C->enableMotor(true);
+                    arduino->enableStepper(1);
                     arduino->servoPosition(1,180);
                     arduino->servoPosition(2,CLAMPSLEEP);
                     arduino->moveStepper(ELEVATORUP,1);
@@ -221,6 +222,7 @@ int main(int argc, char *argv[]) {
     robotI2C->enableMotor(false);
     robotI2C->stop();
     lidarStop();
+    arduino->disableStepper(1);
 
     return 0;
 }
