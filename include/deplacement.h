@@ -26,4 +26,4 @@ typedef enum {
 } go_to_State_t;
 
 int deplacementLinearPoint(robotCDFR mainRobot,Asser* robot, int x, int y);
-int deplacementgoToPoint(robotCDFR mainRobot, Asser* robot, int x, int y, int teta, int direction,int rotation);
+int deplacementgoToPoint(robotCDFR mainRobot, Asser* robot, int x, int y, int teta, asser_direction_side direction = MOVE_FORWARD,asser_rotation_side rotationLookAt = ROTATION_DIRECT,asser_rotation_side rotation = ROTATION_DIRECT);

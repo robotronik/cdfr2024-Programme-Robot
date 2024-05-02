@@ -10,9 +10,6 @@
 #include "logger.hpp"
 #include "robot.h"
 
-typedef enum {
-    SOLARPANNEL
-} fsmMatch_t;
 
 typedef enum {
     TAKEPLANT_INIT,

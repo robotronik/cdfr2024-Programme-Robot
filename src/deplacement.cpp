@@ -105,7 +105,7 @@ int deplacementLinearPoint(robotCDFR mainRobot, Asser* robot, int x, int y){
 
 
 
-int deplacementgoToPoint(robotCDFR mainRobot, Asser* robot, int x, int y, int teta, int direction,int rotation){
+int deplacementgoToPoint(robotCDFR mainRobot, Asser* robot, int x, int y, int teta, asser_direction_side direction,asser_rotation_side rotationLookAt,asser_rotation_side rotation){
     LOG_SCOPE("go to");
     int ireturn = 0;
     static bool initStat = true;

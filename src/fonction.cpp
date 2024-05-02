@@ -1,6 +1,5 @@
 #include "fonction.h"
 
-fsmMatch_t currentStateMatch = SOLARPANNEL;
 
 // Fonction pour mettre à jour l'état de la FSM en fonction de l'entrée
 int initPositon(Asser* robot,int x, int y,int teta){
