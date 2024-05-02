@@ -121,8 +121,14 @@ int deplacementgoToPoint(robotCDFR mainRobot, Asser* robot, int x, int y, int te
         nextState = GOTO_LOOKAT;
         break;
     case GOTO_LOOKAT :
-        if(initStat){ LOG_STATE("GOTO_LOOKAT");
-            robot->setLookForward(x,y,direction);
+        if(initStat){ 
+            LOG_STATE("GOTO_LOOKAT");
+            if(direction == MOVE_FORWARD){
+                robot->setLookForward(x,y,ROTATION_DIRECT);
+            } 
+            else{
+                robot->setLookBackward(x,y,ROTATION_DIRECT);
+            }
         }
         if(!robot->getError(LINEAR_ERROR)){
             nextState = GOTO_MOVE;

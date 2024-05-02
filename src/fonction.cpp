@@ -354,7 +354,7 @@ int TestPinceFSM(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
     //****************************************************************
     case TESTPINCE_GOPLANT :
         if(initStat) LOG_STATE("TESTPINCE_GOPLANT");
-        deplacementreturn = deplacementgoToPoint(mainRobot,robot,-500,-500,0,MOVE_FORWARD,ROTATION_DIRECT);
+        deplacementreturn = deplacementgoToPoint(mainRobot,robot,-700,-505,0,MOVE_FORWARD,ROTATION_DIRECT);
         if(deplacementreturn>0){
             nextState = TESTPINCE_TAKEPLANT;
         }
@@ -366,10 +366,9 @@ int TestPinceFSM(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
     //****************************************************************        
     case TESTPINCE_TAKEPLANT :
         if(initStat) LOG_STATE("TESTPINCE_TAKEPLANT");
-        deplacementreturn = takePlant(mainRobot,robot,arduino,-500,-500,0,2);
+        deplacementreturn = takePlant(mainRobot,robot,arduino,-505,-700,0,2);
         if(deplacementreturn>0){
             nextState = TESTPINCE_GOCORNE;
-            ireturn = 1; // END HERE FOR TODAY
         }
         else if(deplacementreturn<0){
             return deplacementreturn;
@@ -379,7 +378,7 @@ int TestPinceFSM(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
     //****************************************************************        
     case TESTPINCE_GOCORNE :
         if(initStat) LOG_STATE("TESTPINCE_GOCORNE");
-        deplacementreturn = deplacementgoToPoint(mainRobot,robot,-700,-762,0,MOVE_FORWARD,ROTATION_DIRECT);
+        deplacementreturn = deplacementgoToPoint(mainRobot,robot,-700,-762,180,MOVE_FORWARD,ROTATION_DIRECT);
         if(deplacementreturn>0){
             nextState = TESTPINCE_GOJARDINIER;
         }
@@ -391,7 +390,7 @@ int TestPinceFSM(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
     //****************************************************************
     case TESTPINCE_GOJARDINIER :
         if(initStat) LOG_STATE("TESTPINCE_GOJARDINIER");
-        deplacementreturn = deplacementgoToPoint(mainRobot,robot,-860,-762,0,MOVE_FORWARD,ROTATION_DIRECT);
+        deplacementreturn = deplacementgoToPoint(mainRobot,robot,-870,-762,-180,MOVE_FORWARD,ROTATION_DIRECT);
         if(deplacementreturn>0){
             nextState = TESTPINCE_PLACE;
         }
@@ -404,13 +403,26 @@ int TestPinceFSM(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
     case TESTPINCE_PLACE :
         if(initStat) LOG_STATE("TESTPINCE_PLACE");
         if(releasePlant(arduino)){
+            robot->stop();
             nextState = TESTPINCE_GOBACKWARD;
         }
         break;
     //****************************************************************
     case TESTPINCE_GOBACKWARD :
         if(initStat) LOG_STATE("TESTPINCE_GOBACKWARD");
-        deplacementreturn = deplacementgoToPoint(mainRobot,robot,-800,-1250,-90,MOVE_BACKWARD,ROTATION_DIRECT);
+        deplacementreturn = deplacementgoToPoint(mainRobot,robot,-700,-762,-180,MOVE_BACKWARD,ROTATION_DIRECT);
+        if(deplacementreturn>0){
+            nextState = TESTPINCE_GOHOME;
+        }
+        else if(deplacementreturn<0){
+            return deplacementreturn;
+            nextState = TESTPINCE_INIT;
+        }
+        break;
+    //****************************************************************
+    case TESTPINCE_GOHOME :
+        if(initStat) LOG_STATE("TESTPINCE_GOHOME");
+        deplacementreturn = deplacementgoToPoint(mainRobot,robot,-800,-1250,-90,MOVE_FORWARD,ROTATION_DIRECT);
         if(deplacementreturn>0){
             nextState = TESTPINCE_INIT;
             ireturn = 1;
