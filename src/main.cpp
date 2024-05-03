@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
                 int bStateCapteur3;
                 arduino->readCapteur(3,bStateCapteur3);
                 blinkLed(arduino,2,500);
-                if(bStateCapteur3 == 1){
+                if(1 || bStateCapteur3 == 1){
                     nextState = INITIALIZE;
                     arduino->ledOff(2);
                 }

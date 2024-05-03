@@ -88,7 +88,7 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
 
     if(mainRobot.robotStatus.colorTeam == YELLOW){
         offsetRobot1 = 5;
-        offsetRobot2 = -10;
+        offsetRobot2 = 30;
     }
     else{
         offsetRobot1 = -5;
@@ -124,8 +124,11 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
         if(initStat) LOG_STATE("SOLARPANEL_PUSHFOR");
         if(pullpush(arduino)){
             if(mainRobot.robotStatus.colorTeam == YELLOW){
-                if(solarPanelNumber<3){
-                    solarPanelNumber++;
+                solarPanelNumber++;
+                if(solarPanelNumber==6){
+                    nextState = SOLARPANEL_END;
+                }
+                else if(solarPanelNumber<3){
                     nextState = SOLARPANEL_FORWARD;
                 }
                 else{
@@ -133,8 +136,11 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
                 }
             }
             else{
-                if(solarPanelNumber>5){
-                    solarPanelNumber--;
+                 solarPanelNumber--;
+                if(solarPanelNumber==2){
+                    nextState = SOLARPANEL_END;
+                }
+                else if(solarPanelNumber>5){
                     nextState = SOLARPANEL_FORWARD;
                 }
                 else{
@@ -160,22 +166,10 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
         if(initStat) LOG_STATE("SOLARPANEL_PUSHBACK");
         if(pullpush(arduino)){
             if(mainRobot.robotStatus.colorTeam == YELLOW){
-                if(solarPanelNumber==5){
-                    nextState = SOLARPANEL_END;
-                }
-                else{
-                    solarPanelNumber++;
-                    nextState = SOLARPANEL_FORWARD;
-                }
+                nextState = SOLARPANEL_FORWARD;
             }
             else{
-                solarPanelNumber--;
-                if(solarPanelNumber==3){
-                    nextState = SOLARPANEL_END;
-                }
-                else{
-                    nextState = SOLARPANEL_FORWARD;
-                }
+                nextState = SOLARPANEL_FORWARD;
             }
         }
         break;
