@@ -6,6 +6,7 @@
 #include <time.h>
 #include <cstdlib>
 #include <filesystem>
+#include <pigpio.h>
 
 #include "fonction.h"
 #include "lidarAnalize.h"
@@ -41,9 +42,21 @@ int main(int argc, char *argv[]) {
     LOG_INIT();
 
 
-    if(!lidarSetup("/dev/ttyUSB0",256000)){
+    if(!lidarSetup("/dev/ttyAMA0",256000)){
+        LOG_ERROR("cannot find the lidar");
         return -1;
     }
+
+    if (gpioInitialise() < 0) {
+        LOG_ERROR("cannot initialize lidar gpio speed");
+        return 1;
+    }
+    gpioSetPWMfrequency(18, 25000);
+    gpioSetMode(18, PI_OUTPUT);
+    gpioSetPWMrange(18, 100);
+    gpioPWM(18, 50);//lidar speed
+
+
 
     signal(SIGINT, ctrlc);
     signal(SIGTERM, ctrlc);
@@ -65,7 +78,7 @@ int main(int argc, char *argv[]) {
     // arduino->servoPosition(1,180);
     // arduino->servoPosition(2,0);
     // arduino->moveStepper(2200,1);
-    // while(!ctrl_c_pressed);
+    while(!ctrl_c_pressed);
     // ctrl_c_pressed = false;
     // while(!catchPlant(arduino));
     // while(!ctrl_c_pressed);
@@ -150,7 +163,10 @@ int main(int argc, char *argv[]) {
                     }
                 }
                 else{
-                    if(initPositon(robotI2C,-800,-1250,-90)){
+                    // if(initPositon(robotI2C,-800,-1250,-90)){
+                    //     nextState = WAITSTART;
+                    // }
+                    if(initPositon(robotI2C,800,-1250,-90)){
                         nextState = WAITSTART;
                     }
                 }
@@ -190,7 +206,8 @@ int main(int argc, char *argv[]) {
                     finish =  FSMMatch(mainRobot,robotI2C, arduino);
                 }
                 else{
-                    finish =  TestPinceFSM(mainRobot,robotI2C, arduino);
+                    //finish =  TestPinceFSM(mainRobot,robotI2C, arduino);
+                    finish =  FSMMatch(mainRobot,robotI2C, arduino);
                 }
                 if(startTime+80000 < millis() || finish){
                     nextState = FIN;
@@ -238,6 +255,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    gpioPWM(18, 0);
     arduino->ledOff(2);
     arduino->ledOff(1);
     arduino->servoPosition(1,180);

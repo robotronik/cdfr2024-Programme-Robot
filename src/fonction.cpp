@@ -92,7 +92,7 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
     }
     else{
         offsetRobot1 = -5;
-        offsetRobot2 = 10;
+        offsetRobot2 = -30;
     }
     
     switch (currentState)
