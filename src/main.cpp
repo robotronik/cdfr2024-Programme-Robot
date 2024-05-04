@@ -87,7 +87,7 @@ int main(int argc, char *argv[]) {
     // while(!releasePlant(arduino));
     // while(!ctrl_c_pressed);
 
-    LOG_DEBUG("test");
+    LOG_ERROR("test");
 
     while (1) {
 
@@ -143,13 +143,13 @@ int main(int argc, char *argv[]) {
                     mainRobot.robotStatus.colorTeam = YELLOW;
                     nextState = SETHOME;
                     robotI2C->setCoords(800,1250,-90);
-                    printf("teams : YELLOW\n");
+                    LOG_INFO("teams : YELLOW");
                 }
                 else if(bStateCapteur2 == 0){
                     mainRobot.robotStatus.colorTeam = BLUE;
                     nextState = SETHOME;
                     robotI2C->setCoords(830,-1440,-90);
-                    printf("teams : BLUE\n");
+                    LOG_INFO("teams : BLUE");
                 }
                 //IF bStateCapteur2 != 1 && != 2 alors problem
                 break;

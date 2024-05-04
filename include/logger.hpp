@@ -25,10 +25,10 @@ public:
     static std::string logIndentation(){
         std::ostringstream returnstring;
         if (!functionName_.empty()) {
-            returnstring << " "<< std::setw(10) <<  std::left << functionName_.top();
+            returnstring << "   "<< std::setw(15) <<  std::left << functionName_.top();
         }
         for (size_t i = 1; i < functionName_.size(); ++i) {
-            returnstring << "==";
+            returnstring << "=";
         }
         if (!functionName_.empty()) {
             returnstring << ">";
@@ -59,12 +59,14 @@ public:
     }
 
     void initLog(void){
+        std::cout << "\033[1;31m";
         std::cout << "  _____   ____  ____   ____ _______ _____   ____  _   _ _____ _  __" << std::endl;
         std::cout << " |  __ \\ / __ \\|  _ \\ / __ \\__   __|  __ \\ / __ \\| \\ | |_   _| |/ /" << std::endl;
         std::cout << " | |__) | |  | | |_) | |  | | | |  | |__) | |  | |  \\| | | | | ' / " << std::endl;
         std::cout << " |  _  /| |  | |  _ <| |  | | | |  |  _  /| |  | | . ` | | | |  <  " << std::endl;
         std::cout << " | | \\ \\| |__| | |_) | |__| | | |  | | \\ \\| |__| | |\\  |_| |_| . \\ " << std::endl;
-        std::cout << " |_|  \\_\\\\____/|____/ \\____/  |_|  |_|  \\\\_\\____/|_| \\_|_____|_|\\_\\" << std::endl;                                                                 
+        std::cout << " |_|  \\_\\\\____/|____/ \\____/  |_|  |_|  \\\\_\\____/|_| \\_|_____|_|\\_\\" << std::endl;
+        std::cout << "\033[0m";                                                           
                                                                     
         std::cout << "ROBOTRONIK" << std::endl;
         std::cout << "PROGRAM ROBOT CDFR" << std::endl;
@@ -96,16 +98,18 @@ public:
 
         switch (level) {
             case LogLevel::DEBUG:
-                std::cout << "[DEBUG]" << getPosition() << ScopeLogger::logIndentation() << " " << oss.str() << std::endl;
+                std::cout << "[DEBUG]" << getPosition() << std::setw(25)  <<  std::left << ScopeLogger::logIndentation() << " " << oss.str() << std::endl;
                 break;
             case LogLevel::INFO:
-                std::cout << "[INFO] " << getPosition() << ScopeLogger::logIndentation()  << " " << oss.str() << std::endl;
+                std::cout << "[INFO] " << getPosition() << std::setw(25)  <<  std::left << ScopeLogger::logIndentation()  << " " << oss.str() << std::endl;
                 break;
             case LogLevel::WARNING:
-                std::cout << "[WARNING] " << getPosition() << ScopeLogger::logIndentation()  << " "  << oss.str() << std::endl;
+                std::cout << "[WARNING] " << getPosition() << std::setw(25)  <<  std::left << ScopeLogger::logIndentation()  << " "  << oss.str() << std::endl;
                 break;
             case LogLevel::ERROR:
-                std::cerr << "[ERROR] " << getPosition() << ScopeLogger::logIndentation()  << " "  << oss.str() << std::endl;
+                std::cout << "\033[1;31m";
+                std::cout << "[ERROR] " << getPosition() << std::setw(25)  <<  std::left << ScopeLogger::logIndentation()  << " "  << oss.str() << std::endl;
+                std::cout << "\033[0m";
                 break;
             default:
                 break;
