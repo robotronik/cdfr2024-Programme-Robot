@@ -33,8 +33,7 @@ int Asser::stop() {
 }
 
 int Asser::linearSetpoint(int x, int y) {
-    LOG_DEBUG("linear set point : ",x," ",y);
-    printf("set Consigne Lineaire : %d %d\n",x,y);
+    LOG_INFO("linear set point : ",x," ",y);
     int length = 4;  // Nb of bytes to send
     uint8_t message[4];
     int values[] = {x, y};
@@ -47,7 +46,7 @@ int Asser::linearSetpoint(int x, int y) {
 }
 
 int Asser::angularSetpoint(int angle, int rotation) {
-    LOG_DEBUG("set lookat forward : ",angle," ",rotation);
+    LOG_INFO("set lookat forward : ",angle," ",rotation);
     int length = 4;  // Nb of bytes to send
     uint8_t message[4];
     int values[] = {angle, rotation};
@@ -60,7 +59,7 @@ int Asser::angularSetpoint(int angle, int rotation) {
 }
 
 int Asser::setLookForward(int x, int y, int rotation) {
-    LOG_DEBUG("set lookat forward : ",x," ",y," ",rotation);
+    LOG_INFO("set lookat forward : ",x," ",y," ",rotation);
     int length = 6;  // Nb of bytes to send
     uint8_t message[6];
     int values[] = {x, y, rotation};
@@ -74,7 +73,7 @@ int Asser::setLookForward(int x, int y, int rotation) {
 }
 
 int Asser::setLookBackward(int x, int y, int rotation) {
-    LOG_DEBUG("set lookat backward : ",x," ",y," ",rotation);
+    LOG_INFO("set lookat backward : ",x," ",y," ",rotation);
     int length = 6;  // Nb of bytes to send
     uint8_t message[6];
     int values[] = {x, y, rotation};
@@ -88,7 +87,7 @@ int Asser::setLookBackward(int x, int y, int rotation) {
 }
 
 int Asser::setCoords(int x, int y, int z){
-    LOG_DEBUG("Set Coordonates : ",x," ",y," ",z);
+    LOG_INFO("Set Coordonates : ",x," ",y," ",z);
     int length = 6; // Nb of bytes to send
     uint8_t message[6];
     int values[] = {x, y, z};
@@ -131,7 +130,7 @@ int Asser::getCoords(int &x, int &y, int &theta) {
     if (bytesRead != 6) {
         // La lecture n'a pas réussi correctement
         // Gérer l'erreur ici
-        cout<<"problem\n";
+        LOG_ERROR("could not get coordonate");
         return -1; // Ou tout autre code d'erreur que vous préférez
     }
     
@@ -169,9 +168,8 @@ int Asser::getBrakingDistance(int &distance){
     
     // Vérification si la lecture a réussi
     if (bytesRead != 2) {
-        // La lecture n'a pas réussi correctement
-        // Gérer l'erreur ici
-        return -1; // Ou tout autre code d'erreur que vous préférez
+        LOG_ERROR("get Braking Distance not reply");
+        return -1; 
     }
     
     return 0; // La lecture a réussi

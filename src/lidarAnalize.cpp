@@ -106,8 +106,8 @@ int collide(lidarAnalize_t* data, int count ,int distanceStop){
             }
         }
     }
-    //LOG_DEBUG("Distance Stop : ",distanceStop);
-    //LOG_DEBUG("iRetPre : ",iRetPre);
+    LOG_DEBUG("Distance Stop : ",distanceStop);
+    LOG_DEBUG("Collide : ",iRet);
     // LOG_DEBUG("Prec : ",iRetPre);
     return iRet;
 }

@@ -3,6 +3,7 @@
 
 // Fonction pour mettre à jour l'état de la FSM en fonction de l'entrée
 int initPositon(Asser* robot,int x, int y,int teta){
+    LOG_SCOPE("initPos");
     static unsigned long startTime;
     static int step = -1;
     //printf(" %d\n",robot->getError(LINEAR_ERROR));
@@ -26,46 +27,46 @@ int initPositon(Asser* robot,int x, int y,int teta){
 
     if(step == -1){
         robot->setCoords(0,0,0);
-        printf("-1\n");
+        LOG_STATE("SETP -1 ");
         step++;
         startTime = millis()+1000;
     }
     else if(step == 0 && startTime < millis()){
         robot->linearSetpoint(-150,0);
-        printf("0\n");
+        LOG_STATE("SETP 0 ");
         step++;
         startTime = millis()+2000;
     }
     else if(step == 1 && startTime < millis()){
         robot->setCoords(0,yStart,TetaStart);
         robot->linearSetpoint(0,y);
-        printf("1\n");
+        LOG_STATE("SETP 1 ");
         step++;
     }
     else if(step == 2 && !robot->getError(LINEAR_ERROR)){
         robot->angularSetpoint(TetaSecond,0);
-        printf("2\n");
+        LOG_STATE("SETP 2 ");
         step++;
     }
     else if(step == 3 && !robot->getError(ANGULAR_ERROR)){
         robot->linearSetpoint(xSecond,y);
-        printf("3\n");
+        LOG_STATE("SETP 3 ");
         startTime = millis()+2000;
         step++;
     }
     else if(step == 4 && startTime < millis()){
         robot->setCoords(xStart, y,TetaSecond);
         robot->linearSetpoint(x , y);
-        printf("4\n");
+        LOG_STATE("SETP 4 ");
         step++;
     }
     else if(step == 5 && !robot->getError(LINEAR_ERROR)){
         robot->angularSetpoint(teta,0);
-        printf("5\n");
+        LOG_STATE("SETP 5 ");
         step++;
     }
     else if(step == 6 && !robot->getError(ANGULAR_ERROR)){
-        printf("6\n");
+        LOG_STATE("SETP 6 ");
         step++;
     }
     return step>6;

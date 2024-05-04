@@ -75,10 +75,11 @@ int main(int argc, char *argv[]) {
     bool initStat;
     
 
+    // arduino->enableStepper(1);
     // arduino->servoPosition(1,180);
     // arduino->servoPosition(2,0);
     // arduino->moveStepper(2200,1);
-    while(!ctrl_c_pressed);
+    // while(!ctrl_c_pressed);
     // ctrl_c_pressed = false;
     // while(!catchPlant(arduino));
     // while(!ctrl_c_pressed);
@@ -91,6 +92,7 @@ int main(int argc, char *argv[]) {
     while (1) {
 
         LOG_SCOPE("Main");
+        sleep(0.01);
         
        
         int count = SIZEDATALIDAR;
@@ -135,8 +137,6 @@ int main(int argc, char *argv[]) {
                     arduino->moveStepper(ELEVATORUP,1);
                     robotI2C->setLinearMaxSpeed(10000);
                 }
-                //robotI2C->setCoords(0,1500,-90);   
-                //robotI2C->linearSetpoint(0,1400);
                 int bStateCapteur2;
                 arduino->readCapteur(2,bStateCapteur2);
                 if(bStateCapteur2 == 1){
@@ -163,12 +163,12 @@ int main(int argc, char *argv[]) {
                     }
                 }
                 else{
-                    // if(initPositon(robotI2C,-800,-1250,-90)){
-                    //     nextState = WAITSTART;
-                    // }
-                    if(initPositon(robotI2C,800,-1250,-90)){
+                    if(initPositon(robotI2C,-800,-1250,-90)){
                         nextState = WAITSTART;
                     }
+                    // if(initPositon(robotI2C,800,-1250,-90)){
+                    //     nextState = WAITSTART;
+                    // }
                 }
                 
                 break;
@@ -206,8 +206,8 @@ int main(int argc, char *argv[]) {
                     finish =  FSMMatch(mainRobot,robotI2C, arduino);
                 }
                 else{
-                    //finish =  TestPinceFSM(mainRobot,robotI2C, arduino);
-                    finish =  FSMMatch(mainRobot,robotI2C, arduino);
+                    finish =  TestPinceFSM(mainRobot,robotI2C, arduino);
+                    //finish =  FSMMatch(mainRobot,robotI2C, arduino);
                 }
                 if(startTime+80000 < millis() || finish){
                     nextState = FIN;
@@ -266,6 +266,7 @@ int main(int argc, char *argv[]) {
     lidarStop();
     sleep(2);
     arduino->disableStepper(1);
+    LOG_DEBUG("PROCESS KILL");
 
     return 0;
 }
