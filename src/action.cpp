@@ -1,11 +1,12 @@
 #include "action.hpp"
 
 
-action::action(robotCDFR* imainRobot, Asser* irobot, Arduino* iarduino, tableState* itable){
+action::action(std::string name, robotCDFR* imainRobot, Asser* irobot, Arduino* iarduino, tableState* itable){
     mainRobot = imainRobot;
     robot = irobot;
     arduino = iarduino;
     table = itable;
+    actionName = name;
 
     noEndPoint = true;
     currentState = FSMACTION_INIT;
@@ -89,11 +90,11 @@ int action::runAction(void){
     return ireturn;
 }
 
-int action::validAction(void){
+int action::costAction(void){
     return validActionPtr(table);
 }
 
-void action::setvalidAction(std::function<int(tableState*)> ptr){
+void action::setCostAction(std::function<int(tableState*)> ptr){
     validActionPtr = ptr;
 }
 
@@ -124,4 +125,15 @@ void action::setEndPoint(int x, int y, int teta, asser_direction_side Direction,
     endDirection = Direction;
     endRotation = rotation;
     noEndPoint = false;
+}
+
+std::string action::getName(void){
+    return actionName;
+}
+
+void action::goodEnd(std::function<int(tableState*)> ptr){
+    goodEndPtr = ptr;
+}
+void action::badEnd(std::function<int(tableState*)> ptr){
+    badEndPtr = ptr;
 }

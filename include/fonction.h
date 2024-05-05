@@ -40,12 +40,17 @@ typedef enum {
     TESTPINCE_GOHOME
 } fsmTestPince_t;
 
+typedef enum {
+    PUTPLANT_INIT,
+    PUTPLANT_GOBORDER,
+    PUTPLANT_PLACE,
+} fsmTPutPlant_t;
 
 int initPositon(Asser* robot,int x, int y,int teta);
 int turnSolarPannel(robotCDFR mainRobot,Asser* robot,Arduino* arduino);
 int takePlant(robotCDFR mainRobot,Asser* robot,Arduino* arduino,int yPos,int xStart, int xEnd, int numPlante);
 int returnToHome(Asser* robot);
-int pullpush(Arduino* arduino);
+int jardinierePutPlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,int x,int y,int teta);
 int FSMMatch(robotCDFR mainRobot,Asser* robot,Arduino* arduino);
 int TestPinceFSM(robotCDFR mainRobot, Asser* robot,Arduino* arduino);
 

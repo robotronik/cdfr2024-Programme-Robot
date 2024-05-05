@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <string>
 #include "asser.hpp"
 #include "utils.h"
 #include "config.h"
@@ -37,6 +38,8 @@ private:
 
     std::function<int(action*, robotCDFR*, Asser*, Arduino*, tableState*)> runActionPtr;
     std::function<int(tableState*)> validActionPtr;
+    std::function<int(tableState*)> goodEndPtr;
+    std::function<int(tableState*)> badEndPtr;
 
     position_t startPostion;
     asser_direction_side startDirection;
@@ -50,17 +53,26 @@ private:
     fsmAction_t currentState = FSMACTION_INIT;
     bool initStat = true;
 
-    action* nextAction;
+
+    std::string actionName;
 
 public:
-    action(robotCDFR* imainRobot, Asser* irobot, Arduino* iarduino, tableState* itable);
+    action(std::string name, robotCDFR* imainRobot, Asser* irobot, Arduino* iarduino, tableState* itable);
     int runAction(void);
     void setRunAction(std::function<int(action*, robotCDFR*, Asser*, Arduino*, tableState*)> ptr);
     void setStartPoint(int x, int y, int teta, asser_direction_side Direction, asser_rotation_side rotation);
     void setEndPoint(int x, int y, int teta, asser_direction_side Direction, asser_rotation_side rotation);
-    int validAction(void);
-    void setvalidAction(std::function<int(tableState*)> ptr);
+    int costAction(void);
+    void goodEnd(std::function<int(tableState*)> ptr);
+    void badEnd(std::function<int(tableState*)> ptr);
+    void setCostAction(std::function<int(tableState*)> ptr);
+    std::string getName(void);
     ~action();
+
+    friend std::ostream& operator<<(std::ostream& os, action& obj) {
+        os << obj.getName();
+        return os;
+    }
 
 private:
     int goToStart(void);

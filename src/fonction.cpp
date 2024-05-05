@@ -279,6 +279,74 @@ int takePlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,int yPos,int xS
 
 }
 
+int jardinierePutPlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,int x,int y,int teta){
+    LOG_SCOPE("putPlant");
+    int ireturn = 0;
+    static bool initStat = true;
+    static fsmTPutPlant_t currentState = PUTPLANT_INIT;
+    fsmTPutPlant_t nextState = currentState;
+    int deplacementreturn;
+
+
+    switch (currentState)
+    {
+    //****************************************************************
+    case PUTPLANT_INIT :
+        if(initStat) LOG_STATE("PUTPLANT_INIT");
+        nextState = PUTPLANT_GOBORDER;
+        break;
+    //****************************************************************
+    case PUTPLANT_GOBORDER :
+        if(initStat) LOG_STATE("PUTPLANT_GOBORDER");
+        deplacementreturn = deplacementgoToPoint(mainRobot,robot,x,y,teta,MOVE_FORWARD,ROTATION_DIRECT);
+        if(deplacementreturn>0){
+            robot->stop();
+            nextState = PUTPLANT_PLACE;
+        }
+        else{
+            nextState = PUTPLANT_INIT;
+            return -1;
+        }        
+        break;
+    //****************************************************************
+    case PUTPLANT_PLACE :
+        if(initStat) LOG_STATE("PUTPLANT_PLACE");
+        if(releasePlant(arduino)){
+            robot->stop();
+            nextState = PUTPLANT_INIT;
+            return 1;
+        }
+        break;
+    //****************************************************************    
+    default:
+        if(initStat) LOG_ERROR("default");
+        nextState = PUTPLANT_INIT;
+        break;
+    }
+
+    initStat = false;
+    if(nextState != currentState){
+        initStat = true;
+    }
+    currentState = nextState;
+    return ireturn;
+}
+
+
+
+
+
+
+
+//
+
+
+
+
+
+
+
+
 int returnToHome(Asser* robot){
     static int step = 0;
     bool breturn = false;

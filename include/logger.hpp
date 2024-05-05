@@ -6,7 +6,7 @@
 #include <asser.hpp>
 #include <stack>
 
-enum class LogLevel { DEBUG, INFO, WARNING, ERROR };
+enum class LogLevel { DEBUG, INFO, WARNING, ERROR, GREENINFO};
 
 
 class ScopeLogger {
@@ -111,6 +111,12 @@ public:
                 std::cout << "[ERROR] " << getPosition() << std::setw(25)  <<  std::left << ScopeLogger::logIndentation()  << " "  << oss.str() << std::endl;
                 std::cout << "\033[0m";
                 break;
+            case LogLevel::GREENINFO:
+                std::cout << "\033[32m";
+                std::cout << "[INFO] " << getPosition() << std::setw(25)  <<  std::left << ScopeLogger::logIndentation()  << " "  << oss.str() << std::endl;
+                std::cout << "\033[0m";
+                break;
+
             default:
                 break;
         }
@@ -135,6 +141,7 @@ private:
 // Macros for easier logging
 #define LOG_DEBUG(message, ...) Logger::getInstance().log(LogLevel::DEBUG, message, ##__VA_ARGS__)
 #define LOG_INFO(message, ...) Logger::getInstance().log(LogLevel::INFO, message, ##__VA_ARGS__)
+#define LOG_GREEN_INFO(message, ...) Logger::getInstance().log(LogLevel::GREENINFO, message, ##__VA_ARGS__)
 #define LOG_WARNING(message, ...) Logger::getInstance().log(LogLevel::WARNING, message, ##__VA_ARGS__)
 #define LOG_ERROR(message, ...) Logger::getInstance().log(LogLevel::ERROR, message, ##__VA_ARGS__)
 #define LOG_INIT() Logger::getInstance().initLog()

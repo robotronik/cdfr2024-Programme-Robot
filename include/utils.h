@@ -3,6 +3,7 @@
 #include <time.h>
 
 typedef enum {
+    NONE,
     BLUE,
     YELLOW
 } colorTeam_t;
