@@ -11,6 +11,7 @@ action::action(std::string name, robotCDFR* imainRobot, Asser* irobot, Arduino* 
     noEndPoint = true;
     currentState = FSMACTION_INIT;
     initStat = true;
+    actionEnable = true;
 }
 
 action::~action(){
@@ -38,7 +39,11 @@ int action::runAction(void){
         }
         else if(deplacementreturn<0){
             nextState = FSMACTION_INIT;
-            return -1;
+            actionEnable = false;
+            if(badEndPtr){
+                badEndPtr(table);
+            }
+            ireturn = -1;
         }
         break;
 
@@ -49,15 +54,22 @@ int action::runAction(void){
         if(deplacementreturn>0){
             if(noEndPoint){
                 nextState = FSMACTION_INIT;
-                return 1;
+                ireturn = 1;
             }
             else{
                 nextState = FSMACTION_MOVEEND;
             }
+            if(goodEndPtr){
+                goodEndPtr(table);
+            }
         }
         else if(deplacementreturn<0){
             nextState = FSMACTION_INIT;
-            return -1;
+            actionEnable = false;
+            if(badEndPtr){
+                badEndPtr(table);
+            }
+            ireturn = -1;
         }
         break;
 
@@ -67,11 +79,15 @@ int action::runAction(void){
         deplacementreturn = goToEnd();
         if(deplacementreturn>0){
             nextState = FSMACTION_INIT;
-            return 1;
+            ireturn = 1;
         }
         else if(deplacementreturn<0){
             nextState = FSMACTION_INIT;
-            return -1;
+            actionEnable = false;
+            if(badEndPtr){
+                badEndPtr(table);
+            }
+            ireturn = -1;
         }
         break;
         
@@ -91,7 +107,11 @@ int action::runAction(void){
 }
 
 int action::costAction(void){
-    return validActionPtr(table);
+    int cost = validActionPtr(table);
+    if(actionEnable == false){
+        cost = -1;
+    }
+    return cost;
 }
 
 void action::setCostAction(std::function<int(tableState*)> ptr){
@@ -131,9 +151,13 @@ std::string action::getName(void){
     return actionName;
 }
 
-void action::goodEnd(std::function<int(tableState*)> ptr){
+void action::goodEnd(std::function<void(tableState*)> ptr){
     goodEndPtr = ptr;
 }
-void action::badEnd(std::function<int(tableState*)> ptr){
+void action::badEnd(std::function<void(tableState*)> ptr){
     badEndPtr = ptr;
+}
+
+void action::resetActionEnable(void){
+    actionEnable = true;
 }

@@ -48,7 +48,7 @@ typedef enum {
 
 int initPositon(Asser* robot,int x, int y,int teta);
 int turnSolarPannel(robotCDFR mainRobot,Asser* robot,Arduino* arduino);
-int takePlant(robotCDFR mainRobot,Asser* robot,Arduino* arduino,int yPos,int xStart, int xEnd, int numPlante);
+int takePlant(robotCDFR mainRobot,Asser* robot,Arduino* arduino,tableState*itable,int yPos,int xStart, int xEnd, int numPlante);
 int returnToHome(Asser* robot);
 int jardinierePutPlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,int x,int y,int teta);
 int FSMMatch(robotCDFR mainRobot,Asser* robot,Arduino* arduino);

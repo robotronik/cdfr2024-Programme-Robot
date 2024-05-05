@@ -66,9 +66,7 @@ int main(int argc, char *argv[]) {
     signal(SIGTERM, ctrlc);
 
 
-    LOG_DEBUG("test");
     robotCDFR mainRobot;
-    LOG_DEBUG("test");
     Asser *robotI2C = new Asser(I2C_ASSER_ADDR);
     LOG_SETROBOT(robotI2C);
     lidarAnalize_t lidarData[SIZEDATALIDAR];    
@@ -93,7 +91,6 @@ int main(int argc, char *argv[]) {
     // while(!releasePlant(arduino));
     // while(!ctrl_c_pressed);
 
-    LOG_ERROR("test");
 
     while (1) {
 
@@ -216,7 +213,11 @@ int main(int argc, char *argv[]) {
                     //finish =  TestPinceFSM(mainRobot,robotI2C, arduino);
                     //finish =  FSMMatch(mainRobot,robotI2C, arduino);
                 }
-                if(startTime+80000 < millis() || finish){
+                if(startTime+90000 < millis()){
+                    LOG_GREEN_INFO("END BY TIMER");
+                    nextState = FIN;
+                }
+                if(finish){
                     nextState = FIN;
                 }
                 break;

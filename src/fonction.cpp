@@ -195,10 +195,9 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
 
 }
 
-int takePlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,int yPos,int xStart, int xEnd, int numPlante){
+int takePlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,tableState*itable,int yPos,int xStart, int xEnd, int numPlante){
     LOG_SCOPE("take plant");
     int ireturn = 0;
-    const int plantexAxis[6] = {500,300,-300,-500,-300,300};
     static bool initStat = true;
     static fsmtakePlant_t currentState = TAKEPLANT_INIT;
     fsmtakePlant_t nextState = currentState;
@@ -211,7 +210,7 @@ int takePlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,int yPos,int xS
     case TAKEPLANT_INIT :
         if(initStat) LOG_STATE("TAKEPLANT_INIT");
         nextState = TAKEPLANT_FORWARD;
-        positionToGo = plantexAxis[numPlante]+300;
+        positionToGo = itable->plantPosition[numPlante].x+300;
         robot->setLinearMaxSpeed(100);
         break;
     case TAKEPLANT_FORWARD :
@@ -428,7 +427,7 @@ int TestPinceFSM(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
     //****************************************************************        
     case TESTPINCE_TAKEPLANT :
         if(initStat) LOG_STATE("TESTPINCE_TAKEPLANT");
-        deplacementreturn = takePlant(mainRobot,robot,arduino,-505,-700,0,2);
+        //deplacementreturn = takePlant(mainRobot,robot,arduino,-505,-700,0,2);
         if(deplacementreturn>0){
             nextState = TESTPINCE_GOCORNE;
         }
