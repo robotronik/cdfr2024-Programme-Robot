@@ -299,13 +299,13 @@ int jardinierePutPlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,int x,
     case PUTPLANT_GOBORDER :
         if(initStat) LOG_STATE("PUTPLANT_GOBORDER");
         deplacementreturn = deplacementgoToPoint(mainRobot,robot,x,y,teta,MOVE_FORWARD,ROTATION_DIRECT);
-        if(deplacementreturn>0){
+        if(deplacementreturn > 0){
             robot->stop();
             nextState = PUTPLANT_PLACE;
         }
-        else{
+        else if(deplacementreturn < 0){
             nextState = PUTPLANT_INIT;
-            return -1;
+            ireturn = -1;
         }        
         break;
     //****************************************************************
@@ -314,7 +314,7 @@ int jardinierePutPlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,int x,
         if(releasePlant(arduino)){
             robot->stop();
             nextState = PUTPLANT_INIT;
-            return 1;
+            ireturn = 1;
         }
         break;
     //****************************************************************    

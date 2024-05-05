@@ -1,5 +1,5 @@
 #include "actionContainer.hpp"
-
+#include "logger.hpp"
 
 actionContainer::actionContainer(robotCDFR* imainRobot, Asser* irobot, Arduino* iarduino, tableState* itable){
     
@@ -79,10 +79,12 @@ actionContainer::~actionContainer(){
 int actionContainer::choosNextAction(void){
     int bestCost = -1;
     for (action* elem : listeAction) {
-        if(elem->costAction()>bestCost){
+        int cost = elem->costAction();
+        if(cost>bestCost){
+            bestCost = cost;
             currentAction = elem;
         }
     }
-    LOG_GREEN_INFO("CHOOSE : ",currentAction->getName());
+    if(bestCost!=-1)LOG_GREEN_INFO("CHOOSE : ",currentAction->getName());
     return bestCost;
 }
