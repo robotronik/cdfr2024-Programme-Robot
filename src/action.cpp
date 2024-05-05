@@ -6,6 +6,10 @@ action::action(robotCDFR* imainRobot, Asser* irobot, Arduino* iarduino, tableSta
     robot = irobot;
     arduino = iarduino;
     table = itable;
+
+    noEndPoint = true;
+    currentState = FSMACTION_INIT;
+    initStat = true;
 }
 
 action::~action(){

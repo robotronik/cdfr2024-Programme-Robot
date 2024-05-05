@@ -19,6 +19,7 @@
 #include "robot.h"
 #include "actionContainer.hpp"
 
+//#define DISABLE_LIDAR
 #define SIZEDATALIDAR 10000
 
 typedef enum {
@@ -48,6 +49,7 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
+#ifndef DISABLE_LIDAR
     if (gpioInitialise() < 0) {
         LOG_ERROR("cannot initialize lidar gpio speed");
         return 1;
@@ -56,6 +58,7 @@ int main(int argc, char *argv[]) {
     gpioSetMode(18, PI_OUTPUT);
     gpioSetPWMrange(18, 100);
     gpioPWM(18, 50);//lidar speed
+#endif
 
 
 
