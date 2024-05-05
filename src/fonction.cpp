@@ -87,7 +87,7 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
     int offsetRobot2;
     const int table[9] = {1225,1000,775,225,0,-225,-775,-1000,-1225};
 
-    if(mainRobot.robotStatus.colorTeam == YELLOW){
+    if(mainRobot.tableStatus.colorTeam == YELLOW){
         offsetRobot1 = 5;
         offsetRobot2 = 30;
     }
@@ -101,7 +101,7 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
     case SOLARPANEL_INIT :
         if(initStat) LOG_STATE("SOLARPANEL_INIT");
         nextState = SOLARPANEL_FORWARD;
-        if(mainRobot.robotStatus.colorTeam == YELLOW){
+        if(mainRobot.tableStatus.colorTeam == YELLOW){
             solarPanelNumber = 0;
         }
         else{
@@ -124,7 +124,7 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
     case SOLARPANEL_PUSHFOR :
         if(initStat) LOG_STATE("SOLARPANEL_PUSHFOR");
         if(pullpush(arduino)){
-            if(mainRobot.robotStatus.colorTeam == YELLOW){
+            if(mainRobot.tableStatus.colorTeam == YELLOW){
                 solarPanelNumber++;
                 if(solarPanelNumber==6){
                     nextState = SOLARPANEL_END;
@@ -166,7 +166,7 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
     case SOLARPANEL_PUSHBACK :
         if(initStat) LOG_STATE("SOLARPANEL_PUSHBACK");
         if(pullpush(arduino)){
-            if(mainRobot.robotStatus.colorTeam == YELLOW){
+            if(mainRobot.tableStatus.colorTeam == YELLOW){
                 nextState = SOLARPANEL_FORWARD;
             }
             else{
