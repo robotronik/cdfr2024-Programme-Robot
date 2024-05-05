@@ -4,10 +4,12 @@
 #Libraries
 import socket    #https://wiki.python.org/moin/UdpCommunication
 import sys
+import time
 #Parameters
 localPort=8888
 bufferSize=1024
-
+match_time=90
+remotePort=9999
 #Objects
 sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)  ## Internet,UDP
 # function init 
@@ -16,23 +18,24 @@ def init():
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1) #enable broadcasting mode
     sock.bind(('', localPort))
     print("UDP server : {}:{}".format(get_ip_address(),localPort))
-    start_time=sys.argv[1]
-    team=sys.argv[2]
+    start_time=int(time.time()+match_time)+1
+    team=sys.argv[1]
+    print("Start time will be : {} and team will be : {}".format(start_time,team))
     return start_time,team
 # function main 
 def main():
     start_time,team=init()
     while True:
-        data, addr = sock.recvfrom(1024) # get data
+        #data, addr = sock.recvfrom(1024) # get data
         #print("received message: {} from {}\n".format(data,addr))
-        
-        sock.sendto(str(start_time)+":"+str(team),addr)  # write data
+        byte=bytes(str(start_time)+":"+str(team),'utf-8')
+        sock.sendto(byte,('192.168.8.255',remotePort))  # write data
   
 
 # function get_ip_address 
 def get_ip_address():
     """get host ip address"""
-    ip_address = '';
+    ip_address = ''
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(("8.8.8.8",80))
     ip_address = s.getsockname()[0]
