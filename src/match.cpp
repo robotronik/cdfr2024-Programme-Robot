@@ -13,16 +13,50 @@ int mainMatch(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
     {
     case MATCH_INIT :
         if(initStat) LOG_STATE("MATCH_INIT");
+        nextState = MATCH_PLANT;
         break;
 
     case MATCH_PLANT :
         if(initStat) LOG_STATE("MATCH_PLANT");
         break;
 
+    case MATCH_GOSOLARPANEL :
+        if(initStat) LOG_STATE("MATCH_GOSOLARPANEL");
+        if(mainRobot.robotStatus.colorTeam == YELLOW){
+            deplacementreturn = deplacementgoToPoint(mainRobot, robot,800,1250,-90,MOVE_FORWARD);
+        }
+        else{
+            deplacementreturn = deplacementgoToPoint(mainRobot, robot,800,-1250,-90,MOVE_BACKWARD);
+        }
+        if(deplacementreturn<0){
+            nextState = MATCH_INTISOLARPANEL;
+        }
+        else if(deplacementreturn>0){
+            nextState = MATCH_END;
+        }
+        break;
+
+    case MATCH_INTISOLARPANEL :
+        if(initStat) LOG_STATE("MATCH_INTISOLARPANEL");
+        if(mainRobot.robotStatus.colorTeam == YELLOW){
+            if(initPositon(robot,800,1250,-90)){
+                nextState = MATCH_SOLARPANEL;
+            }
+        }
+        else{
+            if(initPositon(robot,800,-1250,-90)){
+                nextState = MATCH_SOLARPANEL;
+            }
+        }
+        break;
 
     case MATCH_SOLARPANEL :
         if(initStat) LOG_STATE("MATCH_SOLARPANEL");
+        if(turnSolarPannel(mainRobot,robot, arduino)){
+            nextState = MATCH_GOHOME1;
+        }
         break;
+
 
     case MATCH_GOHOME1 :
         if(initStat) LOG_STATE("MATCH_GOHOME1");
@@ -35,7 +69,7 @@ int mainMatch(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
         if(deplacementreturn<0){
             nextState = MATCH_GOHOME2;
         }
-        else{
+        else if(deplacementreturn>0){
             nextState = MATCH_END;
         }
         break;
@@ -43,14 +77,16 @@ int mainMatch(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
     case MATCH_GOHOME2 :
         if(initStat) LOG_STATE("MATCH_GOHOME2");
         if(mainRobot.robotStatus.colorTeam == YELLOW){
-            //deplacementreturn = deplacementgoToPoint(mainRobot, robot,800,1250,-90,MOVE_FORWARD);
+            deplacementreturn = deplacementgoToPoint(mainRobot, robot,800,1250,-90,MOVE_FORWARD);
         }
         else{
-            //deplacementreturn = deplacementgoToPoint(mainRobot, robot,800,-1250,-90,MOVE_BACKWARD);
+            deplacementreturn = deplacementgoToPoint(mainRobot, robot,800,-1250,-90,MOVE_BACKWARD);
         }
-        if(deplacementreturn != 0){
+
+        if(deplacementreturn){
             nextState = MATCH_END;
         }
+
         break;
 
     case MATCH_END :

@@ -17,6 +17,7 @@
 #include "arduinoSubFonction.h"
 #include "logger.hpp"
 #include "robot.h"
+#include "actionContainer.hpp"
 
 #define SIZEDATALIDAR 10000
 
@@ -73,6 +74,8 @@ int main(int argc, char *argv[]) {
     main_State_t nextState = INIT;
     unsigned long startTime;
     bool initStat;
+    tableState* table = new tableState();
+    actionContainer* actionSystem = new actionContainer(&mainRobot, robotI2C, arduino, table);
     
 
     // arduino->enableStepper(1);
@@ -206,7 +209,8 @@ int main(int argc, char *argv[]) {
                     finish =  FSMMatch(mainRobot,robotI2C, arduino);
                 }
                 else{
-                    finish =  TestPinceFSM(mainRobot,robotI2C, arduino);
+                    finish = actionSystem->actionContainerRun();
+                    //finish =  TestPinceFSM(mainRobot,robotI2C, arduino);
                     //finish =  FSMMatch(mainRobot,robotI2C, arduino);
                 }
                 if(startTime+80000 < millis() || finish){

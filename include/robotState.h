@@ -1,10 +1,7 @@
 #pragma once 
 
+#include "utils.h"
 
-typedef enum {
-    BLUE,
-    YELLOW
-} colorTeam_t;
 
 class robotState
 {

@@ -1,0 +1,68 @@
+#pragma once
+
+#include <functional>
+#include "asser.hpp"
+#include "utils.h"
+#include "config.h"
+#include "arduino.hpp"
+#include "deplacement.h"
+#include "arduinoSubFonction.h"
+#include "logger.hpp"
+#include "robot.h"
+#include "tableState.hpp"
+
+class action;
+
+typedef int (*FuncRunPtr)(action*, robotCDFR*, Asser*, Arduino*, tableState*);
+typedef int (*FuncValidPtr)(tableState*);
+
+
+class action
+{
+private: 
+
+
+    typedef enum{
+        FSMACTION_INIT,
+        FSMACTION_MOVESTART,
+        FSMACTION_ACTION,
+        FSMACTION_MOVEEND
+    }fsmAction_t;
+
+private:
+    robotCDFR* mainRobot;
+    Asser* robot;
+    Arduino* arduino;
+    tableState* table;
+
+    std::function<int(action*, robotCDFR*, Asser*, Arduino*, tableState*)> runActionPtr;
+    std::function<int(tableState*)> validActionPtr;
+
+    position_t startPostion;
+    asser_direction_side startDirection;
+    asser_rotation_side startRotation;
+
+    bool noEndPoint = true;
+    position_t endPostion;
+    asser_direction_side endDirection;
+    asser_rotation_side endRotation;
+
+    fsmAction_t currentState = FSMACTION_INIT;
+    bool initStat = true;
+
+    action* nextAction;
+
+public:
+    action(robotCDFR* imainRobot, Asser* irobot, Arduino* iarduino, tableState* itable);
+    int runAction(void);
+    void setRunAction(std::function<int(action*, robotCDFR*, Asser*, Arduino*, tableState*)> ptr);
+    void setStartPoint(int x, int y, int teta, asser_direction_side Direction, asser_rotation_side rotation);
+    void setEndPoint(int x, int y, int teta, asser_direction_side Direction, asser_rotation_side rotation);
+    int validAction(void);
+    void setvalidAction(std::function<int(tableState*)> ptr);
+    ~action();
+
+private:
+    int goToStart(void);
+    int goToEnd(void);
+};
