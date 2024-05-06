@@ -24,6 +24,8 @@ private:
     action* putInJardiniere4;
     action* putInJardiniere5;
 
+    action* turnSolarPanelAction;
+
     action* currentAction;
     std::vector<action*> listeAction;
 

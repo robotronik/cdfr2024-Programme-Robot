@@ -17,6 +17,8 @@ actionContainer::actionContainer(robotCDFR* imainRobot, Asser* irobot, Arduino* 
     putInJardiniere4 = new action("putInJardiniere4",imainRobot,irobot,iarduino,itable);
     putInJardiniere5 = new action("putInJardiniere5",imainRobot,irobot,iarduino,itable);
 
+    turnSolarPanelAction = new action("turnSolarPanelAction",imainRobot,irobot,iarduino,itable);
+
 }
 void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* iarduino, tableState* itable){
 // ACTION
@@ -204,6 +206,19 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
         return !itable->JardiniereFull[5] && itable->robotHavePlante && itable->colorTeam == BLUE ? 78 : -1;
     });
     listeAction.push_back(putInJardiniere5);
+
+    turnSolarPanelAction->setStartPoint(800,(itable->colorTeam == YELLOW ? 1250 : -1250),-90, MOVE_FORWARD, ROTATION_DIRECT);
+    turnSolarPanelAction->setRunAction([](action* iaction, robotCDFR* iRobot, Asser* iAsser, Arduino* iarduino, tableState*itable) {
+        return turnSolarPannel(*iRobot, iAsser, iarduino);
+    });
+    turnSolarPanelAction->goodEnd([](tableState*itable){
+        
+    });
+    turnSolarPanelAction->setCostAction([](tableState*itable){
+        return 200;
+    });
+    listeAction.push_back(turnSolarPanelAction);
+
 
 
     //Choose first action

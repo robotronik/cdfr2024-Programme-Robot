@@ -32,7 +32,7 @@ int initPositon(Asser* robot,int x, int y,int teta){
         startTime = millis()+1000;
     }
     else if(step == 0 && startTime < millis()){
-        robot->linearSetpoint(-150,0);
+        robot->linearSetpoint(-250,0);
         LOG_STATE("SETP 0 ");
         step++;
         startTime = millis()+2000;
@@ -69,7 +69,10 @@ int initPositon(Asser* robot,int x, int y,int teta){
         LOG_STATE("SETP 6 ");
         step++;
     }
-    return step>6;
+    if(step>6){
+        step = -1;
+    }
+    return step == -1;
 }
 
 
@@ -92,15 +95,15 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
         offsetRobot2 = 30;
     }
     else{
-        offsetRobot1 = -5;
-        offsetRobot2 = -30;
+        offsetRobot1 = -80;
+        offsetRobot2 = -105;
     }
     
     switch (currentState)
     {
     case SOLARPANEL_INIT :
         if(initStat) LOG_STATE("SOLARPANEL_INIT");
-        nextState = SOLARPANEL_FORWARD;
+        nextState = SOLARPANEL_SETHOME;
         if(mainRobot.tableStatus.colorTeam == YELLOW){
             solarPanelNumber = 0;
         }
@@ -108,6 +111,21 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
             solarPanelNumber = 8;
         }
         break;
+
+    case SOLARPANEL_SETHOME :
+        if(initStat) LOG_STATE("SOLARPANEL_SETHOME");
+        if(mainRobot.tableStatus.colorTeam == YELLOW){
+            if(initPositon(robot,800,1250,-90)){
+                nextState = SOLARPANEL_FORWARD;
+            }
+        }
+        else{
+            if(initPositon(robot,800,-1250,-90)){
+                nextState = SOLARPANEL_FORWARD;
+            }
+        }
+        break;
+
 
     case SOLARPANEL_FORWARD :
         if(initStat) LOG_STATE("SOLARPANEL_FORWARD");
@@ -222,6 +240,7 @@ int takePlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,tableState*itab
         else if(deplacementreturn<=-1){
             nextState = TAKEPLANT_INIT;
             ireturn = -1;
+            robot->setLinearMaxSpeed(10000);
         }
         break;
     case TAKEPLANT_REFORWARD : 
@@ -235,6 +254,7 @@ int takePlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,tableState*itab
         else if(deplacementreturn<=-1){
             nextState = TAKEPLANT_INIT;
             ireturn = -1;
+            robot->setLinearMaxSpeed(10000);
         }
         break;
     case TAKEPLANT_BACKWARD :

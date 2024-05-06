@@ -46,4 +46,5 @@ def get_ip_address():
 
 
 if __name__ == '__main__':
-    main()
+    print("ok")
+    #main()
