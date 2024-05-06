@@ -4,6 +4,9 @@
 #include "fonction.h"
 #include <vector>
 
+
+#define MARGESTOCKPLANT 300
+
 class actionContainer
 {
 private:
@@ -26,6 +29,7 @@ private:
 
 public:
     actionContainer(robotCDFR* imainRobot, Asser* irobot, Arduino* iarduino, tableState* itable);
+    void initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* iarduino, tableState* itable);
     int actionContainerRun(void);
     void resetAllAction(void);
     ~actionContainer();

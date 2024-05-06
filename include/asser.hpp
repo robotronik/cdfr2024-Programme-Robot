@@ -13,8 +13,11 @@ typedef enum {
 } status_finished;
 
 typedef enum{
-    ANGULAR_ERROR = 0,
-    LINEAR_ERROR = 1 
+    MOVING_ERROR = 0,
+    RUNNING_ERROR = 1,
+    TURNING_ERROR = 2,
+    LINEAR_ERROR = 3,
+    ANGULAR_ERROR = 4
 } asser_error_type;
 
 typedef enum {

@@ -51,7 +51,7 @@ int Asser::linearSetpoint(int x, int y) {
 }
 
 int Asser::angularSetpoint(int angle, int rotation) {
-    LOG_INFO("set lookat forward : ",angle," ",rotation);
+    LOG_INFO("set angular point : ",angle," ",rotation);
     int length = 4;  // Nb of bytes to send
     uint8_t message[4];
     int values[] = {angle, rotation};
@@ -180,7 +180,7 @@ int Asser::getError(asser_error_type error_type, int &error){
     uint8_t resultMSB, resultLSB;
     resultLSB = buffer[2 * 0];
     resultMSB = buffer[2 * 0 + 1];
-    error = resultMSB<<8 | resultLSB;
+    error = (int16_t)(resultMSB<<8 | resultLSB);
 
     if (bytesRead != 2) {
         LOG_ERROR("couldn't get error");
@@ -212,10 +212,10 @@ int Asser::setLinearMaxSpeed(int maxSpeed) {
     int values[] = {maxSpeed};
     generateBytes(values, length, message);
     if(i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)60, length, message)){
-        LOG_ERROR("couldn't set angular point\n");
+        LOG_ERROR("couldn't set linear max speed\n");
     }
     if(i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)61, length, message)){
-        LOG_ERROR("couldn't set angular point\n");
+        LOG_ERROR("couldn't set lienar max speed\n");
     }
     return 0;
 }
@@ -227,10 +227,10 @@ int Asser::setAngularMaxSpeed(int maxSpeed) {
     int values[] = {maxSpeed};
     generateBytes(values, length, message);
     if(i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)62, length, message)){
-        LOG_ERROR("couldn't set angular point\n");
+        LOG_ERROR("couldn't set angular max speed\n");
     }
      if(i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)63, length, message)){
-        LOG_ERROR("couldn't set angular point\n");
+        LOG_ERROR("couldn't set angular max speed\n");
     }
     return 0;
 }

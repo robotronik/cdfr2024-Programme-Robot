@@ -6,7 +6,7 @@ int initPositon(Asser* robot,int x, int y,int teta){
     LOG_SCOPE("initPos");
     static unsigned long startTime;
     static int step = -1;
-    //printf(" %d\n",robot->getError(LINEAR_ERROR));
+    //printf(" %d\n",robot->getError(RUNNING_ERROR));
 
     int TetaStart = 90;
     int TetaSecond = -180;
@@ -43,12 +43,12 @@ int initPositon(Asser* robot,int x, int y,int teta){
         LOG_STATE("SETP 1 ");
         step++;
     }
-    else if(step == 2 && !robot->getError(LINEAR_ERROR)){
+    else if(step == 2 && !robot->getError(RUNNING_ERROR)){
         robot->angularSetpoint(TetaSecond,0);
         LOG_STATE("SETP 2 ");
         step++;
     }
-    else if(step == 3 && !robot->getError(ANGULAR_ERROR)){
+    else if(step == 3 && !robot->getError(TURNING_ERROR)){
         robot->linearSetpoint(xSecond,y);
         LOG_STATE("SETP 3 ");
         startTime = millis()+2000;
@@ -60,12 +60,12 @@ int initPositon(Asser* robot,int x, int y,int teta){
         LOG_STATE("SETP 4 ");
         step++;
     }
-    else if(step == 5 && !robot->getError(LINEAR_ERROR)){
+    else if(step == 5 && !robot->getError(RUNNING_ERROR)){
         robot->angularSetpoint(teta,0);
         LOG_STATE("SETP 5 ");
         step++;
     }
-    else if(step == 6 && !robot->getError(ANGULAR_ERROR)){
+    else if(step == 6 && !robot->getError(TURNING_ERROR)){
         LOG_STATE("SETP 6 ");
         step++;
     }
@@ -353,12 +353,12 @@ int returnToHome(Asser* robot){
         robot->setLookForward(0,-1300,0);
         step++;   
     }
-    else if(step == 1 && !robot->getError(ANGULAR_ERROR)){
+    else if(step == 1 && !robot->getError(TURNING_ERROR)){
         robot->linearSetpoint(0,-1300);
         step++;
     }
     else if(step == 2){
-        if(!robot->getError(LINEAR_ERROR)){
+        if(!robot->getError(RUNNING_ERROR)){
             step++;
         }        
     }

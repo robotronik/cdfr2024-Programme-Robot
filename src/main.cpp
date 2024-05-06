@@ -75,8 +75,7 @@ int main(int argc, char *argv[]) {
     main_State_t nextState = INIT;
     unsigned long startTime;
     bool initStat;
-    tableState* table = new tableState();
-    actionContainer* actionSystem = new actionContainer(&mainRobot, robotI2C, arduino, table);
+    actionContainer* actionSystem = new actionContainer(&mainRobot, robotI2C, arduino, &(mainRobot.tableStatus));
     
 
     // arduino->enableStepper(1);
@@ -154,6 +153,7 @@ int main(int argc, char *argv[]) {
                     robotI2C->setCoords(830,-1440,-90);
                     LOG_INFO("teams : BLUE");
                 }
+                actionSystem->initAction(&mainRobot, robotI2C, arduino, &(mainRobot.tableStatus));
                 //IF bStateCapteur2 != 1 && != 2 alors problem
                 break;
             }
