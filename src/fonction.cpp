@@ -6,11 +6,10 @@ int initPositon(Asser* robot,int x, int y,int teta){
     LOG_SCOPE("initPos");
     static unsigned long startTime;
     static int step = -1;
-    //printf(" %d\n",robot->getError(RUNNING_ERROR));
 
     int TetaStart = 90;
     int TetaSecond = -180;
-    int xSecond = 200;
+    int xSecond = 300;
     int xStart = 1000 - ROBOT_Y_OFFSET;
     int yStart = 1500 - ROBOT_Y_OFFSET;
     if(y<0){
@@ -29,13 +28,14 @@ int initPositon(Asser* robot,int x, int y,int teta){
         robot->setCoords(0,0,0);
         LOG_STATE("SETP -1 ");
         step++;
-        startTime = millis()+1000;
+        robot->setLinearMaxSpeed(200);
+        startTime = millis()+100;
     }
     else if(step == 0 && startTime < millis()){
-        robot->linearSetpoint(-250,0);
+        robot->linearSetpoint(-400,0);
         LOG_STATE("SETP 0 ");
         step++;
-        startTime = millis()+2000;
+        startTime = millis()+3000;
     }
     else if(step == 1 && startTime < millis()){
         robot->setCoords(0,yStart,TetaStart);
@@ -43,15 +43,15 @@ int initPositon(Asser* robot,int x, int y,int teta){
         LOG_STATE("SETP 1 ");
         step++;
     }
-    else if(step == 2 && !robot->getError(RUNNING_ERROR)){
+    else if(step == 2 && !robot->getError(LINEAR_ERROR)){
         robot->angularSetpoint(TetaSecond,0);
         LOG_STATE("SETP 2 ");
         step++;
     }
-    else if(step == 3 && !robot->getError(TURNING_ERROR)){
+    else if(step == 3 && !robot->getError(ANGULAR_ERROR)){
         robot->linearSetpoint(xSecond,y);
         LOG_STATE("SETP 3 ");
-        startTime = millis()+2000;
+        startTime = millis()+3000;
         step++;
     }
     else if(step == 4 && startTime < millis()){
@@ -60,17 +60,18 @@ int initPositon(Asser* robot,int x, int y,int teta){
         LOG_STATE("SETP 4 ");
         step++;
     }
-    else if(step == 5 && !robot->getError(RUNNING_ERROR)){
+    else if(step == 5 && !robot->getError(LINEAR_ERROR)){
         robot->angularSetpoint(teta,0);
         LOG_STATE("SETP 5 ");
         step++;
     }
-    else if(step == 6 && !robot->getError(TURNING_ERROR)){
+    else if(step == 6 && !robot->getError(ANGULAR_ERROR)){
         LOG_STATE("SETP 6 ");
         step++;
     }
     if(step>6){
         step = -1;
+        robot->setLinearMaxSpeed(10000);
     }
     return step == -1;
 }
@@ -114,6 +115,7 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
 
     case SOLARPANEL_SETHOME :
         if(initStat) LOG_STATE("SOLARPANEL_SETHOME");
+        LOG_DEBUG("colorteam ",mainRobot.tableStatus.colorTeam == YELLOW?"YELLOW":"BLUE");
         if(mainRobot.tableStatus.colorTeam == YELLOW){
             if(initPositon(robot,800,1250,-90)){
                 nextState = SOLARPANEL_FORWARD;
@@ -143,6 +145,7 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
         if(initStat) LOG_STATE("SOLARPANEL_PUSHFOR");
         if(pullpush(arduino)){
             if(mainRobot.tableStatus.colorTeam == YELLOW){
+                mainRobot.tableStatus.panneauSolaireRotate[solarPanelNumber] = YELLOW;
                 solarPanelNumber++;
                 if(solarPanelNumber==6){
                     nextState = SOLARPANEL_END;
@@ -155,7 +158,8 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
                 }
             }
             else{
-                 solarPanelNumber--;
+                mainRobot.tableStatus.panneauSolaireRotate[solarPanelNumber] = BLUE;
+                solarPanelNumber--;
                 if(solarPanelNumber==2){
                     nextState = SOLARPANEL_END;
                 }
@@ -228,8 +232,8 @@ int takePlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,tableState*itab
     case TAKEPLANT_INIT :
         if(initStat) LOG_STATE("TAKEPLANT_INIT");
         nextState = TAKEPLANT_FORWARD;
-        positionToGo = itable->plantPosition[numPlante].x+300;
-        robot->setLinearMaxSpeed(100);
+        positionToGo = itable->plantPosition[numPlante].x+20;
+        robot->setLinearMaxSpeed(200);
         break;
     case TAKEPLANT_FORWARD :
         if(initStat) LOG_STATE("TAKEPLANT_FORWARD");
@@ -353,7 +357,14 @@ int jardinierePutPlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,int x,
 
 
 
-
+bool allJardiniereFull(tableState* itable){
+    if(itable->colorTeam == YELLOW){
+        return itable->JardiniereFull[0] && itable->JardiniereFull[3] && itable->JardiniereFull[4];
+    }
+    else{
+        return itable->JardiniereFull[1] && itable->JardiniereFull[2] && itable->JardiniereFull[5];
+    }
+}
 
 
 
@@ -373,12 +384,12 @@ int returnToHome(Asser* robot){
         robot->setLookForward(0,-1300,0);
         step++;   
     }
-    else if(step == 1 && !robot->getError(TURNING_ERROR)){
+    else if(step == 1 && !robot->getError(ANGULAR_ERROR)){
         robot->linearSetpoint(0,-1300);
         step++;
     }
     else if(step == 2){
-        if(!robot->getError(RUNNING_ERROR)){
+        if(!robot->getError(LINEAR_ERROR)){
             step++;
         }        
     }

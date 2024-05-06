@@ -6,6 +6,7 @@
 
 
 #define MARGESTOCKPLANT 300
+#define MARGEJADINIERE 400
 
 class actionContainer
 {

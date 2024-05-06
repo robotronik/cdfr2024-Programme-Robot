@@ -73,7 +73,6 @@ int main(int argc, char *argv[]) {
     Arduino *arduino = new Arduino(100);
     main_State_t currentState = INIT;
     main_State_t nextState = INIT;
-    unsigned long startTime;
     bool initStat;
     actionContainer* actionSystem = new actionContainer(&mainRobot, robotI2C, arduino, &(mainRobot.tableStatus));
     
@@ -153,7 +152,6 @@ int main(int argc, char *argv[]) {
                     robotI2C->setCoords(830,-1440,-90);
                     LOG_INFO("teams : BLUE");
                 }
-                actionSystem->initAction(&mainRobot, robotI2C, arduino, &(mainRobot.tableStatus));
                 //IF bStateCapteur2 != 1 && != 2 alors problem
                 break;
             }
@@ -161,7 +159,7 @@ int main(int argc, char *argv[]) {
             case SETHOME:{
                 if(initStat) LOG_STATE("SETHOME");
                 if(mainRobot.tableStatus.colorTeam == YELLOW){
-                    if(initPositon(robotI2C,800,1250,-90)){
+                    if(initPositon(robotI2C,-800,1250,90)){
                         nextState = WAITSTART;
                     }
                 }
@@ -190,7 +188,8 @@ int main(int argc, char *argv[]) {
             //****************************************************************      
             case START:{
                 if(initStat) LOG_STATE("START");
-                startTime = millis();
+                mainRobot.tableStatus.startTime = millis();
+                actionSystem->initAction(&mainRobot, robotI2C, arduino, &(mainRobot.tableStatus));
                 //LAUNCH PYTHON
                 std::string color = mainRobot.tableStatus.colorTeam == YELLOW ? "YELLOW" : "BLUE";
                 std::filesystem::path exe_path = std::filesystem::canonical(std::filesystem::path(argv[0])).parent_path();
@@ -206,14 +205,15 @@ int main(int argc, char *argv[]) {
                 if(initStat) LOG_STATE("RUN");
                 bool finish;
                 if(mainRobot.tableStatus.colorTeam == YELLOW){
-                    finish =  FSMMatch(mainRobot,robotI2C, arduino);
+                    finish = actionSystem->actionContainerRun();
+                    //finish =  FSMMatch(mainRobot,robotI2C, arduino);
                 }
                 else{
                     finish = actionSystem->actionContainerRun();
                     //finish =  TestPinceFSM(mainRobot,robotI2C, arduino);
                     //finish =  FSMMatch(mainRobot,robotI2C, arduino);
                 }
-                if(startTime+90000 < millis()){
+                if(mainRobot.tableStatus.startTime+90000 < millis()){
                     LOG_GREEN_INFO("END BY TIMER");
                     nextState = FIN;
                 }
@@ -226,7 +226,7 @@ int main(int argc, char *argv[]) {
             case RETURNHOME:{
                 if(initStat) LOG_STATE("RETURNHOME");
                 bool finish =  returnToHome(robotI2C);
-                if(startTime+90000 < millis() || finish){
+                if(mainRobot.tableStatus.startTime+90000 < millis() || finish){
                     nextState = FIN;
                 }
                 break;

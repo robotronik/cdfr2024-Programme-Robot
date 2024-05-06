@@ -38,7 +38,7 @@ int catchPlant(Arduino* arduino){
     else if(step == 1 && startTime < millis()){
         arduino->moveStepper(ELEVATORPLANT,1);
         step++;
-        startTime = millis()+DELAYUPDOWN;
+        startTime = millis()+700;
     }
     else if(step == 2 && startTime < millis()){
         arduino->servoPosition(2,CLAMPCLOSE);
@@ -48,7 +48,7 @@ int catchPlant(Arduino* arduino){
     else if(step == 3 && startTime < millis()){
         arduino->moveStepper(ELEVATORUP,1);
         step++;
-        startTime = millis()+DELAYUPDOWN;
+        startTime = millis()+50;
     }
     else if(step == 4 && startTime < millis()){
         step = 0;
@@ -65,7 +65,7 @@ int releasePlant(Arduino* arduino){
         LOG_INFO("release plant");
         arduino->moveStepper(ELEVATORPLANT,1);
         step++;
-        startTime = millis()+DELAYUPDOWN;
+        startTime = millis()+700;
     }
     else if(step == 1 && startTime < millis()){
         arduino->servoPosition(2,CLAMPOPEN);
@@ -75,7 +75,7 @@ int releasePlant(Arduino* arduino){
     else if(step == 2 && startTime < millis()){
         arduino->moveStepper(ELEVATORUP,1);
         step++;
-        startTime = millis()+DELAYUPDOWN;
+        startTime = millis()+700;
     }
     else if(step == 3 && startTime < millis()){
         arduino->servoPosition(2,CLAMPSLEEP);

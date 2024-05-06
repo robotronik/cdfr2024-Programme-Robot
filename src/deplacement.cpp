@@ -56,7 +56,7 @@ int deplacementLinearPoint(robotCDFR mainRobot, Asser* robot, int x, int y){
 
     case DEPLACEMENT_MOVE:
         if(initStat) LOG_STATE("DEPLACEMENT_MOVE");
-        if(!robot->getError(RUNNING_ERROR)){
+        if(!robot->getError(LINEAR_ERROR)){
             nextstep = DEPLACEMENT_INIT;
             iret = 1; //GOOD END
         }
@@ -112,8 +112,6 @@ int deplacementgoToPoint(robotCDFR mainRobot, Asser* robot, int x, int y, int te
     static go_to_State_t currentState = GOTO_INIT;
     go_to_State_t nextState = currentState;
     int deplacementreturn;
-    int iVal;
-    static long unsigned int startTime = millis();
 
 
     switch (currentState)
@@ -132,8 +130,7 @@ int deplacementgoToPoint(robotCDFR mainRobot, Asser* robot, int x, int y, int te
                 robot->setLookBackward(x,y,ROTATION_DIRECT);
             }
         }
-        iVal = robot->getError(ANGULAR_ERROR);
-        if(iVal==0){
+        if(robot->getError(ANGULAR_ERROR)==0){
             nextState = GOTO_MOVE;
         }
         break;
@@ -152,7 +149,7 @@ int deplacementgoToPoint(robotCDFR mainRobot, Asser* robot, int x, int y, int te
         if(initStat){ LOG_STATE("GOTO_TURN");
             robot->angularSetpoint(teta,rotation);
         }
-        if(!robot->getError(TURNING_ERROR)){
+        if(!robot->getError(ANGULAR_ERROR)){
             nextState = GOTO_INIT;
             ireturn = 1;
         }

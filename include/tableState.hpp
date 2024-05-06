@@ -14,6 +14,8 @@ public:
     colorTeam_t panneauSolaireRotate[9];
     bool robotHavePlante;
     colorTeam_t colorTeam;
+    bool solarPanelTurn = false;
+    unsigned long startTime;
 
     //Poistion
     const cartesian_position_t plantPosition[6] =
