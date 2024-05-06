@@ -66,9 +66,7 @@ int main(int argc, char *argv[]) {
     signal(SIGTERM, ctrlc);
 
 
-    LOG_DEBUG("test");
     robotCDFR mainRobot;
-    LOG_DEBUG("test");
     Asser *robotI2C = new Asser(I2C_ASSER_ADDR);
     LOG_SETROBOT(robotI2C);
     lidarAnalize_t lidarData[SIZEDATALIDAR];    
@@ -93,7 +91,6 @@ int main(int argc, char *argv[]) {
     // while(!releasePlant(arduino));
     // while(!ctrl_c_pressed);
 
-    LOG_ERROR("test");
 
     while (1) {
 
@@ -111,7 +108,7 @@ int main(int argc, char *argv[]) {
             //pixelArtPrint(lidarData,count,50,50,100,position);
             //printAngular(lidarData,count);
             robotI2C->getBrakingDistance(distance);
-            mainRobot.robotStatus.collide = collide(lidarData,count,distance);
+            mainRobot.collide = collide(lidarData,count,distance);
             //LOG_DEBUG("collide : ", robot->collide);
             //printf("distance : %d \t collide : %d\n",distance,robot->collide);
         }
@@ -146,13 +143,13 @@ int main(int argc, char *argv[]) {
                 int bStateCapteur2;
                 arduino->readCapteur(2,bStateCapteur2);
                 if(bStateCapteur2 == 1){
-                    mainRobot.robotStatus.colorTeam = YELLOW;
+                    mainRobot.tableStatus.colorTeam = YELLOW;
                     nextState = SETHOME;
                     robotI2C->setCoords(800,1250,-90);
                     LOG_INFO("teams : YELLOW");
                 }
                 else if(bStateCapteur2 == 0){
-                    mainRobot.robotStatus.colorTeam = BLUE;
+                    mainRobot.tableStatus.colorTeam = BLUE;
                     nextState = SETHOME;
                     robotI2C->setCoords(830,-1440,-90);
                     LOG_INFO("teams : BLUE");
@@ -163,7 +160,7 @@ int main(int argc, char *argv[]) {
             //****************************************************************
             case SETHOME:{
                 if(initStat) LOG_STATE("SETHOME");
-                if(mainRobot.robotStatus.colorTeam == YELLOW){
+                if(mainRobot.tableStatus.colorTeam == YELLOW){
                     if(initPositon(robotI2C,800,1250,-90)){
                         nextState = WAITSTART;
                     }
@@ -195,7 +192,7 @@ int main(int argc, char *argv[]) {
                 if(initStat) LOG_STATE("START");
                 startTime = millis();
                 //LAUNCH PYTHON
-                std::string color = mainRobot.robotStatus.colorTeam == YELLOW ? "YELLOW" : "BLUE";
+                std::string color = mainRobot.tableStatus.colorTeam == YELLOW ? "YELLOW" : "BLUE";
                 std::filesystem::path exe_path = std::filesystem::canonical(std::filesystem::path(argv[0])).parent_path();
                 std::filesystem::path python_script_path = exe_path / "../startPAMI.py";
                 std::string command = "python3 " + python_script_path.string() + " " +  color;
@@ -208,7 +205,7 @@ int main(int argc, char *argv[]) {
             case RUN:{
                 if(initStat) LOG_STATE("RUN");
                 bool finish;
-                if(mainRobot.robotStatus.colorTeam == YELLOW){
+                if(mainRobot.tableStatus.colorTeam == YELLOW){
                     finish =  FSMMatch(mainRobot,robotI2C, arduino);
                 }
                 else{
@@ -216,7 +213,11 @@ int main(int argc, char *argv[]) {
                     //finish =  TestPinceFSM(mainRobot,robotI2C, arduino);
                     //finish =  FSMMatch(mainRobot,robotI2C, arduino);
                 }
-                if(startTime+80000 < millis() || finish){
+                if(startTime+90000 < millis()){
+                    LOG_GREEN_INFO("END BY TIMER");
+                    nextState = FIN;
+                }
+                if(finish){
                     nextState = FIN;
                 }
                 break;

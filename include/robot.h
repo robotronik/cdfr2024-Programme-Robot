@@ -1,6 +1,5 @@
 #pragma once
 
-#include "robotState.h"
 #include "tableState.hpp"
 
 class robotCDFR
@@ -8,8 +7,8 @@ class robotCDFR
 private:
 
 public:
-    robotState robotStatus;
     tableState tableStatus;
+    int collide;
     /* data */
 public:
     robotCDFR(/* args */);

@@ -28,8 +28,8 @@ int deplacementLinearPoint(robotCDFR mainRobot, Asser* robot, int x, int y){
         nextstep = DEPLACEMENT_MOVE;
         robot->linearSetpoint(memx,memy);
 
-        // if(mainRobot.robotStatus.collide < DISTANCESTOP){
-        //     printf("distance colide : %d\n",mainRobot.robotStatus.collide);
+        // if(mainRobot.tableStatus.collide < DISTANCESTOP){
+        //     printf("distance colide : %d\n",mainRobot.tableStatus.collide);
         //     nextstep = DEPLACEMENT_WAIT;
         //     startTime = millis() + 5000; //TIME waiting
         // }
@@ -42,8 +42,8 @@ int deplacementLinearPoint(robotCDFR mainRobot, Asser* robot, int x, int y){
         if(initStat) LOG_STATE("DEPLACEMENT_WAITFIRSTMOVE");
         robot->getBrakingDistance(distance);
         if(distance != 0){
-            if(mainRobot.robotStatus.collide < DISTANCESTOP){
-                LOG_INFO("distance colide : ",mainRobot.robotStatus.collide);
+            if(mainRobot.collide < DISTANCESTOP){
+                LOG_INFO("distance colide : ",mainRobot.collide);
                 nextstep = DEPLACEMENT_WAIT;
                 startTime = millis() + 5000; //TIME waiting
             }
@@ -60,8 +60,8 @@ int deplacementLinearPoint(robotCDFR mainRobot, Asser* robot, int x, int y){
             nextstep = DEPLACEMENT_INIT;
             iret = 1; //GOOD END
         }
-        if(mainRobot.robotStatus.collide < DISTANCESTOP){
-            LOG_INFO("distance colide : ",mainRobot.robotStatus.collide);
+        if(mainRobot.collide < DISTANCESTOP){
+            LOG_INFO("distance colide : ",mainRobot.collide);
             nextstep = DEPLACEMENT_STOP;
             robot->stop();
         }
@@ -82,8 +82,8 @@ int deplacementLinearPoint(robotCDFR mainRobot, Asser* robot, int x, int y){
             nextstep = DEPLACEMENT_INIT;
             iret = -1; //BAD END
         }
-        if(mainRobot.robotStatus.collide > DISTANCERESTART){
-            LOG_INFO("distance colide : ",mainRobot.robotStatus.collide);
+        if(mainRobot.collide > DISTANCERESTART){
+            LOG_INFO("distance colide : ",mainRobot.collide);
             nextstep = DEPLACEMENT_MOVE;
             robot->linearSetpoint(memx,memy);
         }

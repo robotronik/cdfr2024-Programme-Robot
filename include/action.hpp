@@ -38,8 +38,8 @@ private:
 
     std::function<int(action*, robotCDFR*, Asser*, Arduino*, tableState*)> runActionPtr;
     std::function<int(tableState*)> validActionPtr;
-    std::function<int(tableState*)> goodEndPtr;
-    std::function<int(tableState*)> badEndPtr;
+    std::function<void(tableState*)> goodEndPtr;
+    std::function<void(tableState*)> badEndPtr;
 
     position_t startPostion;
     asser_direction_side startDirection;
@@ -53,8 +53,8 @@ private:
     fsmAction_t currentState = FSMACTION_INIT;
     bool initStat = true;
 
-
     std::string actionName;
+    bool actionEnable = true;
 
 public:
     action(std::string name, robotCDFR* imainRobot, Asser* irobot, Arduino* iarduino, tableState* itable);
@@ -63,9 +63,10 @@ public:
     void setStartPoint(int x, int y, int teta, asser_direction_side Direction, asser_rotation_side rotation);
     void setEndPoint(int x, int y, int teta, asser_direction_side Direction, asser_rotation_side rotation);
     int costAction(void);
-    void goodEnd(std::function<int(tableState*)> ptr);
-    void badEnd(std::function<int(tableState*)> ptr);
+    void goodEnd(std::function<void(tableState*)> ptr);
+    void badEnd(std::function<void(tableState*)> ptr);
     void setCostAction(std::function<int(tableState*)> ptr);
+    void resetActionEnable(void);
     std::string getName(void);
     ~action();
 

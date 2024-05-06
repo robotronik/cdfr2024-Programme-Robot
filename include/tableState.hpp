@@ -13,6 +13,7 @@ public:
     bool zoneFull[6];
     colorTeam_t panneauSolaireRotate[9];
     bool robotHavePlante;
+    colorTeam_t colorTeam;
 
     //Poistion
     const cartesian_position_t plantPosition[6] =

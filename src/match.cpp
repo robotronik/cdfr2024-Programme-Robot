@@ -22,7 +22,7 @@ int mainMatch(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
 
     case MATCH_GOSOLARPANEL :
         if(initStat) LOG_STATE("MATCH_GOSOLARPANEL");
-        if(mainRobot.robotStatus.colorTeam == YELLOW){
+        if(mainRobot.tableStatus.colorTeam == YELLOW){
             deplacementreturn = deplacementgoToPoint(mainRobot, robot,800,1250,-90,MOVE_FORWARD);
         }
         else{
@@ -38,7 +38,7 @@ int mainMatch(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
 
     case MATCH_INTISOLARPANEL :
         if(initStat) LOG_STATE("MATCH_INTISOLARPANEL");
-        if(mainRobot.robotStatus.colorTeam == YELLOW){
+        if(mainRobot.tableStatus.colorTeam == YELLOW){
             if(initPositon(robot,800,1250,-90)){
                 nextState = MATCH_SOLARPANEL;
             }
@@ -60,7 +60,7 @@ int mainMatch(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
 
     case MATCH_GOHOME1 :
         if(initStat) LOG_STATE("MATCH_GOHOME1");
-        if(mainRobot.robotStatus.colorTeam == YELLOW){
+        if(mainRobot.tableStatus.colorTeam == YELLOW){
             deplacementreturn = deplacementgoToPoint(mainRobot, robot,800,1250,-90,MOVE_FORWARD);
         }
         else{
@@ -76,7 +76,7 @@ int mainMatch(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
 
     case MATCH_GOHOME2 :
         if(initStat) LOG_STATE("MATCH_GOHOME2");
-        if(mainRobot.robotStatus.colorTeam == YELLOW){
+        if(mainRobot.tableStatus.colorTeam == YELLOW){
             deplacementreturn = deplacementgoToPoint(mainRobot, robot,800,1250,-90,MOVE_FORWARD);
         }
         else{

@@ -27,6 +27,7 @@ private:
 public:
     actionContainer(robotCDFR* imainRobot, Asser* irobot, Arduino* iarduino, tableState* itable);
     int actionContainerRun(void);
+    void resetAllAction(void);
     ~actionContainer();
 private : 
 
