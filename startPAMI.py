@@ -7,6 +7,11 @@ def print_color(color):
         print("Blue color")
     else:
         print("Unknown color")
+def trouver_fichier(start_path, filename):
+    for root, dirs, files in os.walk(start_path):
+        if filename in files:
+            return os.path.join(root, filename)
+    return None
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -15,7 +20,6 @@ if __name__ == "__main__":
 
     color = sys.argv[1]
     print_color(color)
-    os.system("python3 UDPServer.py "+("0" if color == "BLUE" else "1"))
-
-
-
+    resultat=trouver_fichier(os.getcwd(),"UDPServer.py")
+    print(resultat)
+    os.system("python3 "+str(resultat)+(" 0" if color == "BLUE" else " 1"))
