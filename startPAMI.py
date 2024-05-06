@@ -1,5 +1,5 @@
 import sys
-
+import os
 def print_color(color):
     if color == "YELLOW":
         print("Yellow color")
@@ -15,3 +15,7 @@ if __name__ == "__main__":
 
     color = sys.argv[1]
     print_color(color)
+    os.system("python3 UDPServer.py "+("0" if color == "BLUE" else "1"))
+
+
+
