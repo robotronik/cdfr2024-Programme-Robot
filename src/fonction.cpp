@@ -82,16 +82,13 @@ int initY(Asser* robot,int x, int y,int teta){
     static bool initStat = true;
     static fsminitY_t currentState = INTIY_INIT;
     fsminitY_t nextState = currentState;
-    int deplacementreturn;
-    static int positionToGo = 0;
     int xSave,ySave,tetaSave;
     int deplacementy = 400;
-
     int TetaStart = 90;
+    int yStart = 1500 - ROBOT_Y_OFFSET;
     if(y<0){
         TetaStart = -90;
     }
-    int yStart = 1500 - ROBOT_Y_OFFSET;
     if(y<0){
         yStart = -yStart;
     }

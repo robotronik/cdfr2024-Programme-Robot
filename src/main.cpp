@@ -178,10 +178,17 @@ int main(int argc, char *argv[]) {
                 if(initStat) LOG_STATE("WAITSTART");
                 int bStateCapteur1;
                 arduino->readCapteur(1,bStateCapteur1);
-                blinkLed(arduino,1,500);
+                if(mainRobot.tableStatus.colorTeam == YELLOW){
+                    blinkLed(arduino,1,500);
+                }
+                else{
+                    blinkLed(arduino,2,500);
+                }
+                
                if(bStateCapteur1 == 0){
                     nextState = START;
                     arduino->ledOff(1);
+                    arduino->ledOff(2);
                 }
                 break;
             }
