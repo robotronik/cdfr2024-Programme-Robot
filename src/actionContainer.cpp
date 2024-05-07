@@ -2,6 +2,10 @@
 #include "logger.hpp"
 
 actionContainer::actionContainer(robotCDFR* imainRobot, Asser* irobot, Arduino* iarduino, tableState* itable){
+    mainRobot = imainRobot;
+    robot = irobot;
+    arduino = iarduino;
+    table = itable;
 
     takePlante0 = new action("takePlante0",imainRobot,irobot,iarduino,itable);
     takePlante1 = new action("takePlante1",imainRobot,irobot,iarduino,itable);
@@ -17,7 +21,15 @@ actionContainer::actionContainer(robotCDFR* imainRobot, Asser* irobot, Arduino* 
     putInJardiniere4 = new action("putInJardiniere4",imainRobot,irobot,iarduino,itable);
     putInJardiniere5 = new action("putInJardiniere5",imainRobot,irobot,iarduino,itable);
 
+    pushPotAction0 = new action("putInJardiniere5",imainRobot,irobot,iarduino,itable);
+    pushPotAction1 = new action("putInJardiniere5",imainRobot,irobot,iarduino,itable);
+    pushPotAction4 = new action("putInJardiniere5",imainRobot,irobot,iarduino,itable);
+    pushPotAction5 = new action("putInJardiniere5",imainRobot,irobot,iarduino,itable);
+
+
     turnSolarPanelAction = new action("turnSolarPanelAction",imainRobot,irobot,iarduino,itable);
+
+    returnToHomeAction = new action("returnToHomeAction",imainRobot,irobot,iarduino,itable);
 
 }
 void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* iarduino, tableState* itable){
@@ -124,7 +136,7 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
         itable->JardiniereFull[0] = true;
     });
     putInJardiniere0->setCostAction([](tableState*itable){
-        return !itable->JardiniereFull[0] && itable->robotHavePlante && itable->colorTeam == YELLOW ? 78 : -1;
+        return !itable->JardiniereFull[0] && itable->robotHavePlante && itable->colorTeam == YELLOW && itable->jardiniereFree[0]? 78 : -1;
     });
     listeAction.push_back(putInJardiniere0);
 
@@ -140,7 +152,7 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
         itable->JardiniereFull[1] = true;
     });
     putInJardiniere1->setCostAction([](tableState*itable){
-        return !itable->JardiniereFull[1] && itable->robotHavePlante && itable->colorTeam == BLUE ? 89 : -1;
+        return !itable->JardiniereFull[1] && itable->robotHavePlante && itable->colorTeam == BLUE  && itable->jardiniereFree[1]? 89 : -1;
     });
     listeAction.push_back(putInJardiniere1);
 
@@ -188,7 +200,7 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
         itable->JardiniereFull[4] = true;
     });
     putInJardiniere4->setCostAction([](tableState*itable){
-        return !itable->JardiniereFull[4] && itable->robotHavePlante && itable->colorTeam == YELLOW ? 89 : -1;
+        return !itable->JardiniereFull[4] && itable->robotHavePlante && itable->colorTeam == YELLOW  && itable->jardiniereFree[2]? 89 : -1;
     });
     listeAction.push_back(putInJardiniere4);
 
@@ -203,10 +215,11 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
         itable->JardiniereFull[5] = true;
     });
     putInJardiniere5->setCostAction([](tableState*itable){
-        return !itable->JardiniereFull[5] && itable->robotHavePlante && itable->colorTeam == BLUE ? 78 : -1;
+        return !itable->JardiniereFull[5] && itable->robotHavePlante && itable->colorTeam == BLUE  && itable->jardiniereFree[3]? 78 : -1;
     });
     listeAction.push_back(putInJardiniere5);
 
+    turnSolarPanelAction->setKeyMoment(65000);
     turnSolarPanelAction->setStartPoint(700,(itable->colorTeam == YELLOW ? 1200 : -1200),(itable->colorTeam == YELLOW ? 90 : -90), MOVE_FORWARD, ROTATION_DIRECT);
     turnSolarPanelAction->setRunAction([](action* iaction, robotCDFR* iRobot, Asser* iAsser, Arduino* iarduino, tableState*itable) {
         return turnSolarPannel(*iRobot, iAsser, iarduino);
@@ -227,6 +240,87 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
     listeAction.push_back(turnSolarPanelAction);
 
 
+
+    returnToHomeAction->setStartPoint(700,(itable->colorTeam == YELLOW ? 1200 : -1200),(itable->colorTeam == YELLOW ? 90 : -90), MOVE_FORWARD, ROTATION_DIRECT);
+    returnToHomeAction->setRunAction([](action* iaction, robotCDFR* iRobot, Asser* iAsser, Arduino* iarduino, tableState*itable) {
+        int iret = 0;
+        if(releasePlant(iarduino)){
+            iret = -100;
+        }
+        return -iret;
+    });
+    returnToHomeAction->setKeyMoment(85000);
+    returnToHomeAction->goodEnd([](tableState*itable){
+
+    });
+    returnToHomeAction->setCostAction([](tableState*itable){
+        int icost;
+        if(itable->startTime+80000 < millis()){
+            icost = 250;
+        }
+        else{
+            icost = 9;
+        }
+        return icost;
+    });
+    listeAction.push_back(returnToHomeAction);
+
+
+//PUSH POT
+    pushPotAction0->setStartPoint(itable->JardinierePosition[0].x+PUSHPOTMARGEX1,-1500+PUSHPOTMARGEY,-180, MOVE_BACKWARD, ROTATION_DIRECT);
+    pushPotAction0->setRunAction([](action* iaction, robotCDFR* iRobot, Asser* iAsser, Arduino* iarduino, tableState*itable) {
+        return deplacementgoToPoint(*iRobot, iAsser, itable->JardinierePosition[0].x+PUSHPOTMARGEX2, -1500+PUSHPOTMARGEY, -180, MOVE_BACKWARD,ROTATION_DIRECT);
+    });
+    pushPotAction0->goodEnd([](tableState*itable){
+        itable->jardiniereFree[0] = true;
+    });
+    pushPotAction0->setCostAction([](tableState*itable){
+        return !(itable->colorTeam == YELLOW && !itable->jardiniereFree[0]) ? -1 : -1;
+    });
+    listeAction.push_back(pushPotAction0);
+
+
+//PUSH POT
+    pushPotAction1->setStartPoint(itable->JardinierePosition[1].x+PUSHPOTMARGEX1,-1500+PUSHPOTMARGEY,-180, MOVE_BACKWARD, ROTATION_DIRECT);
+    pushPotAction1->setRunAction([](action* iaction, robotCDFR* iRobot, Asser* iAsser, Arduino* iarduino, tableState*itable) {
+        return deplacementgoToPoint(*iRobot, iAsser, itable->JardinierePosition[1].x+PUSHPOTMARGEX2, -1500+PUSHPOTMARGEY, -180, MOVE_BACKWARD,ROTATION_DIRECT);
+    });
+    pushPotAction1->goodEnd([](tableState*itable){
+        itable->jardiniereFree[1] = true;
+    });
+    pushPotAction1->setCostAction([](tableState*itable){
+        return !(itable->colorTeam == BLUE && !itable->jardiniereFree[1]) ? 98 : -1;
+    });
+    listeAction.push_back(pushPotAction1);
+
+
+//PUSH POT
+    pushPotAction4->setStartPoint(itable->JardinierePosition[4].x+PUSHPOTMARGEX1,1500-PUSHPOTMARGEY,-180, MOVE_BACKWARD, ROTATION_DIRECT);
+    pushPotAction4->setRunAction([](action* iaction, robotCDFR* iRobot, Asser* iAsser, Arduino* iarduino, tableState*itable) {
+        return deplacementgoToPoint(*iRobot, iAsser, itable->JardinierePosition[4].x+PUSHPOTMARGEX2, 1500-PUSHPOTMARGEY, -180, MOVE_BACKWARD,ROTATION_DIRECT);
+    });
+    pushPotAction4->goodEnd([](tableState*itable){
+        itable->jardiniereFree[2] = true;
+    });
+    pushPotAction4->setCostAction([](tableState*itable){
+        return !(itable->colorTeam == YELLOW && !itable->jardiniereFree[2]) ? 98 : -1;
+    });
+    listeAction.push_back(pushPotAction4);
+
+
+//PUSH POT
+    pushPotAction5->setStartPoint(itable->JardinierePosition[5].x+PUSHPOTMARGEX1,1500-PUSHPOTMARGEY,-180, MOVE_BACKWARD, ROTATION_DIRECT);
+    pushPotAction5->setRunAction([](action* iaction, robotCDFR* iRobot, Asser* iAsser, Arduino* iarduino, tableState*itable) {
+        return deplacementgoToPoint(*iRobot, iAsser, itable->JardinierePosition[5].x+PUSHPOTMARGEX2, 1500-PUSHPOTMARGEY, -180, MOVE_BACKWARD,ROTATION_DIRECT);
+    });
+    pushPotAction5->goodEnd([](tableState*itable){
+        itable->jardiniereFree[3] = true;
+    });
+    pushPotAction5->setCostAction([](tableState*itable){
+        return !(itable->colorTeam == BLUE && !itable->jardiniereFree[3]) ? -1 : -1;
+    });
+    listeAction.push_back(pushPotAction5);
+
     //Choose first action
     choosNextAction();
 }
@@ -236,12 +330,18 @@ int actionContainer::actionContainerRun(void){
     int iChoosNextReturn = 0;
     int iRet = 0;
     iActionReturn = currentAction->runAction();
-    if(iActionReturn>0){
+    if(iActionReturn == -1){
+        iRet = -100;
+    }
+    else if(iActionReturn!=0){
+        resetActionneur(robot,arduino);
         iChoosNextReturn = choosNextAction();
     }
-    else if(iActionReturn<0){
-        iChoosNextReturn = choosNextAction();
-    }
+    // else if(forceNextAction()){
+    //     resetActionneur(robot,arduino);
+    //     iChoosNextReturn = choosNextAction();
+    // }
+
     if(iChoosNextReturn == -1){
         iRet = -1;
     }
@@ -251,6 +351,15 @@ int actionContainer::actionContainerRun(void){
 actionContainer::~actionContainer(){
 }
 
+bool actionContainer::forceNextAction(void){
+    bool bRet = false;
+    for (action* elem : listeAction) {
+        if(elem->actionNeedForce()){
+            bRet = true;
+        }
+    }
+    return bRet;
+}
 
 int actionContainer::choosNextAction(void){
     LOG_GREEN_INFO("CHOOSE NEW ACTION: ");

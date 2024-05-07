@@ -8,6 +8,10 @@
 #define MARGESTOCKPLANT 300
 #define MARGEJADINIERE 400
 
+#define PUSHPOTMARGEY 180
+#define PUSHPOTMARGEX1 -150
+#define PUSHPOTMARGEX2 150
+
 class actionContainer
 {
 private:
@@ -26,13 +30,25 @@ private:
     action* putInJardiniere5;
 
     action* turnSolarPanelAction;
-
+    action* returnToHomeAction;
     action* currentAction;
+
+    action* pushPotAction0;
+    action* pushPotAction1;
+    action* pushPotAction4;
+    action* pushPotAction5;
+
+    robotCDFR* mainRobot;
+    Asser* robot;
+    Arduino* arduino;
+    tableState* table;
+
     std::vector<action*> listeAction;
 
 public:
     actionContainer(robotCDFR* imainRobot, Asser* irobot, Arduino* iarduino, tableState* itable);
     void initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* iarduino, tableState* itable);
+    bool forceNextAction(void);
     int actionContainerRun(void);
     void resetAllAction(void);
     ~actionContainer();

@@ -56,6 +56,9 @@ private:
     std::string actionName;
     bool actionEnable = true;
 
+    unsigned long keyMoment;
+    bool keyMomentSet = false;
+
 public:
     action(std::string name, robotCDFR* imainRobot, Asser* irobot, Arduino* iarduino, tableState* itable);
     int runAction(void);
@@ -67,6 +70,8 @@ public:
     void badEnd(std::function<void(tableState*)> ptr);
     void setCostAction(std::function<int(tableState*)> ptr);
     void resetActionEnable(void);
+    void setKeyMoment(unsigned long keyMom);
+    bool actionNeedForce(void);
     std::string getName(void);
     ~action();
 

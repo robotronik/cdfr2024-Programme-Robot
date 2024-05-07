@@ -10,6 +10,9 @@ tableState::tableState(/* args */){
     for(int i =0; i < 9; i++){
         panneauSolaireRotate[i] = NONE;        
     }
+    for(int i =0; i < 4; i++){
+        jardiniereFree[i] = false;        
+    }
         
     robotHavePlante = false;
 }

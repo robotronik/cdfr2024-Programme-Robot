@@ -161,3 +161,12 @@ void action::badEnd(std::function<void(tableState*)> ptr){
 void action::resetActionEnable(void){
     actionEnable = true;
 }
+
+void action::setKeyMoment(unsigned long keyMom){
+    keyMomentSet = true;
+    keyMoment = keyMom;
+}
+
+bool action::actionNeedForce(void){
+    return table->startTime+keyMoment < millis() && keyMomentSet;
+}

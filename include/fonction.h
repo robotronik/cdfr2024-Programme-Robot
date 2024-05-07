@@ -53,6 +53,7 @@ int takePlant(robotCDFR mainRobot,Asser* robot,Arduino* arduino,tableState*itabl
 int returnToHome(Asser* robot);
 int jardinierePutPlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,int x,int y,int teta);
 bool allJardiniereFull(tableState* itable);
+void resetActionneur(Asser* robot, Arduino* arduino);
 int FSMMatch(robotCDFR mainRobot,Asser* robot,Arduino* arduino);
 int TestPinceFSM(robotCDFR mainRobot, Asser* robot,Arduino* arduino);
 

@@ -11,6 +11,7 @@ public:
     bool planteStockFull[6];
     bool JardiniereFull[6];
     bool zoneFull[6];
+    bool jardiniereFree[4];
     colorTeam_t panneauSolaireRotate[9];
     bool robotHavePlante;
     colorTeam_t colorTeam;

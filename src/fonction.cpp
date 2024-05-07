@@ -366,7 +366,12 @@ bool allJardiniereFull(tableState* itable){
     }
 }
 
-
+void resetActionneur(Asser* robot, Arduino* arduino){
+    arduino->servoPosition(1,180);
+    arduino->servoPosition(2,CLAMPSLEEP);
+    arduino->moveStepper(ELEVATORUP,1);
+    robot->setLinearMaxSpeed(10000);
+}
 
 //
 
