@@ -275,7 +275,7 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
         itable->jardiniereFree[0] = true;
     });
     pushPotAction0->setCostAction([](tableState*itable){
-        return !(itable->colorTeam == YELLOW && !itable->jardiniereFree[0]) ? -1 : -1;
+        return itable->colorTeam == YELLOW && !itable->jardiniereFree[0] ? -1 : -1;
     });
     listeAction.push_back(pushPotAction0);
 
@@ -289,7 +289,7 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
         itable->jardiniereFree[1] = true;
     });
     pushPotAction1->setCostAction([](tableState*itable){
-        return !(itable->colorTeam == BLUE && !itable->jardiniereFree[1]) ? 98 : -1;
+        return itable->colorTeam == BLUE && !itable->jardiniereFree[1] ? 98 : -1;
     });
     listeAction.push_back(pushPotAction1);
 
@@ -303,7 +303,7 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
         itable->jardiniereFree[2] = true;
     });
     pushPotAction4->setCostAction([](tableState*itable){
-        return !(itable->colorTeam == YELLOW && !itable->jardiniereFree[2]) ? 98 : -1;
+        return itable->colorTeam == YELLOW && !itable->jardiniereFree[2] ? 98 : -1;
     });
     listeAction.push_back(pushPotAction4);
 
@@ -317,7 +317,7 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
         itable->jardiniereFree[3] = true;
     });
     pushPotAction5->setCostAction([](tableState*itable){
-        return !(itable->colorTeam == BLUE && !itable->jardiniereFree[3]) ? -1 : -1;
+        return itable->colorTeam == BLUE && !itable->jardiniereFree[3] ? -1 : -1;
     });
     listeAction.push_back(pushPotAction5);
 
