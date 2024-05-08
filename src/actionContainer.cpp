@@ -92,7 +92,7 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
     listeAction.push_back(takePlante3);
 
 // ACTION
-    takePlante4->setStartPoint(itable->plantPosition[4].x - MARGESTOCKPLANT,itable->plantPosition[4].y,0,MOVE_BACKWARD,ROTATION_DIRECT);
+    takePlante4->setStartPoint(itable->plantPosition[4].x - MARGESTOCKPLANT,itable->plantPosition[4].y,0,MOVE_FORWARD,ROTATION_DIRECT);
     takePlante4->setRunAction([&](action* iaction, robotCDFR* iRobot, Asser* iAsser, Arduino* iarduino, tableState*itable) {
         return takePlant(*iRobot,iAsser,iarduino,itable,itable->plantPosition[4].y,itable->plantPosition[4].x - MARGESTOCKPLANT,itable->plantPosition[4].x + 400,4);
     });
@@ -190,7 +190,7 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
 
 
 // ACTION YELLOW
-    putInJardiniere4->setStartPoint(itable->JardinierePosition[4].x, itable->JardinierePosition[4].y-MARGEJADINIERE, -90, MOVE_FORWARD, ROTATION_DIRECT);
+    putInJardiniere4->setStartPoint(itable->JardinierePosition[4].x, itable->JardinierePosition[4].y-MARGEJADINIERE, -90, MOVE_BACKWARD, ROTATION_DIRECT);
     putInJardiniere4->setEndPoint(itable->JardinierePosition[4].x, itable->JardinierePosition[4].y-MARGEJADINIERE, -90, MOVE_BACKWARD, ROTATION_DIRECT);
     putInJardiniere4->setRunAction([](action* iaction, robotCDFR* iRobot, Asser* iAsser, Arduino* iarduino, tableState*itable) {
         return jardinierePutPlant(*iRobot,iAsser,iarduino,itable->JardinierePosition[4].x, itable->JardinierePosition[4].y-130,-90);
@@ -241,7 +241,7 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
 
 
 
-    returnToHomeAction->setStartPoint(700,(itable->colorTeam == YELLOW ? 1200 : -1200),(itable->colorTeam == YELLOW ? 90 : -90), MOVE_FORWARD, ROTATION_DIRECT);
+    returnToHomeAction->setStartPoint(700,(itable->colorTeam == YELLOW ? 1200 : -1200),(itable->colorTeam == YELLOW ? 90 : -90), (itable->colorTeam == BLUE ? MOVE_BACKWARD : MOVE_FORWARD), ROTATION_DIRECT);
     returnToHomeAction->setRunAction([](action* iaction, robotCDFR* iRobot, Asser* iAsser, Arduino* iarduino, tableState*itable) {
         int iret = 0;
         if(releasePlant(iarduino)){
