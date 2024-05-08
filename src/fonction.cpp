@@ -80,7 +80,6 @@ int initPositon2(robotCDFR mainRobot, Asser* robot,int x, int y,int teta){
     LOG_SCOPE("initPos");
     static unsigned long startTime;
     static int step = -1;
-    int iDeplacement = 0;
 
     int TetaStart = 90;
     int TetaSecond = -180;
@@ -107,12 +106,11 @@ int initPositon2(robotCDFR mainRobot, Asser* robot,int x, int y,int teta){
         startTime = millis()+100;
     }
     else if(step == 0 && startTime < millis()){
-        deplacementLinearPoint(mainRobot,robot,-400,0)>0;
         LOG_STATE("SETP 0 ");
         step++;
         startTime = millis()+3000;
     }
-    else if(step == 1 && startTime < millis()){
+    else if(step == 1 && deplacementLinearPoint(mainRobot,robot,-400,0)>0){
         robot->setCoords(0,yStart,TetaStart);
         LOG_STATE("SETP 1 ");       
         step++;
@@ -123,12 +121,11 @@ int initPositon2(robotCDFR mainRobot, Asser* robot,int x, int y,int teta){
         step++;
     }
     else if(step == 3 && !robot->getError(ANGULAR_ERROR)){
-        robot->linearSetpoint(xSecond,y);
         LOG_STATE("SETP 3 ");
         startTime = millis()+3000;
         step++;
     }
-    else if(step == 4 && startTime < millis()){
+    else if(step == 4 && deplacementLinearPoint(mainRobot,robot,xSecond,y)>0){
         robot->setCoords(xStart, y,TetaSecond);
         LOG_STATE("SETP 4 ");
         step++;
