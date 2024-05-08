@@ -7,8 +7,8 @@
 #include "logger.hpp"
 #include "robot.h"
 
-#define DISTANCESTOP   500
-#define DISTANCERESTART 600
+#define DISTANCESTOP   600
+#define DISTANCERESTART 700
 
 typedef enum {
     DEPLACEMENT_INIT,

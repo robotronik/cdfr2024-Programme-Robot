@@ -45,7 +45,7 @@ int deplacementLinearPoint(robotCDFR mainRobot, Asser* robot, int x, int y){
             if(mainRobot.collide < DISTANCESTOP){
                 LOG_INFO("distance colide : ",mainRobot.collide);
                 nextstep = DEPLACEMENT_WAIT;
-                startTime = millis() + 7000; //TIME waiting
+                startTime = millis() + 5000; //TIME waiting
             }
             else{
                 nextstep = DEPLACEMENT_MOVE;
@@ -64,6 +64,7 @@ int deplacementLinearPoint(robotCDFR mainRobot, Asser* robot, int x, int y){
             LOG_INFO("distance colide : ",mainRobot.collide);
             nextstep = DEPLACEMENT_STOP;
             robot->stop();
+            robot->brakeMotor(true);
         }
         break;
 
@@ -85,6 +86,8 @@ int deplacementLinearPoint(robotCDFR mainRobot, Asser* robot, int x, int y){
         if(mainRobot.collide > DISTANCERESTART){
             LOG_INFO("distance colide : ",mainRobot.collide);
             nextstep = DEPLACEMENT_MOVE;
+            robot->brakeMotor(false);
+            robot->enableMotor(true);
             robot->linearSetpoint(memx,memy);
         }
         break;

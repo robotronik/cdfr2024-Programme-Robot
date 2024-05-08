@@ -57,4 +57,5 @@ class Asser : public I2CDevice {
         int enableMotor(bool status);
         int setLinearMaxSpeed(int maxSpeed);
         int setAngularMaxSpeed(int maxSpeed);
+        int brakeMotor(bool brake);
 };

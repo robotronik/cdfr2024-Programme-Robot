@@ -145,6 +145,7 @@ int main(int argc, char *argv[]) {
                 if(initStat) LOG_STATE("INITIALIZE");
                 if(initStat){
                     robotI2C->enableMotor(true);
+                    robotI2C->brakeMotor(false);
                     arduino->enableStepper(1);
                     arduino->servoPosition(1,180);
                     arduino->servoPosition(2,CLAMPSLEEP);
@@ -265,6 +266,7 @@ int main(int argc, char *argv[]) {
                 lidarStop();
                 arduino->disableStepper(1);
                 robotI2C->enableMotor(false);
+                robotI2C->brakeMotor(true);
                 nextState = STOP;
                 break;
             //****************************************************************
@@ -300,6 +302,7 @@ int main(int argc, char *argv[]) {
     arduino->servoPosition(2,CLAMPSTOP);
     arduino->moveStepper(0,1);
     robotI2C->enableMotor(false);
+    robotI2C->brakeMotor(false);
     robotI2C->stop();
     lidarStop();
     sleep(2);

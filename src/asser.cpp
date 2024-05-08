@@ -205,6 +205,16 @@ int Asser::enableMotor(bool status) {
     return 0;
 }
 
+int Asser::brakeMotor(bool brake){
+    LOG_INFO("motor brake",brake?"Enable":"disable");
+    uint8_t message = (brake == true) ? 52 : 53;
+    if (i2c_smbus_write_byte(i2cFile, (char)message)) {
+        LOG_ERROR("couldn't stop motor");
+        return -1;
+    }
+    return 0;
+}
+
 int Asser::setLinearMaxSpeed(int maxSpeed) {
     LOG_INFO("set linear max speed : ",maxSpeed);
     int length = 2;
