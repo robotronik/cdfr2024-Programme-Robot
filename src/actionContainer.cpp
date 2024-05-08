@@ -330,7 +330,7 @@ int actionContainer::actionContainerRun(void){
     int iChoosNextReturn = 0;
     int iRet = 0;
     iActionReturn = currentAction->runAction();
-    if(iActionReturn == -1){
+    if(iActionReturn == -100){
         iRet = -100;
     }
     else if(iActionReturn!=0){

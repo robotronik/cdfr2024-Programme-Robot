@@ -99,19 +99,22 @@ int main(int argc, char *argv[]) {
         
        
         int count = SIZEDATALIDAR;
-        if(getlidarData(lidarData,count)){
-            int x, y, teta;
-            int distance;
-            robotI2C->getCoords(x,y,teta);
-            position_t position = {x,y,teta,0};
-            convertAngularToAxial(lidarData,count,position);
-            //pixelArtPrint(lidarData,count,50,50,100,position);
-            //printAngular(lidarData,count);
-            robotI2C->getBrakingDistance(distance);
-            mainRobot.collide = collide(lidarData,count,distance);
-            //LOG_DEBUG("collide : ", robot->collide);
-            //printf("distance : %d \t collide : %d\n",distance,robot->collide);
+        if(currentState != FIN){
+            if(getlidarData(lidarData,count)){
+                int x, y, teta;
+                int distance;
+                robotI2C->getCoords(x,y,teta);
+                position_t position = {x,y,teta,0};
+                convertAngularToAxial(lidarData,count,position);
+                //pixelArtPrint(lidarData,count,50,50,100,position);
+                //printAngular(lidarData,count);
+                robotI2C->getBrakingDistance(distance);
+                mainRobot.collide = collide(lidarData,count,distance);
+                //LOG_DEBUG("collide : ", robot->collide);
+                //printf("distance : %d \t collide : %d\n",distance,robot->collide);
+            }
         }
+       
 
        
        
@@ -260,19 +263,21 @@ int main(int argc, char *argv[]) {
             }
             //****************************************************************
             case FIN:
-                if(initStat) LOG_STATE("FIN");
-                arduino->servoPosition(1,180);
-                arduino->servoPosition(2,CLAMPSTOP);
-                lidarStop();
-                arduino->disableStepper(1);
-                robotI2C->enableMotor(false);
-                robotI2C->brakeMotor(true);
-                nextState = STOP;
+                if(initStat){
+                    LOG_STATE("FIN");
+                    arduino->servoPosition(1,180);
+                    arduino->servoPosition(2,CLAMPSTOP);
+                    lidarStop();
+                    gpioPWM(18, 0);
+                    arduino->disableStepper(1);
+                    robotI2C->enableMotor(false);
+                    robotI2C->brakeMotor(true);
+                    nextState = STOP;
+                } 
                 break;
             //****************************************************************
             case STOP:
                 if(initStat) LOG_STATE("STOP");
-                nextState = STOP;
                 break;
             //****************************************************************
             default:
