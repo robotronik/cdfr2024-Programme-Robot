@@ -76,6 +76,55 @@ int initPositon(Asser* robot,int x, int y,int teta){
     return step == -1;
 }
 
+int initY(Asser* robot,int x, int y,int teta){
+    LOG_SCOPE("initY");
+    int ireturn = 0;
+    static bool initStat = true;
+    static fsminitY_t currentState = INTIY_INIT;
+    fsminitY_t nextState = currentState;
+    int xSave,ySave,tetaSave;
+    int deplacementy = 400;
+    int TetaStart = 90;
+    int yStart = 1500 - ROBOT_Y_OFFSET;
+    if(y<0){
+        TetaStart = -90;
+    }
+    if(y<0){
+        yStart = -yStart;
+    }
+    if(y<0){
+        deplacementy = -deplacementy;
+    }
+    
+    switch (currentState)
+    {
+    case INTIY_INIT :
+        if(initStat) LOG_STATE("INTIY_INIT");
+        nextState = INTIY_BACKWARD;
+        robot->getCoords(xSave,ySave,tetaSave);
+        robot->linearSetpoint(xSave , ySave - deplacementy);
+        break;
+    case INTIY_BACKWARD :
+        if(initStat) LOG_STATE("INTIY_BACKWARD");    
+        if(!robot->getError(LINEAR_ERROR)){
+            robot->setCoords(xSave,ySave,TetaStart);
+        }
+        break;
+    default:
+        if(initStat) LOG_STATE("default");
+        nextState = INTIY_INIT;
+        break;
+    }
+
+    initStat = false;
+    if(nextState != currentState){
+        initStat = true;
+    }
+    currentState = nextState;
+    return ireturn;
+
+}
+
 
 
 int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
@@ -115,7 +164,6 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
 
     case SOLARPANEL_SETHOME :
         if(initStat) LOG_STATE("SOLARPANEL_SETHOME");
-        LOG_DEBUG("colorteam ",mainRobot.tableStatus.colorTeam == YELLOW?"YELLOW":"BLUE");
         if(mainRobot.tableStatus.colorTeam == YELLOW){
             if(initPositon(robot,800,1250,-90)){
                 nextState = SOLARPANEL_FORWARD;
@@ -359,10 +407,10 @@ int jardinierePutPlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,int x,
 
 bool allJardiniereFull(tableState* itable){
     if(itable->colorTeam == YELLOW){
-        return itable->JardiniereFull[0] && itable->JardiniereFull[3] && itable->JardiniereFull[4];
+        return  itable->JardiniereFull[3] && itable->JardiniereFull[4];//itable->JardiniereFull[0] &&
     }
     else{
-        return itable->JardiniereFull[1] && itable->JardiniereFull[2] && itable->JardiniereFull[5];
+        return itable->JardiniereFull[1] && itable->JardiniereFull[2] ;//&& itable->JardiniereFull[5]
     }
 }
 
