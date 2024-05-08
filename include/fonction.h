@@ -53,7 +53,7 @@ typedef enum {
 } fsminitY_t;
 
 int initPositon(Asser* robot,int x, int y,int teta);
-int initY(Asser* robot,int x, int y,int teta);
+int initY(robotCDFR mainRobot, Asser* robot,int x, int y,int teta);
 int turnSolarPannel(robotCDFR mainRobot,Asser* robot,Arduino* arduino);
 int takePlant(robotCDFR mainRobot,Asser* robot,Arduino* arduino,tableState*itable,int yPos,int xStart, int xEnd, int numPlante);
 int returnToHome(Asser* robot);
