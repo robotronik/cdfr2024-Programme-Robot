@@ -209,7 +209,20 @@ int Asser::brakeMotor(bool brake){
     LOG_INFO("motor brake",brake?"Enable":"disable");
     uint8_t message = (brake == true) ? 52 : 53;
     if (i2c_smbus_write_byte(i2cFile, (char)message)) {
-        LOG_ERROR("couldn't stop motor");
+        LOG_ERROR("couldn't stop brake motor");
+        return -1;
+    }
+    return 0;
+}
+
+int Asser::setMaxTorque(int max) {
+    LOG_INFO("linear set max torque : ",max);
+    int length = 2;  // Nb of bytes to send
+    uint8_t message[2];
+    int values[] = {max};
+    generateBytes(values, length, message);
+    if (i2c_smbus_write_i2c_block_data(i2cFile, (uint8_t)54, length, message)){
+        LOG_ERROR("Error: couldn't set max torque\n");
         return -1;
     }
     return 0;

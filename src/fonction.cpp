@@ -29,6 +29,7 @@ int initPositon(Asser* robot,int x, int y,int teta){
         LOG_STATE("SETP -1 ");
         step++;
         robot->setLinearMaxSpeed(200);
+        robot->setMaxTorque(20);
         startTime = millis()+100;
     }
     else if(step == 0 && startTime < millis()){
@@ -72,6 +73,7 @@ int initPositon(Asser* robot,int x, int y,int teta){
     if(step>6){
         step = -1;
         robot->setLinearMaxSpeed(10000);
+        robot->setMaxTorque(100);
     }
     return step == -1;
 }
