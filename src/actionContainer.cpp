@@ -247,7 +247,7 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
         if(releasePlant(iarduino)){
             iret = -100;
         }
-        return -iret;
+        return iret;
     });
     returnToHomeAction->setKeyMoment(85000);
     returnToHomeAction->goodEnd([](tableState*itable){
