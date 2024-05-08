@@ -117,16 +117,21 @@ int main(int argc, char *argv[]) {
 
         switch (currentState) {
             //****************************************************************
-            case INIT:
+            case INIT:{
                 if(initStat) LOG_STATE("INIT");
                 int bStateCapteur3;
+                int bStateCapteur1;
                 arduino->readCapteur(3,bStateCapteur3);
+                arduino->readCapteur(1,bStateCapteur1);
                 blinkLed(arduino,2,500);
-                if(1 || bStateCapteur3 == 1){
+                blinkLed(arduino,1,500);
+                if(bStateCapteur3 == 1 && bStateCapteur1 == 1){
                     nextState = INITIALIZE;
                     arduino->ledOff(2);
+                    arduino->ledOff(1);
                 }
                 break;
+            }
             //****************************************************************
             case INITIALIZE:{
                 if(initStat) LOG_STATE("INITIALIZE");
