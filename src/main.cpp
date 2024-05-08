@@ -75,6 +75,8 @@ int main(int argc, char *argv[]) {
     main_State_t nextState = INIT;
     bool initStat;
     actionContainer* actionSystem = new actionContainer(&mainRobot, robotI2C, arduino, &(mainRobot.tableStatus));
+    int countStart = 0;
+    int countSetHome = 0;
     
 
     // arduino->enableStepper(1);
@@ -119,13 +121,19 @@ int main(int argc, char *argv[]) {
             //****************************************************************
             case INIT:{
                 if(initStat) LOG_STATE("INIT");
-                int bStateCapteur3;
-                int bStateCapteur1;
+                int bStateCapteur3 = 0;
+                int bStateCapteur1 = 0;
                 arduino->readCapteur(3,bStateCapteur3);
                 arduino->readCapteur(1,bStateCapteur1);
                 blinkLed(arduino,2,500);
                 blinkLed(arduino,1,500);
                 if(bStateCapteur3 == 1 && bStateCapteur1 == 1){
+                    countSetHome ++;
+                }
+                else{
+                    countSetHome = 0;
+                }
+                if(countSetHome == 5){
                     nextState = INITIALIZE;
                     arduino->ledOff(2);
                     arduino->ledOff(1);
@@ -143,7 +151,7 @@ int main(int argc, char *argv[]) {
                     arduino->moveStepper(ELEVATORUP,1);
                     robotI2C->setLinearMaxSpeed(10000);
                 }
-                int bStateCapteur2;
+                int bStateCapteur2 = 0;
                 arduino->readCapteur(2,bStateCapteur2);
                 if(bStateCapteur2 == 1){
                     mainRobot.tableStatus.colorTeam = YELLOW;
@@ -164,12 +172,12 @@ int main(int argc, char *argv[]) {
             case SETHOME:{
                 if(initStat) LOG_STATE("SETHOME");
                 if(mainRobot.tableStatus.colorTeam == YELLOW){
-                    if(initPositon(robotI2C,-800,1250,90)){
+                    if(initPositon(robotI2C,-800,1325,90)){
                         nextState = WAITSTART;
                     }
                 }
                 else{
-                    if(initPositon(robotI2C,-800,-1250,-90)){
+                    if(initPositon(robotI2C,-800,-1325,-90)){
                         nextState = WAITSTART;
                     }
                     // if(initPositon(robotI2C,800,-1250,-90)){
@@ -181,7 +189,7 @@ int main(int argc, char *argv[]) {
             }            
             case WAITSTART:{
                 if(initStat) LOG_STATE("WAITSTART");
-                int bStateCapteur1;
+                int bStateCapteur1 = 0;
                 arduino->readCapteur(1,bStateCapteur1);
                 if(mainRobot.tableStatus.colorTeam == YELLOW){
                     blinkLed(arduino,1,500);
@@ -191,6 +199,12 @@ int main(int argc, char *argv[]) {
                 }
                 
                if(bStateCapteur1 == 0){
+                    countStart ++;
+                }
+                else{
+                    countStart = 0;
+                }
+                if(countStart == 5){
                     nextState = START;
                     arduino->ledOff(1);
                     arduino->ledOff(2);

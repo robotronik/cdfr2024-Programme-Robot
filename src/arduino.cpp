@@ -18,7 +18,7 @@ int Arduino::servoPosition(int servoNb, int position) {
 }
 
 int Arduino::readCapteur(int capteurNumber, int &state){
-    uint8_t buffer[2];
+    uint8_t buffer[2] = {0,0};
     int command = 100 + (capteurNumber -1);
 
     i2c_smbus_write_byte(i2cFile, command);
