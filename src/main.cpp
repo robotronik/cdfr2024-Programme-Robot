@@ -267,8 +267,8 @@ int main(int argc, char *argv[]) {
                     LOG_STATE("FIN");
                     arduino->servoPosition(1,180);
                     arduino->servoPosition(2,CLAMPSTOP);
-                    lidarStop();
-                    gpioPWM(18, 0);
+                    //lidarStop();
+                    //gpioPWM(18, 0);
                     arduino->disableStepper(1);
                     robotI2C->enableMotor(false);
                     robotI2C->brakeMotor(true);

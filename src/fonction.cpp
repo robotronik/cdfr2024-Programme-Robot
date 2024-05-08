@@ -76,6 +76,79 @@ int initPositon(Asser* robot,int x, int y,int teta){
     return step == -1;
 }
 
+int initPositon2(robotCDFR mainRobot, Asser* robot,int x, int y,int teta){
+    LOG_SCOPE("initPos");
+    static unsigned long startTime;
+    static int step = -1;
+    int iDeplacement = 0;
+
+    int TetaStart = 90;
+    int TetaSecond = -180;
+    int xSecond = 300;
+    int xStart = 1000 - ROBOT_Y_OFFSET;
+    int yStart = 1500 - ROBOT_Y_OFFSET;
+    if(y<0){
+        TetaStart = -90;
+    }
+    if(y<0){
+        yStart = -yStart;
+    }
+    if(x<0){
+        TetaSecond = 0;
+        xSecond = -xSecond;
+        xStart = -xStart;
+    }
+
+    if(step == -1){
+        robot->setCoords(0,0,0);
+        LOG_STATE("SETP -1 ");
+        step++;
+        robot->setLinearMaxSpeed(200);
+        startTime = millis()+100;
+    }
+    else if(step == 0 && startTime < millis()){
+        deplacementLinearPoint(mainRobot,robot,-400,0)>0;
+        LOG_STATE("SETP 0 ");
+        step++;
+        startTime = millis()+3000;
+    }
+    else if(step == 1 && startTime < millis()){
+        robot->setCoords(0,yStart,TetaStart);
+        LOG_STATE("SETP 1 ");       
+        step++;
+    }
+    else if(step == 2 && deplacementLinearPoint(mainRobot,robot,0,y)>0){
+        robot->angularSetpoint(TetaSecond,0);
+        LOG_STATE("SETP 2 ");
+        step++;
+    }
+    else if(step == 3 && !robot->getError(ANGULAR_ERROR)){
+        robot->linearSetpoint(xSecond,y);
+        LOG_STATE("SETP 3 ");
+        startTime = millis()+3000;
+        step++;
+    }
+    else if(step == 4 && startTime < millis()){
+        robot->setCoords(xStart, y,TetaSecond);
+        LOG_STATE("SETP 4 ");
+        step++;
+    }
+    else if(step == 5 && deplacementLinearPoint(mainRobot,robot,x,y)>0){
+        robot->angularSetpoint(teta,0);
+        LOG_STATE("SETP 5 ");
+        step++;
+    }
+    else if(step == 6 && !robot->getError(ANGULAR_ERROR)){
+        LOG_STATE("SETP 6 ");
+        step++;
+    }
+    if(step>6){
+        step = -1;
+        robot->setLinearMaxSpeed(10000);
+    }
+    return step == -1;
+}
+
 int initY(Asser* robot,int x, int y,int teta){
     LOG_SCOPE("initY");
     int ireturn = 0;
@@ -165,12 +238,12 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
     case SOLARPANEL_SETHOME :
         if(initStat) LOG_STATE("SOLARPANEL_SETHOME");
         if(mainRobot.tableStatus.colorTeam == YELLOW){
-            if(initPositon(robot,800,1250,-90)){
+            if(initPositon2(mainRobot, robot,800,1250,-90)){
                 nextState = SOLARPANEL_FORWARD;
             }
         }
         else{
-            if(initPositon(robot,800,-1250,-90)){
+            if(initPositon2(mainRobot, robot,800,-1250,-90)){
                 nextState = SOLARPANEL_FORWARD;
             }
         }

@@ -72,7 +72,7 @@ int deplacementLinearPoint(robotCDFR mainRobot, Asser* robot, int x, int y){
         if(initStat) LOG_STATE("DEPLACEMENT_STOP");
         robot->getBrakingDistance(distance);
         if(distance==0){
-            startTime = millis() + 5000;
+            startTime = millis() + 5000000;
             nextstep = DEPLACEMENT_WAIT;
         }
         break;
