@@ -45,7 +45,7 @@ int deplacementLinearPoint(robotCDFR mainRobot, Asser* robot, int x, int y){
             if(mainRobot.collide < DISTANCESTOP){
                 LOG_INFO("distance colide : ",mainRobot.collide);
                 nextstep = DEPLACEMENT_WAIT;
-                startTime = millis() + 5000; //TIME waiting
+                startTime = millis() + 7000; //TIME waiting
             }
             else{
                 nextstep = DEPLACEMENT_MOVE;

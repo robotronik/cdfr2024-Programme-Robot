@@ -260,7 +260,11 @@ int main(int argc, char *argv[]) {
             //****************************************************************
             case FIN:
                 if(initStat) LOG_STATE("FIN");
-                //arduino->servoPosition(2,180);
+                arduino->servoPosition(1,180);
+                arduino->servoPosition(2,CLAMPSTOP);
+                lidarStop();
+                arduino->disableStepper(1);
+                robotI2C->enableMotor(false);
                 nextState = STOP;
                 break;
             //****************************************************************
