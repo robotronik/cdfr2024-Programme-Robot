@@ -378,6 +378,9 @@ int takePlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,tableState*itab
     fsmtakePlant_t nextState = currentState;
     int deplacementreturn;
     static int positionToGo = 0;
+    int x,y,teta;
+    static bool servoChange;
+    static bool servoChange2;
 
 
     switch (currentState)
@@ -385,12 +388,24 @@ int takePlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,tableState*itab
     case TAKEPLANT_INIT :
         if(initStat) LOG_STATE("TAKEPLANT_INIT");
         nextState = TAKEPLANT_FORWARD;
-        positionToGo = itable->plantPosition[numPlante].x+20;
+        positionToGo = itable->plantPosition[numPlante].x+60;
+        arduino->servoPosition(4,180);
         robot->setLinearMaxSpeed(200);
+        servoChange = false;
+        servoChange2 = false;
         break;
     case TAKEPLANT_FORWARD :
         if(initStat) LOG_STATE("TAKEPLANT_FORWARD");
         deplacementreturn = deplacementLinearPoint(mainRobot,robot,positionToGo,yPos);
+        robot->getCoords(x,y,teta);
+        if(x>positionToGo-250 && servoChange == false){
+            servoChange = true;
+            arduino->servoPosition(4,100);
+        }
+        // if(x>positionToGo-140 && servoChange2 == false){
+        //     servoChange2 = true;
+        //     arduino->servoPosition(4,100);
+        // }
         if(deplacementreturn>=1){
             nextState = TAKEPLANT_BACKWARD;
         }

@@ -84,7 +84,6 @@ int main(int argc, char *argv[]) {
     int countStart = 0;
     int countSetHome = 0;
     
-
     // arduino->enableStepper(1);
     // arduino->servoPosition(1,180);
     // arduino->servoPosition(2,0);
@@ -165,6 +164,7 @@ int main(int argc, char *argv[]) {
             case INITIALIZE:{
                 if(initStat) LOG_STATE("INITIALIZE");
                 if(initStat){
+                    arduino->servoPosition(4,100);
                     robotI2C->enableMotor(true);
                     robotI2C->brakeMotor(false);
                     arduino->enableStepper(1);
@@ -283,6 +283,7 @@ int main(int argc, char *argv[]) {
             case FIN:
                 if(initStat){
                     LOG_STATE("FIN");
+                    arduino->servoPosition(4,180);
                     arduino->servoPosition(1,180);
                     arduino->servoPosition(2,CLAMPSTOP);
                     //lidarStop();
@@ -319,6 +320,7 @@ int main(int argc, char *argv[]) {
     }
 
     gpioPWM(18, 0);
+    arduino->servoPosition(4,180);
     arduino->ledOff(2);
     arduino->ledOff(1);
     arduino->servoPosition(1,180);

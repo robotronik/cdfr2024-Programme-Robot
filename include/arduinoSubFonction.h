@@ -6,10 +6,10 @@
 #include "arduino.hpp"
 
 #define DELAYUPDOWN 1000
-#define DELAYOPENCLOSE 300
+#define DELAYOPENCLOSE 500
 
 #define ELEVATORUP 2200
-#define ELEVATORPLANT 610
+#define ELEVATORPLANT 550
 
 #define CLAMPCLOSE 0
 #define CLAMPOPEN 180
