@@ -8,6 +8,7 @@
 #include <filesystem>
 #include <pigpio.h>
 #include <thread>
+#include <fstream>
 
 #include "fonction.h"
 #include "lidarAnalize.h"
@@ -45,6 +46,26 @@ void ctrlz(int signal) {
     ctrl_z_pressed = true;
 }
 
+
+bool isWifiConnected() {
+    std::ifstream file("/proc/net/wireless");
+    std::string line;
+
+    if (file.is_open()) {
+        while (std::getline(file, line)) {
+            if (line.find("wlan0") != std::string::npos) {
+                // Si la ligne contient "wlan0", cela indique que l'interface Wi-Fi est présente
+                return true;
+            }
+        }
+        file.close();
+    } else {
+        std::cerr << "Erreur : Impossible d'ouvrir le fichier /proc/net/wireless." << std::endl;
+    }
+
+    return false;
+}
+
 void executePythonScript(const std::string& command) {
     std::system(command.c_str());
 }
@@ -76,7 +97,7 @@ int main(int argc, char *argv[]) {
     //signal(SIGTSTP, ctrlz);
     
 
-
+    std::thread* python_thread;
     robotCDFR mainRobot;
     Asser *robotI2C = new Asser(I2C_ASSER_ADDR);
     LOG_SETROBOT(robotI2C);
@@ -248,7 +269,7 @@ int main(int argc, char *argv[]) {
                 std::filesystem::path exe_path = std::filesystem::canonical(std::filesystem::path(argv[0])).parent_path();
                 std::filesystem::path python_script_path = exe_path / "../startPAMI.py";
                 std::string command = "python3 " + python_script_path.string() + " " +  color;
-                //std::thread python_thread(executePythonScript,command);
+                python_thread = new std::thread(executePythonScript,command);
                 //
                 nextState = RUN;
                 break;
@@ -324,10 +345,6 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // if (python_thread.joinable()) {
-    //     python_thread.join();
-    //     LOG_DEBUG("FIN PYTHON");
-    // }
     gpioPWM(18, 0);
     arduino->servoPosition(4,180);
     arduino->ledOff(2);
