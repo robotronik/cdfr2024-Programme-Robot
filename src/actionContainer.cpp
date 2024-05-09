@@ -107,7 +107,7 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
     listeAction.push_back(takePlante4);
 
 // ACTION
-    takePlante5->setStartPoint(itable->plantPosition[5].x + MARGESTOCKPLANTX,itable->plantPosition[5].y + MARGESTOCKPLANTY,0,MOVE_FORWARD,ROTATION_DIRECT);
+    takePlante5->setStartPoint(itable->plantPosition[5].x - MARGESTOCKPLANTX,itable->plantPosition[5].y + MARGESTOCKPLANTY,0,MOVE_FORWARD,ROTATION_DIRECT);
     takePlante5->setRunAction([&](action* iaction, robotCDFR* iRobot, Asser* iAsser, Arduino* iarduino, tableState*itable) {
         return takePlant2(*iRobot,iAsser,iarduino,itable,itable->plantPosition[5].x - MARGESTOCKPLANTX,itable->plantPosition[5].y + MARGESTOCKPLANTY,itable->plantPosition[5].x + MARGESTOCKPLANTX/5,itable->plantPosition[5].y - MARGESTOCKPLANTY/5);
     });
