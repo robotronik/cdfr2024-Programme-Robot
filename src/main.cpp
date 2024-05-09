@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
 
     signal(SIGINT, ctrlc);
     signal(SIGTERM, ctrlc);
-    signal(SIGTSTP, ctrlz);
+    //signal(SIGTSTP, ctrlz);
     
 
 
@@ -136,10 +136,10 @@ int main(int argc, char *argv[]) {
                     int bStateCapteur2 = 0;
                     arduino->readCapteur(2,bStateCapteur2);
                     if(bStateCapteur2 == 1){
-                        robotI2C->setCoords(800,1250,-90);
+                        robotI2C->setCoords(-710,1170,90);
                     }
                     else{
-                        robotI2C->setCoords(830,-1250,-90);
+                        robotI2C->setCoords(-710,-1170,-90);
                     }
                 }
                 int bStateCapteur3 = 0;
@@ -178,13 +178,13 @@ int main(int argc, char *argv[]) {
                 if(bStateCapteur2 == 1){
                     mainRobot.tableStatus.colorTeam = YELLOW;
                     nextState = SETHOME;
-                    robotI2C->setCoords(800,1250,-90);
+                    robotI2C->setCoords(-710,1170,90);
                     LOG_INFO("teams : YELLOW");
                 }
                 else if(bStateCapteur2 == 0){
                     mainRobot.tableStatus.colorTeam = BLUE;
                     nextState = SETHOME;
-                    robotI2C->setCoords(830,-1250,-90);
+                    robotI2C->setCoords(-710,-1170,-90);
                     LOG_INFO("teams : BLUE");
                 }
                 //IF bStateCapteur2 != 1 && != 2 alors problem
