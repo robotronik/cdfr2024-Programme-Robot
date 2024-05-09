@@ -39,6 +39,10 @@ void ctrlc(int)
 {
     ctrl_c_pressed = true;
 }
+bool ctrl_z_pressed = false;
+void ctrlz(int signal) {
+    ctrl_z_pressed = true;
+}
 
 int main(int argc, char *argv[]) {
     LOG_INIT();
@@ -64,6 +68,8 @@ int main(int argc, char *argv[]) {
 
     signal(SIGINT, ctrlc);
     signal(SIGTERM, ctrlc);
+    signal(SIGTSTP, ctrlz);
+    
 
 
     robotCDFR mainRobot;
@@ -73,7 +79,7 @@ int main(int argc, char *argv[]) {
     Arduino *arduino = new Arduino(100);
     main_State_t currentState = INIT;
     main_State_t nextState = INIT;
-    bool initStat;
+    bool initStat = true;
     actionContainer* actionSystem = new actionContainer(&mainRobot, robotI2C, arduino, &(mainRobot.tableStatus));
     int countStart = 0;
     int countSetHome = 0;
@@ -106,7 +112,10 @@ int main(int argc, char *argv[]) {
                 robotI2C->getCoords(x,y,teta);
                 position_t position = {x,y,teta,0};
                 convertAngularToAxial(lidarData,count,position);
-                //pixelArtPrint(lidarData,count,50,50,100,position);
+                if(ctrl_z_pressed){
+                    ctrl_z_pressed = false;
+                    pixelArtPrint(lidarData,count,50,50,100,position);
+                }                
                 //printAngular(lidarData,count);
                 robotI2C->getBrakingDistance(distance);
                 mainRobot.collide = collide(lidarData,count,distance);
