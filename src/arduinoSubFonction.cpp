@@ -10,7 +10,7 @@ int pullpush(Arduino* arduino){
         LOG_INFO("push pull");
         arduino->servoPosition(1,0);
         step++;
-        startTime = millis()+350;
+        startTime = millis()+700;
     }
     else if(step == 1 && startTime < millis()){
         arduino->servoPosition(1,180);

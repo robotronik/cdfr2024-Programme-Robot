@@ -105,6 +105,7 @@ int initPositon2(robotCDFR mainRobot, Asser* robot,int x, int y,int teta){
         LOG_STATE("SETP -1 ");
         step++;
         robot->setLinearMaxSpeed(200);
+        robot->setMaxTorque(20);
         startTime = millis()+100;
     }
     else if(step == 0 && startTime < millis()){
@@ -143,12 +144,13 @@ int initPositon2(robotCDFR mainRobot, Asser* robot,int x, int y,int teta){
     }
     if(step>6){
         step = -1;
+        robot->setMaxTorque(100);
         robot->setLinearMaxSpeed(10000);
     }
     return step == -1;
 }
 
-int initY(Asser* robot,int x, int y,int teta){
+int initY(robotCDFR mainRobot, Asser* robot,int x, int y,int teta){
     LOG_SCOPE("initY");
     int ireturn = 0;
     static bool initStat = true;
@@ -175,11 +177,17 @@ int initY(Asser* robot,int x, int y,int teta){
         nextState = INTIY_BACKWARD;
         robot->getCoords(xSave,ySave,tetaSave);
         robot->linearSetpoint(xSave , ySave - deplacementy);
+        robot->setLinearMaxSpeed(200);
+        robot->setMaxTorque(20);
         break;
     case INTIY_BACKWARD :
         if(initStat) LOG_STATE("INTIY_BACKWARD");    
-        if(!robot->getError(LINEAR_ERROR)){
+        if(deplacementLinearPoint(mainRobot,robot,xSave, ySave - deplacementy)>0){
             robot->setCoords(xSave,ySave,TetaStart);
+            robot->setLinearMaxSpeed(10000);
+            robot->setMaxTorque(100);
+            ireturn = 1;
+            nextState = INTIY_INIT;
         }
         break;
     default:
@@ -217,7 +225,7 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
         offsetRobot2 = 30;
     }
     else{
-        offsetRobot1 = -80;
+        offsetRobot1 = -70;
         offsetRobot2 = -105;
     }
     
