@@ -5,6 +5,7 @@
 import socket    #https://wiki.python.org/moin/UdpCommunication
 import sys
 import time
+import signal
 #Parameters
 localPort=8888
 bufferSize=1024
@@ -30,6 +31,7 @@ def main():
         #print("received message: {} from {}\n".format(data,addr))
         byte=bytes(str(start_time)+":"+str(team),'utf-8')
         sock.sendto(byte,('192.168.8.255',remotePort))  # write data
+        time.sleep(0.1)
   
 
 # function get_ip_address 
@@ -42,9 +44,14 @@ def get_ip_address():
     s.close()
     return ip_address
 
+def sigint_handler(signum, frame):
+    print("Signal SIGINT capturé. Arrêt du script Python.")
+    sys.exit(0)
+
 
 
 
 if __name__ == '__main__':
     print("ok")
-    #main()
+    signal.signal(signal.SIGINT, sigint_handler)
+    main()

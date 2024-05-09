@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <filesystem>
 #include <pigpio.h>
+#include <thread>
 
 #include "fonction.h"
 #include "lidarAnalize.h"
@@ -42,6 +43,10 @@ void ctrlc(int)
 bool ctrl_z_pressed = false;
 void ctrlz(int signal) {
     ctrl_z_pressed = true;
+}
+
+void executePythonScript(const std::string& command) {
+    std::system(command.c_str());
 }
 
 int main(int argc, char *argv[]) {
@@ -83,7 +88,7 @@ int main(int argc, char *argv[]) {
     actionContainer* actionSystem = new actionContainer(&mainRobot, robotI2C, arduino, &(mainRobot.tableStatus));
     int countStart = 0;
     int countSetHome = 0;
-    
+
     // arduino->enableStepper(1);
     // arduino->servoPosition(1,180);
     // arduino->servoPosition(2,0);
@@ -243,7 +248,7 @@ int main(int argc, char *argv[]) {
                 std::filesystem::path exe_path = std::filesystem::canonical(std::filesystem::path(argv[0])).parent_path();
                 std::filesystem::path python_script_path = exe_path / "../startPAMI.py";
                 std::string command = "python3 " + python_script_path.string() + " " +  color;
-                std::system(command.c_str());
+                std::thread python_thread(executePythonScript,command);
                 //
                 nextState = RUN;
                 break;
@@ -319,6 +324,10 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    // if (python_thread.joinable()) {
+    //     python_thread.join();
+    //     LOG_DEBUG("FIN PYTHON");
+    // }
     gpioPWM(18, 0);
     arduino->servoPosition(4,180);
     arduino->ledOff(2);
