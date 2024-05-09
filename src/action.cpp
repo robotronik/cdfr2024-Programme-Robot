@@ -123,7 +123,12 @@ void action::setRunAction(std::function<int(action*, robotCDFR*, Asser*, Arduino
 }
 
 int action::goToStart(void){
-    return deplacementgoToPoint(*mainRobot, robot, startPostion.x,startPostion.y, startPostion.teta, startDirection);
+    if(noTetaStart){
+        return deplacementgoToPointNoTurn(*mainRobot, robot, startPostion.x,startPostion.y, startDirection,startRotation);
+    }
+    else{
+        return deplacementgoToPoint(*mainRobot, robot, startPostion.x,startPostion.y, startPostion.teta, startDirection);
+    }    
 }
 
 
@@ -138,6 +143,15 @@ void action::setStartPoint(int x, int y, int teta, asser_direction_side Directio
     startDirection = Direction;
     startRotation = rotation;
 }
+
+void action::setStartPoint(int x, int y, asser_direction_side Direction, asser_rotation_side rotation){
+    startPostion.x = x;
+    startPostion.y = y;
+    startDirection = Direction;
+    startRotation = rotation;
+    noTetaStart = true;
+}
+
 void action::setEndPoint(int x, int y, int teta, asser_direction_side Direction, asser_rotation_side rotation){
     endPostion.x = x;
     endPostion.y = y;
