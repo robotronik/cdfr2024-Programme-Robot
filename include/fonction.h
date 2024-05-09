@@ -52,7 +52,20 @@ typedef enum {
     INTIY_BACKWARD
 } fsminitY_t;
 
+
+typedef enum {
+    SETPOS_INIT,
+    SETPOS_WAITINIT,
+    SETPOS_FIRSTBACKWARD,
+    SETPOS_FIRSTFORWARD,
+    SETPOS_SECONDBACKWARD,
+    SETPOS_SECONDFORWARD
+} fsminitPos_t;
+
+
+
 int initPositon(Asser* robot,int x, int y,int teta);
+int initPositon2(robotCDFR mainRobot, Asser* robot,int x, int y,int teta);
 int initY(robotCDFR mainRobot, Asser* robot,int x, int y,int teta);
 int turnSolarPannel(robotCDFR mainRobot,Asser* robot,Arduino* arduino);
 int takePlant(robotCDFR mainRobot,Asser* robot,Arduino* arduino,tableState*itable,int yPos,int xStart, int xEnd, int numPlante);

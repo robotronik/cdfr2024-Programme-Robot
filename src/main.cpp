@@ -185,12 +185,12 @@ int main(int argc, char *argv[]) {
             case SETHOME:{
                 if(initStat) LOG_STATE("SETHOME");
                 if(mainRobot.tableStatus.colorTeam == YELLOW){
-                    if(initPositon(robotI2C,-800,1325,90)){
+                    if(initPositon2(mainRobot,robotI2C,-800,1325,90)){
                         nextState = WAITSTART;
                     }
                 }
                 else{
-                    if(initPositon(robotI2C,-800,-1325,-90)){
+                    if(initPositon2(mainRobot,robotI2C,-800,-1325,-90)){
                         nextState = WAITSTART;
                     }
                     // if(initPositon(robotI2C,800,-1250,-90)){

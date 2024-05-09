@@ -79,9 +79,14 @@ int initPositon(Asser* robot,int x, int y,int teta){
 }
 
 int initPositon2(robotCDFR mainRobot, Asser* robot,int x, int y,int teta){
-    LOG_SCOPE("initPos");
+    LOG_SCOPE("initPositon2");
+    int ireturn = 0;
+    static bool initStat = true;
+    static fsminitPos_t currentState = SETPOS_INIT;
+    fsminitPos_t nextState = currentState;
+    //int xSave,ySave,tetaSave;
     static unsigned long startTime;
-    static int step = -1;
+    //static int step = -1;
 
     int TetaStart = 90;
     int TetaSecond = -180;
@@ -100,54 +105,116 @@ int initPositon2(robotCDFR mainRobot, Asser* robot,int x, int y,int teta){
         xStart = -xStart;
     }
 
-    if(step == -1){
+    // if(step == -1){
+    //     robot->setCoords(0,0,0);
+    //     LOG_STATE("SETP -1 ");
+    //     step++;
+    //     robot->setLinearMaxSpeed(200);
+    //     robot->setMaxTorque(20);
+    //     startTime = millis()+100;
+    // }
+    // else if(step == 0 && startTime < millis()){
+    //     LOG_STATE("SETP 0 ");
+    //     step++;
+    // }
+    // else if(step == 1 && deplacementLinearPoint(mainRobot,robot,-400,0)>0){
+    //     robot->setCoords(0,yStart,TetaStart);
+    //     LOG_STATE("SETP 1 ");       
+    //     step++;
+    // }
+    // else if(step == 2 && deplacementLinearPoint(mainRobot,robot,0,y)>0){
+    //     robot->angularSetpoint(TetaSecond,0);
+    //     LOG_STATE("SETP 2 ");
+    //     step++;
+    // }
+    // else if(step == 3 && !robot->getError(ANGULAR_ERROR)){
+    //     LOG_STATE("SETP 3 ");
+    //     startTime = millis()+3000;
+    //     step++;
+    // }
+    // else if(step == 4 && deplacementLinearPoint(mainRobot,robot,xSecond,y)>0){
+    //     robot->setCoords(xStart, y,TetaSecond);
+    //     LOG_STATE("SETP 4 ");
+    //     step++;
+    // }
+    // else if(step == 5 && deplacementLinearPoint(mainRobot,robot,x,y)>0){
+    //     robot->angularSetpoint(teta,0);
+    //     LOG_STATE("SETP 5 ");
+    //     step++;
+    // }
+    // else if(step == 6 && !robot->getError(ANGULAR_ERROR)){
+    //     LOG_STATE("SETP 6 ");
+    //     step++;
+    // }
+    // if(step>6){
+    //     step = -1;
+    //     robot->setMaxTorque(100);
+    //     robot->setLinearMaxSpeed(10000);
+    // }
+    // return step == -1;
+
+    
+    switch (currentState)
+    {
+    case SETPOS_INIT :
+        if(initStat) LOG_STATE("SETPOS_INIT");
         robot->setCoords(0,0,0);
-        LOG_STATE("SETP -1 ");
-        step++;
         robot->setLinearMaxSpeed(200);
         robot->setMaxTorque(20);
         startTime = millis()+100;
+        nextState = SETPOS_FIRSTFORWARD;
+        break;
+
+    case SETPOS_WAITINIT :
+        if(initStat) LOG_STATE("SETPOS_WAITINIT");
+        if(startTime < millis()){
+            nextState = SETPOS_WAITINIT;
+        }
+        break;
+
+    case SETPOS_FIRSTFORWARD :
+        if(initStat) LOG_STATE("SETPOS_FIRSTFORWARD");
+        if(deplacementLinearPoint(mainRobot,robot,-400,0)>0){
+            nextState = SETPOS_FIRSTBACKWARD;
+            robot->setCoords(0,yStart,TetaStart);
+        }
+        break;
+
+    case SETPOS_FIRSTBACKWARD :
+        if(initStat) LOG_STATE("SETPOS_FIRSTBACKWARD");    
+        if(deplacementgoToPoint(mainRobot,robot,0,y,TetaSecond)>0){
+            nextState = SETPOS_SECONDBACKWARD;
+        }
+        break;
+
+    case SETPOS_SECONDBACKWARD :
+        if(initStat) LOG_STATE("SETPOS_SECONDBACKWARD");
+        if(deplacementLinearPoint(mainRobot,robot,xSecond,y)>0){
+            robot->setCoords(xStart, y,TetaSecond);
+            nextState = SETPOS_SECONDFORWARD;
+        }
+        break;
+
+    case SETPOS_SECONDFORWARD :
+        if(initStat) LOG_STATE("SETPOS_SECONDFORWARD");
+        if(deplacementgoToPoint(mainRobot,robot,x,y,teta)>0){
+            nextState = SETPOS_INIT;
+            ireturn = 1;
+        }
+        break;
+        
+    default:
+        if(initStat) LOG_STATE("default");
+        nextState = SETPOS_INIT;
+        break;
     }
-    else if(step == 0 && startTime < millis()){
-        LOG_STATE("SETP 0 ");
-        step++;
-        startTime = millis()+3000;
+
+    initStat = false;
+    if(nextState != currentState){
+        initStat = true;
     }
-    else if(step == 1 && deplacementLinearPoint(mainRobot,robot,-400,0)>0){
-        robot->setCoords(0,yStart,TetaStart);
-        LOG_STATE("SETP 1 ");       
-        step++;
-    }
-    else if(step == 2 && deplacementLinearPoint(mainRobot,robot,0,y)>0){
-        robot->angularSetpoint(TetaSecond,0);
-        LOG_STATE("SETP 2 ");
-        step++;
-    }
-    else if(step == 3 && !robot->getError(ANGULAR_ERROR)){
-        LOG_STATE("SETP 3 ");
-        startTime = millis()+3000;
-        step++;
-    }
-    else if(step == 4 && deplacementLinearPoint(mainRobot,robot,xSecond,y)>0){
-        robot->setCoords(xStart, y,TetaSecond);
-        LOG_STATE("SETP 4 ");
-        step++;
-    }
-    else if(step == 5 && deplacementLinearPoint(mainRobot,robot,x,y)>0){
-        robot->angularSetpoint(teta,0);
-        LOG_STATE("SETP 5 ");
-        step++;
-    }
-    else if(step == 6 && !robot->getError(ANGULAR_ERROR)){
-        LOG_STATE("SETP 6 ");
-        step++;
-    }
-    if(step>6){
-        step = -1;
-        robot->setMaxTorque(100);
-        robot->setLinearMaxSpeed(10000);
-    }
-    return step == -1;
+    currentState = nextState;
+    return ireturn;
 }
 
 int initY(robotCDFR mainRobot, Asser* robot,int x, int y,int teta){
