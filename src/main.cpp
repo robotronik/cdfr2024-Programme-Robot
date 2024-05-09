@@ -123,7 +123,16 @@ int main(int argc, char *argv[]) {
         switch (currentState) {
             //****************************************************************
             case INIT:{
-                if(initStat) LOG_STATE("INIT");
+                if(initStat){ LOG_STATE("INIT");
+                    int bStateCapteur2 = 0;
+                    arduino->readCapteur(2,bStateCapteur2);
+                    if(bStateCapteur2 == 1){
+                        robotI2C->setCoords(800,1250,-90);
+                    }
+                    else{
+                        robotI2C->setCoords(830,-1250,-90);
+                    }
+                }
                 int bStateCapteur3 = 0;
                 int bStateCapteur1 = 0;
                 arduino->readCapteur(3,bStateCapteur3);
@@ -166,7 +175,7 @@ int main(int argc, char *argv[]) {
                 else if(bStateCapteur2 == 0){
                     mainRobot.tableStatus.colorTeam = BLUE;
                     nextState = SETHOME;
-                    robotI2C->setCoords(830,-1440,-90);
+                    robotI2C->setCoords(830,-1250,-90);
                     LOG_INFO("teams : BLUE");
                 }
                 //IF bStateCapteur2 != 1 && != 2 alors problem
