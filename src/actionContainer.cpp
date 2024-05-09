@@ -63,9 +63,9 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
     listeAction.push_back(takePlante1);
 
 // ACTION
-    takePlante2->setStartPoint(itable->plantPosition[2].x - MARGESTOCKPLANT,itable->plantPosition[2].y,0,MOVE_FORWARD,ROTATION_DIRECT);
+    takePlante2->setStartPoint(itable->plantPosition[2].x - MARGESTOCKPLANTX,itable->plantPosition[2].y - MARGESTOCKPLANTY,0,MOVE_FORWARD,ROTATION_DIRECT);
     takePlante2->setRunAction([](action* iaction, robotCDFR* iRobot, Asser* iAsser, Arduino* iarduino, tableState*itable) {
-        return takePlant(*iRobot,iAsser,iarduino,itable,itable->plantPosition[2].y,itable->plantPosition[2].x - MARGESTOCKPLANT,itable->plantPosition[2].x + 400,2);
+        return takePlant2(*iRobot,iAsser,iarduino,itable,itable->plantPosition[2].x - MARGESTOCKPLANTX,itable->plantPosition[2].y - MARGESTOCKPLANTY,itable->plantPosition[2].x + MARGESTOCKPLANTX/5,itable->plantPosition[2].y + MARGESTOCKPLANTY/5);
     });
     takePlante2->goodEnd([](tableState*itable){
         itable->robotHavePlante = true;
@@ -158,10 +158,10 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
 
 
 // ACTION BLUE
-    putInJardiniere2->setStartPoint(-700,-762,180,MOVE_FORWARD,ROTATION_DIRECT);
-    putInJardiniere2->setEndPoint(-700,-762,180,MOVE_BACKWARD,ROTATION_DIRECT);
+    putInJardiniere2->setStartPoint(-700,-732,180,MOVE_FORWARD,ROTATION_DIRECT);
+    putInJardiniere2->setEndPoint(-700,-732,180,MOVE_BACKWARD,ROTATION_DIRECT);
     putInJardiniere2->setRunAction([](action* iaction, robotCDFR* iRobot, Asser* iAsser, Arduino* iarduino, tableState*itable) {
-        return jardinierePutPlant(*iRobot,iAsser,iarduino,-870,-762,-180);
+        return jardinierePutPlant(*iRobot,iAsser,iarduino,-870,-732,-180);
     });
     putInJardiniere2->goodEnd([](tableState*itable){
         itable->robotHavePlante = false;
@@ -174,10 +174,10 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
 
 
 // ACTION YELLOW
-    putInJardiniere3->setStartPoint(-700,762,180,MOVE_FORWARD,ROTATION_DIRECT);
-    putInJardiniere3->setEndPoint(-700,762,180,MOVE_BACKWARD,ROTATION_DIRECT);
+    putInJardiniere3->setStartPoint(-700,732,180,MOVE_FORWARD,ROTATION_DIRECT);
+    putInJardiniere3->setEndPoint(-700,732,180,MOVE_BACKWARD,ROTATION_DIRECT);
     putInJardiniere3->setRunAction([](action* iaction, robotCDFR* iRobot, Asser* iAsser, Arduino* iarduino, tableState*itable) {
-        return jardinierePutPlant(*iRobot,iAsser,iarduino,-870,762,-180);
+        return jardinierePutPlant(*iRobot,iAsser,iarduino,-870,732,-180);
     });
     putInJardiniere3->goodEnd([](tableState*itable){
         itable->robotHavePlante = false;

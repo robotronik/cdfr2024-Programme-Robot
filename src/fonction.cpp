@@ -388,8 +388,8 @@ int takePlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,tableState*itab
     case TAKEPLANT_INIT :
         if(initStat) LOG_STATE("TAKEPLANT_INIT");
         nextState = TAKEPLANT_FORWARD;
-        positionToGo = itable->plantPosition[numPlante].x+60;
-        arduino->servoPosition(4,180);
+        positionToGo = itable->plantPosition[numPlante].x+100;
+        arduino->servoPosition(4,100);
         robot->setLinearMaxSpeed(200);
         servoChange = false;
         servoChange2 = false;
@@ -398,14 +398,14 @@ int takePlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,tableState*itab
         if(initStat) LOG_STATE("TAKEPLANT_FORWARD");
         deplacementreturn = deplacementLinearPoint(mainRobot,robot,positionToGo,yPos);
         robot->getCoords(x,y,teta);
-        if(x>positionToGo-250 && servoChange == false){
+        if(x>positionToGo-200 && servoChange == false){
             servoChange = true;
+            arduino->servoPosition(4,170);
+        }
+        if(x>positionToGo-50 && servoChange2 == false){
+            servoChange2 = true;
             arduino->servoPosition(4,100);
         }
-        // if(x>positionToGo-140 && servoChange2 == false){
-        //     servoChange2 = true;
-        //     arduino->servoPosition(4,100);
-        // }
         if(deplacementreturn>=1){
             nextState = TAKEPLANT_BACKWARD;
         }
@@ -439,6 +439,76 @@ int takePlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,tableState*itab
         }
         else if(deplacementreturn<=-1){
             nextState = TAKEPLANT_REFORWARD;
+        }
+        break;
+    case TAKEPLANT_TAKE :
+        if(initStat) LOG_STATE("TAKEPLANT_TAKE");
+        deplacementreturn = catchPlant(arduino);
+        if(deplacementreturn){
+            nextState = TAKEPLANT_END;
+        }
+        break;
+    case TAKEPLANT_END :
+        if(initStat) LOG_STATE("TAKEPLANT_END");
+        nextState = TAKEPLANT_INIT;
+        robot->setLinearMaxSpeed(10000);
+        ireturn = 1;
+        break;
+    
+    default:
+        if(initStat) LOG_STATE("default");
+        nextState = TAKEPLANT_INIT;
+        break;
+    }
+
+    initStat = false;
+    if(nextState != currentState){
+        initStat = true;
+    }
+    currentState = nextState;
+    return ireturn;
+
+}
+
+int takePlant2(robotCDFR mainRobot, Asser* robot,Arduino* arduino,tableState*itable,int xStart,int yStart, int xEnd, int yEnd){
+    LOG_SCOPE("take plant");
+    int ireturn = 0;
+    static bool initStat = true;
+    static fsmtakePlant_t currentState = TAKEPLANT_INIT;
+    fsmtakePlant_t nextState = currentState;
+    int deplacementreturn;
+    int xtogo = xEnd - (115/sqrt((xEnd-xStart)*(xEnd-xStart)+(yEnd-yStart)*(yEnd-yStart)))*(xEnd-xStart);
+    int ytogo = yEnd - (115/sqrt((xEnd-xStart)*(xEnd-xStart)+(yEnd-yStart)*(yEnd-yStart)))*(yEnd-yStart);
+
+    switch (currentState)
+    {
+    case TAKEPLANT_INIT :
+        if(initStat) LOG_STATE("TAKEPLANT_INIT");
+        nextState = TAKEPLANT_FORWARD;
+        arduino->servoPosition(4,100);
+        robot->setLinearMaxSpeed(200);
+        break;
+    case TAKEPLANT_FORWARD :
+        if(initStat) LOG_STATE("TAKEPLANT_FORWARD");
+        deplacementreturn = deplacementgoToPointNoTurn(mainRobot,robot,xEnd,yEnd);
+        if(deplacementreturn>=1){
+            nextState = TAKEPLANT_BACKWARD;
+        }
+        else if(deplacementreturn<=-1){
+            nextState = TAKEPLANT_INIT;
+            ireturn = -1;
+            robot->setLinearMaxSpeed(10000);
+        }
+        break;
+    case TAKEPLANT_BACKWARD :
+        if(initStat){ LOG_STATE("TAKEPLANT_BACKWARD");
+        }
+        deplacementreturn = deplacementgoToPointNoTurn(mainRobot,robot,xtogo,ytogo,MOVE_BACKWARD);
+        if(deplacementreturn>=1){
+            nextState = TAKEPLANT_TAKE;
+        }
+        else if(deplacementreturn<=-1){
+            nextState = TAKEPLANT_INIT;
         }
         break;
     case TAKEPLANT_TAKE :

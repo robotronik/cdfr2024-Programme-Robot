@@ -63,7 +63,7 @@ int releasePlant(Arduino* arduino){
 
     if(step == 0 ){
         LOG_INFO("release plant");
-        arduino->moveStepper(ELEVATORPLANT,1);
+        arduino->moveStepper(750,1);
         step++;
         startTime = millis()+700;
     }

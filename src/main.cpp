@@ -248,7 +248,7 @@ int main(int argc, char *argv[]) {
                 std::filesystem::path exe_path = std::filesystem::canonical(std::filesystem::path(argv[0])).parent_path();
                 std::filesystem::path python_script_path = exe_path / "../startPAMI.py";
                 std::string command = "python3 " + python_script_path.string() + " " +  color;
-                std::thread python_thread(executePythonScript,command);
+                //std::thread python_thread(executePythonScript,command);
                 //
                 nextState = RUN;
                 break;

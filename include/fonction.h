@@ -9,6 +9,7 @@
 #include "arduinoSubFonction.h"
 #include "logger.hpp"
 #include "robot.h"
+#include <math.h>
 
 
 typedef enum {
@@ -69,6 +70,7 @@ int initPositon2(robotCDFR mainRobot, Asser* robot,int x, int y,int teta);
 int initY(robotCDFR mainRobot, Asser* robot,int x, int y,int teta);
 int turnSolarPannel(robotCDFR mainRobot,Asser* robot,Arduino* arduino);
 int takePlant(robotCDFR mainRobot,Asser* robot,Arduino* arduino,tableState*itable,int yPos,int xStart, int xEnd, int numPlante);
+int takePlant2(robotCDFR mainRobot, Asser* robot,Arduino* arduino,tableState*itable,int xStart,int yStart, int xEnd, int yEnd);
 int returnToHome(Asser* robot);
 int jardinierePutPlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,int x,int y,int teta);
 bool allJardiniereFull(tableState* itable);
