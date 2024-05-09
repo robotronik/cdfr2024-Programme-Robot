@@ -115,7 +115,7 @@ int collide(lidarAnalize_t* data, int count ,int distanceStop){
 void getTableValid(lidarAnalize_t* data, int count){
     for(int i = 0; i <count; i++){
         if(data[i].valid){
-            if(data[i].x<1000 && data[i].x>-1000 && data[i].y<1500 && data[i].y>-1500)
+            if(data[i].x<950 && data[i].x>-950 && data[i].y<1450 && data[i].y>-1450)
                 data[i].onTable = true;
             else
                 data[i].onTable = false;
