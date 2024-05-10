@@ -281,9 +281,9 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
 
 
 //PUSH POT
-    pushPotAction1->setStartPoint(itable->JardinierePosition[1].x+PUSHPOTMARGEX1,-1500+PUSHPOTMARGEY,-180, MOVE_BACKWARD, ROTATION_DIRECT);
+    pushPotAction1->setStartPoint(itable->JardinierePosition[1].x+PUSHPOTMARGEX1,-1500+PUSHPOTMARGEY, MOVE_BACKWARD, ROTATION_DIRECT);
     pushPotAction1->setRunAction([](action* iaction, robotCDFR* iRobot, Asser* iAsser, Arduino* iarduino, tableState*itable) {
-        return deplacementgoToPoint(*iRobot, iAsser, itable->JardinierePosition[1].x+PUSHPOTMARGEX2, -1500+PUSHPOTMARGEY, -180, MOVE_BACKWARD,ROTATION_DIRECT);
+        return deplacementgoToPointNoTurn(*iRobot, iAsser, itable->JardinierePosition[1].x+PUSHPOTMARGEX2, -1500+PUSHPOTMARGEY+20, MOVE_BACKWARD,ROTATION_DIRECT);
     });
     pushPotAction1->goodEnd([](tableState*itable){
         itable->jardiniereFree[1] = true;
@@ -295,9 +295,9 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
 
 
 //PUSH POT
-    pushPotAction4->setStartPoint(itable->JardinierePosition[4].x+PUSHPOTMARGEX1,1500-PUSHPOTMARGEY,-180, MOVE_BACKWARD, ROTATION_DIRECT);
+    pushPotAction4->setStartPoint(itable->JardinierePosition[4].x+PUSHPOTMARGEX1,1500-PUSHPOTMARGEY, MOVE_BACKWARD, ROTATION_DIRECT);
     pushPotAction4->setRunAction([](action* iaction, robotCDFR* iRobot, Asser* iAsser, Arduino* iarduino, tableState*itable) {
-        return deplacementgoToPoint(*iRobot, iAsser, itable->JardinierePosition[4].x+PUSHPOTMARGEX2, 1500-PUSHPOTMARGEY, -180, MOVE_BACKWARD,ROTATION_DIRECT);
+        return deplacementgoToPointNoTurn(*iRobot, iAsser, itable->JardinierePosition[4].x+PUSHPOTMARGEX2, 1500-PUSHPOTMARGEY-20, MOVE_BACKWARD,ROTATION_DIRECT);
     });
     pushPotAction4->goodEnd([](tableState*itable){
         itable->jardiniereFree[2] = true;
