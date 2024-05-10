@@ -562,6 +562,7 @@ int jardinierePutPlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,int x,
         deplacementreturn = deplacementgoToPoint(mainRobot,robot,x,y,teta,MOVE_FORWARD,ROTATION_DIRECT);
         if(deplacementreturn > 0){
             robot->stop();
+            robot->brakeMotor(true);
             nextState = PUTPLANT_PLACE;
         }
         else if(deplacementreturn < 0){
@@ -574,6 +575,8 @@ int jardinierePutPlant(robotCDFR mainRobot, Asser* robot,Arduino* arduino,int x,
         if(initStat) LOG_STATE("PUTPLANT_PLACE");
         if(releasePlant(arduino)){
             robot->stop();
+            robot->brakeMotor(false);
+            robot->enableMotor(true);
             nextState = PUTPLANT_INIT;
             ireturn = 1;
         }

@@ -97,7 +97,6 @@ int main(int argc, char *argv[]) {
     //signal(SIGTSTP, ctrlz);
     
 
-    std::thread* python_thread;
     robotCDFR mainRobot;
     Asser *robotI2C = new Asser(I2C_ASSER_ADDR);
     LOG_SETROBOT(robotI2C);
@@ -265,11 +264,11 @@ int main(int argc, char *argv[]) {
                 mainRobot.tableStatus.startTime = millis();
                 actionSystem->initAction(&mainRobot, robotI2C, arduino, &(mainRobot.tableStatus));
                 //LAUNCH PYTHON
-                std::string color = mainRobot.tableStatus.colorTeam == YELLOW ? "YELLOW" : "BLUE";
-                std::filesystem::path exe_path = std::filesystem::canonical(std::filesystem::path(argv[0])).parent_path();
-                std::filesystem::path python_script_path = exe_path / "../startPAMI.py";
-                std::string command = "python3 " + python_script_path.string() + " " +  color;
-                python_thread = new std::thread(executePythonScript,command);
+                // std::string color = mainRobot.tableStatus.colorTeam == YELLOW ? "YELLOW" : "BLUE";
+                // std::filesystem::path exe_path = std::filesystem::canonical(std::filesystem::path(argv[0])).parent_path();
+                // std::filesystem::path python_script_path = exe_path / "../startPAMI.py";
+                // std::string command = "python3 " + python_script_path.string() + " " +  color;
+                // python_thread = new std::thread(executePythonScript,command);
                 //
                 nextState = RUN;
                 break;
