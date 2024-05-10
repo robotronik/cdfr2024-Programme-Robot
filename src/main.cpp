@@ -121,6 +121,12 @@ int main(int argc, char *argv[]) {
     // while(!releasePlant(arduino));
     // while(!ctrl_c_pressed);
 
+    // std::string colorTest = mainRobot.tableStatus.colorTeam == YELLOW ? "YELLOW" : "BLUE";
+    // std::filesystem::path exe_pathTest = std::filesystem::canonical(std::filesystem::path(argv[0])).parent_path();
+    // std::filesystem::path python_script_pathTest = exe_pathTest / "../startPAMI.py";
+    // std::string commandTest = "python3 " + python_script_pathTest.string() + " " +  colorTest;
+    // std::thread python_threadTest(executePythonScript,commandTest);
+
 
     while (1) {
 
