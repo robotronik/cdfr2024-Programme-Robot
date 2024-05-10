@@ -352,12 +352,12 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
     case SOLARPANEL_SETHOME :
         if(initStat) LOG_STATE("SOLARPANEL_SETHOME");
         if(mainRobot.tableStatus.colorTeam == YELLOW){
-            if(initPositonY(mainRobot, robot,800,1270,-90)){
+            if(initPositon2(mainRobot, robot,800,1250,-90)){
                 nextState = SOLARPANEL_FORWARD;
             }
         }
         else{
-            if(initPositonY(mainRobot, robot,800,-1270,-90)){
+            if(initPositon2(mainRobot, robot,800,-1250,-90)){
                 nextState = SOLARPANEL_FORWARD;
             }
         }
