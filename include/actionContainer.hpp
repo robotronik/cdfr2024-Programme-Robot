@@ -13,7 +13,7 @@
 
 #define PUSHPOTMARGEY 180
 #define PUSHPOTMARGEX1 -150
-#define PUSHPOTMARGEX2 200
+#define PUSHPOTMARGEX2 250
 
 class actionContainer
 {
