@@ -25,7 +25,7 @@ int deplacementLinearPoint(robotCDFR mainRobot, Asser* robot, int x, int y){
         // Go directly in wait if collide
         // Actual problem : at the begengin, the collide system not watch the good side
 
-        nextstep = DEPLACEMENT_MOVE;
+        nextstep = DEPLACEMENT_WAITFIRSTMOVE;
         robot->linearSetpoint(memx,memy);
 
         // if(mainRobot.tableStatus.collide < DISTANCESTOP){
