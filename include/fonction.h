@@ -66,6 +66,7 @@ typedef enum {
 
 
 int initPositon(Asser* robot,int x, int y,int teta);
+int initPositonY(robotCDFR mainRobot, Asser* robot,int x, int y,int teta);
 int initPositon2(robotCDFR mainRobot, Asser* robot,int x, int y,int teta);
 int initY(robotCDFR mainRobot, Asser* robot,int x, int y,int teta);
 int turnSolarPannel(robotCDFR mainRobot,Asser* robot,Arduino* arduino);

@@ -78,6 +78,88 @@ int initPositon(Asser* robot,int x, int y,int teta){
     return step == -1;
 }
 
+int initPositonY(robotCDFR mainRobot, Asser* robot,int x, int y,int teta){
+    LOG_SCOPE("initPositonY");
+    int ireturn = 0;
+    static bool initStat = true;
+    static fsminitPos_t currentState = SETPOS_INIT;
+    fsminitPos_t nextState = currentState;
+    int xSave,ySave,tetaSave;
+    static unsigned long startTime;
+    //static int step = -1;
+
+    int TetaStart = 90;
+    int TetaSecond = -180;
+    int xSecond = 300;
+    int xStart = 1000 - ROBOT_Y_OFFSET;
+    int yStart = 1500 - ROBOT_Y_OFFSET;
+    int yBack = 400;
+    if(y<0){
+        TetaStart = -90;
+    }
+     if(y<0){
+        yBack = -yBack;
+    }
+    if(y<0){
+        yStart = -yStart;
+    }
+    if(x<0){
+        TetaSecond = 0;
+        xSecond = -xSecond;
+        xStart = -xStart;
+    }
+
+    
+    switch (currentState)
+    {
+    case SETPOS_INIT :
+        if(initStat) LOG_STATE("SETPOS_INIT");
+        robot->getCoords(xSave,ySave,tetaSave);
+        robot->setLinearMaxSpeed(200);
+        robot->setMaxTorque(20);
+        startTime = millis()+100;
+        nextState = SETPOS_FIRSTFORWARD;
+        break;
+
+    case SETPOS_WAITINIT :
+        if(initStat) LOG_STATE("SETPOS_WAITINIT");
+        if(startTime < millis()){
+            nextState = SETPOS_WAITINIT;
+        }
+        break;
+
+    case SETPOS_FIRSTFORWARD :
+        if(initStat) LOG_STATE("SETPOS_FIRSTFORWARD");
+        if(deplacementLinearPoint(mainRobot,robot,xSave,ySave+yBack)>0){
+            nextState = SETPOS_FIRSTBACKWARD;
+            robot->setCoords(xSave,yStart,TetaStart);
+        }
+        break;
+
+    case SETPOS_FIRSTBACKWARD :
+        if(initStat) LOG_STATE("SETPOS_FIRSTBACKWARD");    
+        if(deplacementgoToPoint(mainRobot,robot,xSave,y,teta)>0){
+            nextState = SETPOS_INIT;
+            robot->setLinearMaxSpeed(10000);
+            robot->setMaxTorque(100);
+            ireturn = 1;
+        }
+        break;
+        
+    default:
+        if(initStat) LOG_STATE("default");
+        nextState = SETPOS_INIT;
+        break;
+    }
+
+    initStat = false;
+    if(nextState != currentState){
+        initStat = true;
+    }
+    currentState = nextState;
+    return ireturn;
+}
+
 int initPositon2(robotCDFR mainRobot, Asser* robot,int x, int y,int teta){
     LOG_SCOPE("initPositon2");
     int ireturn = 0;
@@ -270,12 +352,12 @@ int turnSolarPannel(robotCDFR mainRobot, Asser* robot,Arduino* arduino){
     case SOLARPANEL_SETHOME :
         if(initStat) LOG_STATE("SOLARPANEL_SETHOME");
         if(mainRobot.tableStatus.colorTeam == YELLOW){
-            if(initPositon2(mainRobot, robot,800,1250,-90)){
+            if(initPositonY(mainRobot, robot,800,1250,-90)){
                 nextState = SOLARPANEL_FORWARD;
             }
         }
         else{
-            if(initPositon2(mainRobot, robot,800,-1250,-90)){
+            if(initPositonY(mainRobot, robot,800,-1250,-90)){
                 nextState = SOLARPANEL_FORWARD;
             }
         }
