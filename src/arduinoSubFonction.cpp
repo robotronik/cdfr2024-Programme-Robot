@@ -83,6 +83,16 @@ int releasePlant(Arduino* arduino){
         startTime = millis()+DELAYOPENCLOSE;
     }
     else if(step == 4 && startTime < millis()){
+        arduino->servoPosition(2,CLAMPOPEN);
+        step++;
+        startTime = millis()+DELAYOPENCLOSE;
+    }
+    else if(step == 5 && startTime < millis()){
+        arduino->servoPosition(2,CLAMPSLEEP);
+        step++;
+        startTime = millis()+DELAYOPENCLOSE;
+    }
+    else if(step == 6 && startTime < millis()){
         step = 0;
         bret = true;
     }
