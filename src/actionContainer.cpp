@@ -75,21 +75,24 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
     });
     takePlante2->setCostAction([](tableState*itable){
         int cost = itable->colorTeam == BLUE ? 100 : 80;
-        return itable->planteStockFull[2] && !itable->robotHavePlante && !allJardiniereFull(itable) ? cost : -1;
+        //return itable->planteStockFull[2] && !itable->robotHavePlante && !allJardiniereFull(itable) ? cost : -1;
+        return itable->planteStockFull[2] && !itable->robotHavePlante && !allJardiniereFull(itable) ? -1 : -1;
     });
     listeAction.push_back(takePlante2);
 
 // ACTION
-    takePlante3->setStartPoint(itable->plantPosition[3].x - MARGESTOCKPLANT,itable->plantPosition[3].y,MOVE_FORWARD,ROTATION_DIRECT);
-    takePlante3->setRunAction([&](action* iaction, robotCDFR* iRobot, Asser* iAsser, Arduino* iarduino, tableState*itable) {
-        return takePlant(*iRobot,iAsser,iarduino,itable,itable->plantPosition[3].y,itable->plantPosition[3].x - MARGESTOCKPLANT,itable->plantPosition[3].x + 400,3);
+    takePlante3->setStartPoint(itable->plantPosition[3].x,itable->plantPosition[3].y - MARGESTOCKPLANTY,MOVE_FORWARD,ROTATION_DIRECT);
+    takePlante3->setRunAction([](action* iaction, robotCDFR* iRobot, Asser* iAsser, Arduino* iarduino, tableState*itable) {
+        return takePlant2(*iRobot,iAsser,iarduino,itable,itable->plantPosition[3].x,itable->plantPosition[3].y - MARGESTOCKPLANTY,itable->plantPosition[3].x,itable->plantPosition[3].y + MARGESTOCKPLANTY/5);
     });
     takePlante3->goodEnd([](tableState*itable){
         itable->robotHavePlante = true;
         itable->planteStockFull[3] = false;
     });
     takePlante3->setCostAction([](tableState*itable){
-        return itable->planteStockFull[3] && !itable->robotHavePlante && !allJardiniereFull(itable) ? -1 : -1;
+        int cost = itable->colorTeam == BLUE ? 100 : 80;
+        return itable->planteStockFull[3] && !itable->robotHavePlante && !allJardiniereFull(itable) ? cost : -1;
+        //return itable->planteStockFull[3] && !itable->robotHavePlante && !allJardiniereFull(itable) ? -1 : -1;
     });
     listeAction.push_back(takePlante3);
 
