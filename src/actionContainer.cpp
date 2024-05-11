@@ -75,15 +75,17 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
     });
     takePlante2->setCostAction([](tableState*itable){
         int cost = itable->colorTeam == BLUE ? 100 : 80;
-        //return itable->planteStockFull[2] && !itable->robotHavePlante && !allJardiniereFull(itable) ? cost : -1;
-        return itable->planteStockFull[2] && !itable->robotHavePlante && !allJardiniereFull(itable) ? -1 : -1;
+        if(itable->newStrat == true){
+            cost = -1;
+        }
+        return itable->planteStockFull[2] && !itable->robotHavePlante && !allJardiniereFull(itable) ? cost : -1;
     });
     listeAction.push_back(takePlante2);
 
 // ACTION
-    takePlante3->setStartPoint(itable->plantPosition[3].x,itable->plantPosition[3].y - MARGESTOCKPLANTY,MOVE_FORWARD,ROTATION_DIRECT);
+    takePlante3->setStartPoint(itable->plantPosition[3].x,itable->plantPosition[3].y - (itable->colorTeam == BLUE ? MARGESTOCKPLANTY : -MARGESTOCKPLANTY),MOVE_FORWARD,ROTATION_DIRECT);
     takePlante3->setRunAction([](action* iaction, robotCDFR* iRobot, Asser* iAsser, Arduino* iarduino, tableState*itable) {
-        return takePlant2(*iRobot,iAsser,iarduino,itable,itable->plantPosition[3].x,itable->plantPosition[3].y - MARGESTOCKPLANTY,itable->plantPosition[3].x,itable->plantPosition[3].y + MARGESTOCKPLANTY/5);
+        return takePlant2(*iRobot,iAsser,iarduino,itable,itable->plantPosition[3].x,itable->plantPosition[3].y - (itable->colorTeam == BLUE ? MARGESTOCKPLANTY : -MARGESTOCKPLANTY),itable->plantPosition[3].x,itable->plantPosition[3].y + (itable->colorTeam == BLUE ? MARGESTOCKPLANTY : -MARGESTOCKPLANTY)/5);
     });
     takePlante3->goodEnd([](tableState*itable){
         itable->robotHavePlante = true;
@@ -91,8 +93,10 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
     });
     takePlante3->setCostAction([](tableState*itable){
         int cost = itable->colorTeam == BLUE ? 100 : 80;
+        if(itable->newStrat == false){
+            cost = -1;
+        }
         return itable->planteStockFull[3] && !itable->robotHavePlante && !allJardiniereFull(itable) ? cost : -1;
-        //return itable->planteStockFull[3] && !itable->robotHavePlante && !allJardiniereFull(itable) ? -1 : -1;
     });
     listeAction.push_back(takePlante3);
 

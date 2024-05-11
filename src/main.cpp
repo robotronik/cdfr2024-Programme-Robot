@@ -108,6 +108,7 @@ int main(int argc, char *argv[]) {
     actionContainer* actionSystem = new actionContainer(&mainRobot, robotI2C, arduino, &(mainRobot.tableStatus));
     int countStart = 0;
     int countSetHome = 0;
+    int countstategi = 0;
 
     // arduino->enableStepper(1);
     // arduino->servoPosition(1,180);
@@ -164,7 +165,15 @@ int main(int argc, char *argv[]) {
             case INIT:{
                 if(initStat){ LOG_STATE("INIT");
                     int bStateCapteur2 = 0;
+                    int bCapteur4 = 0;
+                    arduino->readCapteur(1,bCapteur4);
                     arduino->readCapteur(2,bStateCapteur2);
+                    if(bCapteur4 == 1){
+                        mainRobot.tableStatus.newStrat = true;
+                    }
+                    else{
+                        mainRobot.tableStatus.newStrat = false;
+                    }
                     if(bStateCapteur2 == 1){
                         robotI2C->setCoords(-710,1170,90);
                     }
@@ -176,8 +185,13 @@ int main(int argc, char *argv[]) {
                 int bStateCapteur1 = 0;
                 arduino->readCapteur(3,bStateCapteur3);
                 arduino->readCapteur(1,bStateCapteur1);
-                blinkLed(arduino,2,500);
-                blinkLed(arduino,1,500);
+                if(mainRobot.tableStatus.newStrat = true){
+                    blinkLed(arduino,2,500);
+                }
+                else{
+                    blinkLed(arduino,1,500);
+                }               
+                
                 if(bStateCapteur3 == 1 && bStateCapteur1 == 1){
                     countSetHome ++;
                 }

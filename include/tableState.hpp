@@ -17,6 +17,7 @@ public:
     colorTeam_t colorTeam;
     bool solarPanelTurn = false;
     unsigned long startTime;
+    bool newStrat = false;
 
     //Poistion
     const cartesian_position_t plantPosition[6] =
