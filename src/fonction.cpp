@@ -717,7 +717,7 @@ int lastPlant(robotCDFR mainRobot,Asser* robot,Arduino* arduino,tableState*itabl
     //****************************************************************
     case LASTPLANT_TAKE :
         if(initStat) LOG_STATE("LASTPLANT_TAKE");
-        if(takePlant2(mainRobot,robot,arduino,itable,itable->plantPosition[0].x,itable->plantPosition[0].y - 150,itable->plantPosition[0].x,itable->plantPosition[0].y + 250)){
+        if(takePlant2(mainRobot,robot,arduino,itable,itable->plantPosition[0].x,itable->plantPosition[0].y + 250,itable->plantPosition[0].x,itable->plantPosition[0].y - 150)){
             nextState = LASTPLANT_GOPOT;       
         }
 
@@ -725,7 +725,7 @@ int lastPlant(robotCDFR mainRobot,Asser* robot,Arduino* arduino,tableState*itabl
     //****************************************************************
     case LASTPLANT_GOPOT :
         if(initStat) LOG_STATE("LASTPLANT_GOPOT");
-        if(deplacementgoToPoint(mainRobot,robot,887,1130,-90)){
+        if(deplacementgoToPoint(mainRobot,robot,887,-1130,90)){
             nextState = LASTPLANT_TURN;
             arduino->servoPosition(2,CLAMPOPEN);
         }
@@ -738,7 +738,7 @@ int lastPlant(robotCDFR mainRobot,Asser* robot,Arduino* arduino,tableState*itabl
     //****************************************************************
     case LASTPLANT_TURN :
         if(initStat) LOG_STATE("LASTPLANT_TURN");
-        if(deplacementgoToPoint(mainRobot,robot,887,1170,-90)){
+        if(deplacementgoToPoint(mainRobot,robot,887,-1170,90)){
             nextState = LASTPLANT_INIT;
             ireturn = 1;
         }

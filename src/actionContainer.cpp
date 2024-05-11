@@ -265,7 +265,31 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
         }
         return icost;
     });
-    listeAction.push_back(returnToHomeAction);
+    //listeAction.push_back(returnToHomeAction);
+
+    //PLANT TO HOME
+    returnToHomeActionPlante->setStartPoint(itable->plantPosition[0].x,itable->plantPosition[0].y+250, -90, MOVE_FORWARD, ROTATION_DIRECT);
+    returnToHomeActionPlante->setRunAction([](action* iaction, robotCDFR* iRobot, Asser* iAsser, Arduino* iarduino, tableState*itable) {
+        int iret = 0;
+        if(lastPlant(*iRobot,iAsser,iarduino,itable)){
+            iret = -100;
+        }
+        return iret;
+    });
+    returnToHomeAction->goodEnd([](tableState*itable){
+
+    });
+    returnToHomeActionPlante->setCostAction([](tableState*itable){
+        int icost;
+        if(itable->startTime+80000 < millis()){
+            icost = 250;
+        }
+        else{
+            icost = 9;
+        }
+        return icost;
+    });
+    listeAction.push_back(returnToHomeActionPlante);
 
 
 //PUSH POT
@@ -323,27 +347,6 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
     });
     listeAction.push_back(pushPotAction5);
 
-
-//PLANT TO HOME
-    returnToHomeActionPlante->setStartPoint(itable->plantPosition[0].x,itable->plantPosition[0].y, -90, MOVE_BACKWARD, ROTATION_DIRECT);
-    returnToHomeActionPlante->setRunAction([](action* iaction, robotCDFR* iRobot, Asser* iAsser, Arduino* iarduino, tableState*itable) {
-        int iret = 0;
-        if(lastPlant(*iRobot,iAsser,iarduino,itable)){
-            iret = -100;
-        }
-        return iret;
-    });
-    returnToHomeActionPlante->setCostAction([](tableState*itable){
-        int icost;
-        if(itable->startTime+80000 < millis()){
-            icost = 250;
-        }
-        else{
-            icost = 9;
-        }
-        return icost;
-    });
-    listeAction.push_back(returnToHomeActionPlante);
 
     //Choose first action
     choosNextAction();
