@@ -696,6 +696,69 @@ void resetActionneur(Asser* robot, Arduino* arduino){
     robot->setLinearMaxSpeed(10000);
 }
 
+
+
+int lastPlant(robotCDFR mainRobot,Asser* robot,Arduino* arduino,tableState*itable){
+    LOG_SCOPE("lastPlant");
+    int ireturn = 0;
+    static bool initStat = true;
+    static fsminitLastPlant_t currentState = LASTPLANT_INIT;
+    fsminitLastPlant_t nextState = currentState;
+    int deplacementreturn;
+
+
+    switch (currentState)
+    {
+    //****************************************************************
+    case LASTPLANT_INIT :
+        if(initStat) LOG_STATE("LASTPLANT_INIT");
+        nextState = LASTPLANT_TAKE;
+        break;
+    //****************************************************************
+    case LASTPLANT_TAKE :
+        if(initStat) LOG_STATE("LASTPLANT_TAKE");
+        if(takePlant2(mainRobot,robot,arduino,itable,itable->plantPosition[0].x,itable->plantPosition[0].y - 150,itable->plantPosition[0].x,itable->plantPosition[0].y + 250)){
+            nextState = LASTPLANT_GOPOT;       
+        }
+
+        break;
+    //****************************************************************
+    case LASTPLANT_GOPOT :
+        if(initStat) LOG_STATE("LASTPLANT_GOPOT");
+        if(deplacementgoToPoint(mainRobot,robot,887,1130,-90)){
+            nextState = LASTPLANT_TURN;
+            arduino->servoPosition(2,CLAMPOPEN);
+        }
+        break;
+    //****************************************************************
+    case LASTPLANT_REALSE :
+        if(initStat) LOG_STATE("LASTPLANT_REALSE");
+        nextState = LASTPLANT_TURN;
+        break;
+    //****************************************************************
+    case LASTPLANT_TURN :
+        if(initStat) LOG_STATE("LASTPLANT_TURN");
+        if(deplacementgoToPoint(mainRobot,robot,887,1170,-90)){
+            nextState = LASTPLANT_INIT;
+            ireturn = 1;
+        }
+        break;
+    //****************************************************************
+    //****************************************************************    
+    default:
+        if(initStat) LOG_ERROR("default");
+        nextState = LASTPLANT_INIT;
+        break;
+    }
+
+    initStat = false;
+    if(nextState != currentState){
+        initStat = true;
+    }
+    currentState = nextState;
+    return ireturn;
+}
+
 //
 
 

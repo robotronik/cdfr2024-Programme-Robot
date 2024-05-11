@@ -64,12 +64,21 @@ typedef enum {
 } fsminitPos_t;
 
 
+typedef enum {
+    LASTPLANT_INIT,
+    LASTPLANT_TAKE,
+    LASTPLANT_GOPOT,
+    LASTPLANT_REALSE,
+    LASTPLANT_TURN
+} fsminitLastPlant_t;
+
 
 int initPositon(Asser* robot,int x, int y,int teta);
 int initPositonY(robotCDFR mainRobot, Asser* robot,int x, int y,int teta);
 int initPositon2(robotCDFR mainRobot, Asser* robot,int x, int y,int teta);
 int initY(robotCDFR mainRobot, Asser* robot,int x, int y,int teta);
 int turnSolarPannel(robotCDFR mainRobot,Asser* robot,Arduino* arduino);
+int lastPlant(robotCDFR mainRobot,Asser* robot,Arduino* arduino,tableState*itable);
 int takePlant(robotCDFR mainRobot,Asser* robot,Arduino* arduino,tableState*itable,int yPos,int xStart, int xEnd, int numPlante);
 int takePlant2(robotCDFR mainRobot, Asser* robot,Arduino* arduino,tableState*itable,int xStart,int yStart, int xEnd, int yEnd);
 int returnToHome(Asser* robot);
