@@ -7,17 +7,23 @@ LDLIBS = -lsl_lidar_sdk -pthread -li2c -lpigpio -lrt -lpthread
 TARGET = bin/programCDFR
 SRCDIR = src
 OBJDIR = obj
+BINDIR = bin
+TESTTAGET := $(wildcard test/*.cpp)
+TARGET += $(patsubst test/%.cpp,$(BINDIR)/%,$(TESTTAGET))
+SIMPLETARGET := $(patsubst $(BINDIR)/%,%,$(TARGET))
 
 SRC = $(wildcard $(SRCDIR)/*.cpp)
 OBJ = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRC))
 DEPENDS := $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.d,$(SRC))
 
-.PHONY: all clean
+
+.PHONY: all clean $(TARGET)
 
 all: lidarLib $(TARGET)
-	@echo "Compilation terminée. Exécutez './$(TARGET)' pour exécuter le programme."
+	@echo "Compilation terminée!"
+	@echo "$(SIMPLETARGET)"
 
-$(TARGET): $(OBJ) | bin
+$(TARGET): $(OBJ) | $(BINDIR)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
 -include $(DEPENDS)
@@ -28,9 +34,10 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp | $(OBJDIR)
 $(OBJDIR):
 	mkdir -p $@
 
+$(foreach exec,$(SIMPLETARGET),$(eval $(exec): lidarLib $(BINDIR)/$(exec)))
 
-bin:
-	mkdir -p bin
+$(BINDIR):
+	mkdir -p $(BINDIR)
 
 lidarLib:
 	@echo "Compilation du sous-dossier lidarLib..."
