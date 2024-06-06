@@ -92,7 +92,7 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
         itable->planteStockFull[3] = false;
     });
     takePlante3->setCostAction([](tableState*itable){
-        int cost = itable->colorTeam == BLUE ? 100 : 80;
+        int cost = 100;
         if(itable->newStrat == false){
             cost = -1;
         }
@@ -111,6 +111,9 @@ void actionContainer::initAction(robotCDFR* imainRobot, Asser* irobot, Arduino* 
     });
     takePlante4->setCostAction([](tableState*itable){
         int cost = itable->colorTeam == BLUE ? 80 : 100;
+        if(itable->newStrat == true){
+            cost = -1;
+        }
         return itable->planteStockFull[4] && !itable->robotHavePlante && !allJardiniereFull(itable) ? cost : -1;
     });
     listeAction.push_back(takePlante4);

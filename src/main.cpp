@@ -73,7 +73,6 @@ void executePythonScript(const std::string& command) {
 int main(int argc, char *argv[]) {
     LOG_INIT();
 
-
     if(!lidarSetup("/dev/ttyAMA0",256000)){
         LOG_ERROR("cannot find the lidar");
         return -1;
@@ -166,7 +165,7 @@ int main(int argc, char *argv[]) {
                 if(initStat){ LOG_STATE("INIT");
                     int bStateCapteur2 = 0;
                     int bCapteur4 = 0;
-                    arduino->readCapteur(1,bCapteur4);
+                    arduino->readCapteur(6,bCapteur4);
                     arduino->readCapteur(2,bStateCapteur2);
                     if(bCapteur4 == 1){
                         mainRobot.tableStatus.newStrat = true;
@@ -185,7 +184,7 @@ int main(int argc, char *argv[]) {
                 int bStateCapteur1 = 0;
                 arduino->readCapteur(3,bStateCapteur3);
                 arduino->readCapteur(1,bStateCapteur1);
-                if(mainRobot.tableStatus.newStrat = true){
+                if(mainRobot.tableStatus.newStrat == true){
                     blinkLed(arduino,2,500);
                 }
                 else{
